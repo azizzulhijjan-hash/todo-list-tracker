@@ -5,6 +5,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>To Do List Tracker — Mulai 2 Menit</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  var firebaseConfig = {
+    apiKey: "AIzaSyD7zeG10K7xEOhp-7xV4B6Ks-JwVLqCu8c",
+    authDomain: "mulai2menit-todo.firebaseapp.com",
+    projectId: "mulai2menit-todo",
+    storageBucket: "mulai2menit-todo.firebasestorage.app",
+    messagingSenderId: "149025487779",
+    appId: "1:149025487779:web:152aec2c91dc6ecbdfb816",
+    measurementId: "G-ZKGYFHMCJB"
+  };
+
+  var fbApp = initializeApp(firebaseConfig);
+  var auth = getAuth(fbApp);
+  var db = getFirestore(fbApp);
+  var googleProvider = new GoogleAuthProvider();
+
+  // Expose ke window supaya bisa dipakai dari script non-module di bawah
+  window.fb = {
+    auth: auth,
+    db: db,
+    signIn: function() { return signInWithPopup(auth, googleProvider); },
+    signOutUser: function() { return signOut(auth); },
+    onAuthChange: function(cb) { return onAuthStateChanged(auth, cb); },
+    getDoc: function(path) { return getDoc(doc(db, path)); },
+    setDoc: function(path, data) { return setDoc(doc(db, path), data); }
+  };
+  window.dispatchEvent(new Event("firebase-ready"));
+</script>
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -159,6 +191,15 @@
   .name-gate button { width: 100%; background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: #fff; border: none; border-radius: 10px; padding: 13px; font-size: 14px; font-weight: 700; cursor: pointer; }
   .name-gate .gate-error { font-size: 12px; color: var(--red); margin-top: 8px; min-height: 16px; }
 
+  .google-signin-btn {
+    width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
+    background: #fff; color: #3c4043; border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 12px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
+    transition: all 0.15s;
+  }
+  .google-signin-btn:hover { background: var(--border-soft); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .google-signin-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
   .loading-row { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 24px; }
   .spinner { width: 16px; height: 16px; border: 2px solid #C8C3EF; border-top-color: var(--purple); border-radius: 50%; animation: spin 0.7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -179,8 +220,8 @@
     <div class="guide-step">
       <div class="guide-num">1</div>
       <div class="guide-content">
-        <h3>Masukkan nama kamu</h3>
-        <p>Nama ini dipakai untuk menyimpan data tugasmu, jadi kalau kamu buka lagi nanti di device yang sama, semua tugas dan history-nya masih ada. Gunakan nama yang sama setiap kali biar datanya tersambung.</p>
+        <h3>Login dengan akun Google kamu</h3>
+        <p>Data tugasmu tersimpan di akun Google yang kamu pakai untuk login, jadi kalau kamu buka app ini dari device manapun (HP, laptop, tablet) dan login dengan akun yang sama, semua tugas dan history-nya akan tetap ada.</p>
       </div>
     </div>
 
@@ -234,9 +275,11 @@
   <div class="name-gate">
     <div class="gate-icon">✓</div>
     <h2>Selamat datang</h2>
-    <p>Masukkan nama kamu supaya data to do list tersimpan dan bisa diakses lagi nanti.</p>
-    <input type="text" id="nameInput" placeholder="Nama kamu...">
-    <button id="nameSubmit">Mulai</button>
+    <p>Login dengan Google supaya data to do list kamu tersimpan dan bisa diakses dari device manapun.</p>
+    <button id="googleSignInBtn" class="google-signin-btn">
+      <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84c-.21 1.12-.84 2.07-1.79 2.71v2.26h2.9c1.7-1.56 2.69-3.87 2.69-6.61z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.81 5.96-2.18l-2.9-2.26c-.81.54-1.85.87-3.06.87-2.35 0-4.34-1.59-5.05-3.71H.95v2.33C2.44 16.05 5.48 18 9 18z"/><path fill="#FBBC05" d="M3.95 10.71c-.18-.54-.28-1.11-.28-1.71s.1-1.17.28-1.71V4.96H.95C.35 6.18 0 7.55 0 9s.35 2.82.95 4.04l3-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.57-2.57C13.46.89 11.43 0 9 0 5.48 0 2.44 1.95.95 4.96l3 2.33C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
+      <span>Masuk dengan Google</span>
+    </button>
     <div class="gate-error" id="nameError"></div>
   </div>
 </div>
@@ -251,14 +294,17 @@
   </div>
   <div class="header-actions">
     <button class="btn-ghost" id="openGuide">📖 Cara pakai</button>
-    <button class="btn-ghost" id="switchUserBtn">Ganti nama</button>
+    <button class="btn-ghost hidden" id="switchUserBtn">Keluar</button>
   </div>
 </div>
 
 <div class="user-bar hidden" id="userBar">
-  <div>
-    <div class="greet">Halo, <span id="userNameLabel"></span> 👋</div>
-    <div class="sub" id="taskCountLabel"></div>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <img id="userPhoto" src="" alt="" style="width:32px;height:32px;border-radius:50%;display:none;">
+    <div>
+      <div class="greet">Halo, <span id="userNameLabel"></span> 👋</div>
+      <div class="sub" id="taskCountLabel"></div>
+    </div>
   </div>
   <div class="day-nav">
     <button id="prevDay">‹</button>
@@ -266,6 +312,7 @@
     <button id="nextDay">›</button>
   </div>
 </div>
+
 
 <div class="save-status hidden" id="saveStatus"></div>
 
@@ -362,8 +409,8 @@
   function slugify(name) { return name.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""); }
   function dateKey(d) { return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); }
   function monthKeyOf(d) { return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0"); }
-  function storageKey(user, dk) { return "todo-day:" + slugify(user) + ":" + dk; }
-  function localKey(user, dk) { return "todo-day-local:" + slugify(user) + ":" + dk; }
+  function firestorePath(uid, dk) { return "users/" + uid + "/days/" + dk; }
+  function localKey(uid, dk) { return "todo-day-local:" + uid + ":" + dk; }
   function daysInMonth(year, month) { return new Date(year, month + 1, 0).getDate(); }
   function isSameDay(a, b) { return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
 
@@ -372,32 +419,62 @@
   document.getElementById("closeGuide").addEventListener("click", function() { document.getElementById("guideModal").classList.add("hidden"); });
   document.getElementById("guideModal").addEventListener("click", function(e) { if (e.target === this) this.classList.add("hidden"); });
 
-  // ───── NAME GATE ─────
-  document.getElementById("nameSubmit").addEventListener("click", submitName);
-  document.getElementById("nameInput").addEventListener("keydown", function(e) { if (e.key === "Enter") submitName(); });
+  // ───── GOOGLE SIGN-IN ─────
+  var fbReady = false;
+  window.addEventListener("firebase-ready", function() {
+    fbReady = true;
+    window.fb.onAuthChange(function(user) {
+      if (user) {
+        onSignedIn(user);
+      } else {
+        onSignedOut();
+      }
+    });
+  });
 
-  function submitName() {
-    var val = document.getElementById("nameInput").value.trim();
-    if (!val) { document.getElementById("nameError").textContent = "Nama tidak boleh kosong."; return; }
-    currentUser = val;
+  document.getElementById("googleSignInBtn").addEventListener("click", function() {
+    if (!fbReady) {
+      document.getElementById("nameError").textContent = "Sedang menyiapkan koneksi, coba lagi sebentar.";
+      return;
+    }
+    var btn = document.getElementById("googleSignInBtn");
+    btn.disabled = true;
+    document.getElementById("nameError").textContent = "";
+    window.fb.signIn().catch(function(err) {
+      console.warn("Sign-in gagal:", err);
+      document.getElementById("nameError").textContent = "Gagal login. Coba lagi.";
+    }).finally(function() {
+      btn.disabled = false;
+    });
+  });
+
+  function onSignedIn(user) {
+    currentUser = user.uid;
     document.getElementById("nameGate").classList.add("hidden");
     document.getElementById("userBar").classList.remove("hidden");
     document.getElementById("tabsBar").classList.remove("hidden");
     document.getElementById("checklistView").classList.remove("hidden");
-    document.getElementById("userNameLabel").textContent = currentUser;
+    document.getElementById("switchUserBtn").classList.remove("hidden");
+    document.getElementById("userNameLabel").textContent = user.displayName || user.email || "Pengguna";
+    var photoEl = document.getElementById("userPhoto");
+    if (user.photoURL) { photoEl.src = user.photoURL; photoEl.style.display = "block"; }
     loadDay();
   }
 
-  document.getElementById("switchUserBtn").addEventListener("click", function() {
+  function onSignedOut() {
     currentUser = null;
     document.getElementById("nameGate").classList.remove("hidden");
-    document.getElementById("nameInput").value = "";
     document.getElementById("nameError").textContent = "";
     document.getElementById("userBar").classList.add("hidden");
     document.getElementById("tabsBar").classList.add("hidden");
     document.getElementById("checklistView").classList.add("hidden");
     document.getElementById("progressView").classList.add("hidden");
     document.getElementById("matrixView").classList.add("hidden");
+    document.getElementById("switchUserBtn").classList.add("hidden");
+  }
+
+  document.getElementById("switchUserBtn").addEventListener("click", function() {
+    if (window.fb) window.fb.signOutUser();
   });
 
   // ───── DAY NAV ─────
@@ -425,26 +502,29 @@
     if (tab === "progress") renderProgress();
   }
 
-  // ───── STORAGE (per hari) ─────
-  // Strategi: localStorage adalah sumber utama untuk tampilan (instan, tidak pernah gagal).
-  // Server storage disinkronkan di belakang layar secara diam-diam (best effort),
-  // tanpa retry berlebihan dan tanpa memblokir tampilan.
-  async function backgroundSyncFromServer(key) {
+  // ───── STORAGE (per hari, via Firestore) ─────
+  // Strategi: localStorage tetap dipakai sebagai cache instan supaya tampilan
+  // tidak menunggu jaringan. Firestore adalah sumber data yang sebenarnya,
+  // terikat ke akun Google (uid), sehingga sama persis di semua device.
+  async function backgroundSyncFromServer(path) {
     try {
-      var result = await window.storage.get(key, false);
-      return result && result.value ? result.value : null;
+      var snap = await window.fb.getDoc(path);
+      if (snap && snap.exists && snap.exists()) {
+        return JSON.stringify(snap.data());
+      }
+      return null;
     } catch (e) {
-      // Diam-diam saja, baik untuk "belum ada data" maupun error server sementara.
-      // localStorage sudah jadi sumber tampilan, jadi ini tidak mengganggu pengalaman pakai.
+      console.warn("Gagal sinkron dari Firestore:", e);
       return null;
     }
   }
 
-  async function backgroundSyncToServer(key, payload) {
+  async function backgroundSyncToServer(path, dataObj) {
     try {
-      await window.storage.set(key, payload, false);
+      await window.fb.setDoc(path, dataObj);
       return true;
     } catch (e) {
+      console.warn("Gagal sinkron ke Firestore:", e);
       return false;
     }
   }
@@ -453,7 +533,7 @@
     var dk = dateKey(viewDate);
     updateDayLabel();
 
-    // Tampilkan dulu dari localStorage secara instan, tanpa menunggu server.
+    // Tampilkan dulu dari localStorage secara instan, tanpa menunggu jaringan.
     var loaded = null;
     try {
       var local = localStorage.getItem(localKey(currentUser, dk));
@@ -463,25 +543,22 @@
     dayData = loaded || { tasks: [] };
     renderChecklist();
 
-    // Sinkronkan dari server di belakang layar. Kalau server punya versi
-    // dan localStorage kosong, pakai versi server. Kalau localStorage sudah
-    // ada isinya, anggap itu yang paling baru (sudah ditampilkan duluan).
-    if (!loaded) {
-      var raw = await backgroundSyncFromServer(storageKey(currentUser, dk));
-      if (raw && dk === dateKey(viewDate)) {
-        try {
-          var serverData = JSON.parse(raw);
-          dayData = serverData;
-          try { localStorage.setItem(localKey(currentUser, dk), raw); } catch (e3) {}
-          renderChecklist();
-        } catch (eParse) { console.warn("Gagal parse data server:", eParse); }
-      }
+    // Sinkronkan dari Firestore di belakang layar — ini sumber data yang
+    // benar-benar terikat ke akun, jadi sama di semua device.
+    var raw = await backgroundSyncFromServer(firestorePath(currentUser, dk));
+    if (raw && dk === dateKey(viewDate)) {
+      try {
+        var serverData = JSON.parse(raw);
+        dayData = serverData;
+        try { localStorage.setItem(localKey(currentUser, dk), raw); } catch (e3) {}
+        renderChecklist();
+      } catch (eParse) { console.warn("Gagal parse data server:", eParse); }
     }
   }
 
   async function saveDay() {
     var dk = dateKey(viewDate);
-    var key = storageKey(currentUser, dk);
+    var path = firestorePath(currentUser, dk);
     var payload = JSON.stringify(dayData);
 
     // Simpan ke localStorage dulu — ini yang menjamin data tidak hilang dan instan.
@@ -492,9 +569,8 @@
       console.warn("Gagal menyimpan ke localStorage:", eLocal);
     }
 
-    // Sinkronkan ke server di belakang layar, tanpa retry agresif dan tanpa
-    // memblokir atau mengubah status yang sudah ditampilkan ke user.
-    backgroundSyncToServer(key, payload);
+    // Sinkronkan ke Firestore di belakang layar.
+    backgroundSyncToServer(path, dayData);
   }
 
   function showSaveStatus(state) {
@@ -668,7 +744,7 @@
 
     var results = await Promise.all(missingDays.map(function(d) {
       var dk = dateKey(new Date(year, month, d));
-      return backgroundSyncFromServer(storageKey(currentUser, dk)).then(function(raw) {
+      return backgroundSyncFromServer(firestorePath(currentUser, dk)).then(function(raw) {
         return { day: d, raw: raw };
       });
     }));

@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>To Do List Tracker — Mulai 2 Menit</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --purple: #5B4FCF; --purple-dark: #3E33A3; --purple-light: #EAE8FB; --purple-mid: #7B70D9;
+    --teal: #0F9E80; --teal-light: #DDF5EE;
+    --coral: #E05C35; --coral-light: #FDE9E1;
+    --gold: #C99228; --gold-light: #FDF3DC;
+    --red: #C0392B; --red-light: #FAE2DF;
+    --bg: #F4F2EE; --card: #FFFFFF;
+    --text: #1E1C2E; --text-soft: #6B6880; --text-muted: #A09DB8;
+    --border: #E4E1F0; --border-soft: #F0EEF8;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    background: var(--bg); color: var(--text); min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; padding: 24px 16px 60px;
+  }
+
+  .app-header { width: 100%; max-width: 760px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .app-logo { display: flex; align-items: center; gap: 8px; }
+  .app-logo .dot { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, var(--purple), var(--purple-mid)); display: flex; align-items: center; justify-content: center; }
+  .app-logo .dot span { font-size: 14px; }
+  .app-logo .brand-name { font-size: 13px; font-weight: 700; color: var(--text); }
+  .app-logo .brand-sub { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+  .header-actions { display: flex; gap: 8px; align-items: center; }
+  .btn-ghost { font-size: 12px; font-weight: 600; color: var(--purple); background: var(--purple-light); border: none; border-radius: 20px; padding: 6px 14px; cursor: pointer; transition: all 0.15s; }
+  .btn-ghost:hover { background: #D8D4F5; }
+
+  .user-bar {
+    width: 100%; max-width: 760px; background: var(--card); border-radius: 16px;
+    padding: 16px 20px; margin-bottom: 12px; box-shadow: 0 2px 16px rgba(91,79,207,0.06);
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  .user-bar .greet { font-size: 14px; font-weight: 600; }
+  .user-bar .greet span { color: var(--purple); }
+  .user-bar .sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  .day-nav { display: flex; align-items: center; gap: 10px; }
+  .day-nav button { width: 30px; height: 30px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--border-soft); cursor: pointer; font-size: 14px; color: var(--text-soft); display: flex; align-items: center; justify-content: center; }
+  .day-nav button:hover { background: var(--border); }
+  .day-nav .day-label { font-size: 13px; font-weight: 700; min-width: 150px; text-align: center; }
+  .day-nav .day-today-badge { font-size: 10px; font-weight: 700; color: var(--teal); background: var(--teal-light); padding: 2px 8px; border-radius: 20px; margin-left: 6px; }
+
+  .tabs { width: 100%; max-width: 760px; display: flex; gap: 8px; margin-bottom: 16px; }
+  .tab-btn { flex: 1; padding: 10px 16px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--card); font-size: 13px; font-weight: 700; color: var(--text-soft); cursor: pointer; transition: all 0.15s; text-align: center; }
+  .tab-btn.active { background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: #fff; border-color: transparent; }
+
+  .card { background: var(--card); border-radius: 20px; max-width: 760px; width: 100%; padding: 28px; box-shadow: 0 4px 32px rgba(91,79,207,0.08), 0 1px 4px rgba(0,0,0,0.04); }
+  .hidden { display: none !important; }
+
+  h1 { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+  p.desc { font-size: 13px; color: var(--text-soft); line-height: 1.6; margin-bottom: 20px; }
+
+  /* ── ADD TASK ── */
+  .add-task-row { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .add-task-row input[type="text"] { flex: 1; min-width: 160px; border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 14px; font-family: inherit; background: var(--border-soft); color: var(--text); }
+  .add-task-row input[type="text"]:focus { outline: none; border-color: var(--purple); background: #fff; }
+  .add-task-row select, .add-task-row input[type="time"] { border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 13px; font-family: inherit; background: var(--border-soft); color: var(--text); cursor: pointer; }
+  .add-task-row button { background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: #fff; border: none; border-radius: 10px; padding: 10px 18px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+
+  .cat-pill { font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; }
+  .cat-pill.ui { background: var(--coral-light); color: #993C1D; }
+  .cat-pill.ni { background: var(--purple-light); color: #3C3489; }
+  .cat-pill.uni { background: var(--gold-light); color: #854F0B; }
+  .cat-pill.nuni { background: var(--border-soft); color: var(--text-soft); }
+
+  /* ── TASK LIST ── */
+  .task-row { display: flex; align-items: center; gap: 12px; padding: 12px 4px; border-bottom: 0.5px solid var(--border-soft); }
+  .task-row:last-child { border-bottom: none; }
+  .task-check { width: 22px; height: 22px; border-radius: 7px; border: 1.5px solid var(--border); background: var(--border-soft); cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; color: transparent; transition: all 0.15s; }
+  .task-check.checked { background: var(--teal); border-color: var(--teal); color: #fff; }
+  .task-time { font-size: 11px; font-weight: 700; color: var(--purple); background: var(--purple-light); padding: 3px 8px; border-radius: 8px; white-space: nowrap; min-width: 48px; text-align: center; }
+  .task-name { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .task-name.done { color: var(--text-muted); text-decoration: line-through; }
+  .task-del { width: 26px; height: 26px; border-radius: 7px; border: none; background: transparent; color: var(--text-muted); cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+  .task-del:hover { background: var(--red-light); color: var(--red); }
+
+  .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 13px; }
+
+  /* ── MATRIX TAB ── */
+  .matrix-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  @media (max-width: 600px) {
+    .matrix-grid { grid-template-columns: 1fr; }
+    .add-task-row { flex-direction: column; }
+    .add-task-row input, .add-task-row select, .add-task-row button { width: 100%; }
+  }
+  .matrix-quad { border-radius: 14px; padding: 14px; min-height: 140px; }
+  .matrix-quad.q-do { background: var(--coral-light); border: 1px solid #F5C8B6; }
+  .matrix-quad.q-schedule { background: var(--purple-light); border: 1px solid #D0CBEF; }
+  .matrix-quad.q-delegate { background: var(--gold-light); border: 1px solid #EDD79A; }
+  .matrix-quad.q-delete { background: var(--border-soft); border: 1px solid var(--border); }
+  .matrix-quad .quad-title { font-size: 12px; font-weight: 700; margin-bottom: 2px; }
+  .matrix-quad.q-do .quad-title { color: #993C1D; }
+  .matrix-quad.q-schedule .quad-title { color: #3C3489; }
+  .matrix-quad.q-delegate .quad-title { color: #854F0B; }
+  .matrix-quad.q-delete .quad-title { color: var(--text-soft); }
+  .matrix-quad .quad-sub { font-size: 10px; color: var(--text-muted); margin-bottom: 10px; }
+  .matrix-quad .quad-item { font-size: 12px; padding: 6px 8px; background: rgba(255,255,255,0.6); border-radius: 8px; margin-bottom: 6px; line-height: 1.4; }
+  .matrix-axis-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; text-align: center; margin-bottom: 6px; }
+
+  .app-footer { margin-top: 20px; font-size: 12px; color: var(--text-muted); text-align: center; }
+
+  /* ── PROGRESS / GRAFIK VIEW ── */
+  .month-summary { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+  .summary-stat { flex: 1; min-width: 100px; background: var(--border-soft); border-radius: 14px; padding: 14px; text-align: center; }
+  .summary-stat .stat-value { font-size: 22px; font-weight: 800; color: var(--purple); }
+  .summary-stat .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  .chart-wrap { overflow-x: auto; padding-bottom: 8px; }
+  .chart-svg-container { min-width: 100%; }
+  .chart-bars { display: flex; align-items: flex-end; gap: 4px; height: 160px; min-width: max-content; padding: 0 4px; }
+  .chart-bar-col { display: flex; flex-direction: column; align-items: center; width: 20px; flex-shrink: 0; }
+  .chart-bar { width: 14px; border-radius: 4px 4px 0 0; background: var(--border); transition: height 0.3s; position: relative; }
+  .chart-bar.has-data { background: linear-gradient(180deg, var(--purple-mid), var(--purple)); }
+  .chart-bar.today-bar { background: linear-gradient(180deg, var(--teal), #0a7a63); }
+  .chart-bar-track { display: flex; align-items: flex-end; height: 130px; }
+  .chart-day-label { font-size: 9px; color: var(--text-muted); margin-top: 6px; }
+  .chart-day-label.today-label { color: var(--purple); font-weight: 700; }
+  .chart-pct-label { font-size: 8px; color: var(--text-muted); margin-bottom: 2px; }
+
+  .save-status { width: 100%; max-width: 760px; margin-bottom: 12px; font-size: 12px; font-weight: 600; padding: 8px 14px; border-radius: 10px; text-align: center; }
+  .save-status.ok { background: var(--teal-light); color: #085041; }
+  .save-status.warn { background: var(--gold-light); color: #854F0B; }
+
+  /* ── GUIDE MODAL ── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(30,28,46,0.55); backdrop-filter: blur(4px); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .modal { background: #fff; border-radius: 20px; max-width: 520px; width: 100%; padding: 32px; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+  .modal-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; gap: 12px; }
+  .modal h2 { font-size: 20px; font-weight: 800; color: var(--text); }
+  .modal-close { width: 30px; height: 30px; border-radius: 8px; background: var(--border-soft); border: none; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--text-soft); }
+  .guide-step { display: flex; gap: 14px; margin-bottom: 20px; }
+  .guide-num { width: 32px; height: 32px; border-radius: 10px; background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: #fff; font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .guide-content h3 { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .guide-content p { font-size: 13px; color: var(--text-soft); line-height: 1.65; }
+  .guide-tip { background: var(--purple-light); border-radius: 12px; padding: 14px 16px; margin-top: 16px; }
+  .guide-tip p { font-size: 13px; color: #3A3460; line-height: 1.6; }
+  .guide-tip strong { color: var(--purple); }
+  .guide-highlight { background: var(--gold-light); border-radius: 12px; padding: 14px 16px; margin-top: 12px; border-left: 3px solid var(--gold); }
+  .guide-highlight p { font-size: 13px; color: #6B4A0B; line-height: 1.6; }
+  .guide-highlight strong { color: var(--gold); }
+
+  /* ── NAME GATE ── */
+  .name-gate-overlay { position: fixed; inset: 0; background: rgba(30,28,46,0.55); backdrop-filter: blur(4px); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .name-gate { background: #fff; border-radius: 20px; max-width: 420px; width: 100%; padding: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); text-align: center; }
+  .name-gate .gate-icon { width: 48px; height: 48px; border-radius: 14px; margin: 0 auto 16px; background: linear-gradient(135deg, var(--purple), var(--purple-mid)); display: flex; align-items: center; justify-content: center; font-size: 22px; }
+  .name-gate h2 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+  .name-gate p { font-size: 13px; color: var(--text-soft); line-height: 1.6; margin-bottom: 20px; }
+  .name-gate input { width: 100%; border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 14px; font-size: 14px; font-family: inherit; background: var(--border-soft); margin-bottom: 12px; text-align: center; }
+  .name-gate input:focus { outline: none; border-color: var(--purple); background: #fff; }
+  .name-gate button { width: 100%; background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: #fff; border: none; border-radius: 10px; padding: 13px; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .name-gate .gate-error { font-size: 12px; color: var(--red); margin-top: 8px; min-height: 16px; }
+
+  .loading-row { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 24px; }
+  .spinner { width: 16px; height: 16px; border: 2px solid #C8C3EF; border-top-color: var(--purple); border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="modal-overlay hidden" id="guideModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--purple);margin-bottom:4px;">Panduan Pemakaian</p>
+        <h2>Cara pakai To Do List Tracker</h2>
+      </div>
+      <button class="modal-close" id="closeGuide">✕</button>
+    </div>
+
+    <div class="guide-step">
+      <div class="guide-num">1</div>
+      <div class="guide-content">
+        <h3>Masukkan nama kamu</h3>
+        <p>Nama ini dipakai untuk menyimpan data tugasmu, jadi kalau kamu buka lagi nanti di device yang sama, semua tugas dan history-nya masih ada. Gunakan nama yang sama setiap kali biar datanya tersambung.</p>
+      </div>
+    </div>
+
+    <div class="guide-step">
+      <div class="guide-num">2</div>
+      <div class="guide-content">
+        <h3>Setiap hari punya daftar tugasnya sendiri</h3>
+        <p>Tidak seperti to do list biasa, di sini tugas yang kamu isi hari ini tidak akan tercampur dengan hari lain. Gunakan navigasi ‹ › untuk pindah ke tanggal lain dan isi tugas yang relevan untuk hari itu saja.</p>
+      </div>
+    </div>
+
+    <div class="guide-step">
+      <div class="guide-num">3</div>
+      <div class="guide-content">
+        <h3>Tambahkan tugas, jam, dan kategorinya</h3>
+        <p>Tulis nama tugas, tentukan jam pelaksanaannya, lalu pilih kategori sesuai Eisenhower Matrix: Urgent-Important, Not Urgent-Important, Urgent-Not Important, atau Not Urgent-Not Important.</p>
+      </div>
+    </div>
+
+    <div class="guide-step">
+      <div class="guide-num">4</div>
+      <div class="guide-content">
+        <h3>Centang tugas yang sudah selesai</h3>
+        <p>Klik kotak di sebelah tugas untuk menandainya selesai. Tugas akan otomatis tersusun berdasarkan jam, dari pagi ke malam.</p>
+      </div>
+    </div>
+
+    <div class="guide-step">
+      <div class="guide-num">5</div>
+      <div class="guide-content">
+        <h3>Pantau progres lewat grafik bulanan</h3>
+        <p>Tab Progress menampilkan persentase keberhasilan tugasmu setiap hari dalam bentuk grafik batang. Tinggi batang menunjukkan seberapa banyak tugas hari itu yang berhasil diselesaikan. Data hari-hari sebelumnya tetap tersimpan dan tidak akan hilang.</p>
+      </div>
+    </div>
+
+    <div class="guide-step" style="margin-bottom:0;">
+      <div class="guide-num">6</div>
+      <div class="guide-content">
+        <h3>Gunakan Eisenhower Matrix untuk prioritas</h3>
+        <p>Tab ini otomatis menyortir tugas hari yang sedang kamu lihat ke 4 kuadran: Do, Schedule, Delegate, dan Delete. Fokuskan energi di kuadran Do dan Schedule.</p>
+      </div>
+    </div>
+
+    <div class="guide-highlight">
+      <p><strong>Waktu terbaik untuk mengisi:</strong> isi to do list ini di malam hari, setelah semua kegiatan hari itu selesai. Dengan begitu kamu mencatat apa yang benar-benar terjadi, bukan sekadar rencana, dan grafik progresmu jadi lebih akurat untuk dievaluasi besok paginya.</p>
+    </div>
+  </div>
+</div>
+
+<div class="name-gate-overlay" id="nameGate">
+  <div class="name-gate">
+    <div class="gate-icon">✓</div>
+    <h2>Selamat datang</h2>
+    <p>Masukkan nama kamu supaya data to do list tersimpan dan bisa diakses lagi nanti.</p>
+    <input type="text" id="nameInput" placeholder="Nama kamu...">
+    <button id="nameSubmit">Mulai</button>
+    <div class="gate-error" id="nameError"></div>
+  </div>
+</div>
+
+<div class="app-header">
+  <div class="app-logo">
+    <div class="dot"><span>✓</span></div>
+    <div>
+      <div class="brand-name">Mulai 2 Menit</div>
+      <div class="brand-sub">To Do List Tracker</div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="btn-ghost" id="openGuide">📖 Cara pakai</button>
+    <button class="btn-ghost" id="switchUserBtn">Ganti nama</button>
+  </div>
+</div>
+
+<div class="user-bar hidden" id="userBar">
+  <div>
+    <div class="greet">Halo, <span id="userNameLabel"></span> 👋</div>
+    <div class="sub" id="taskCountLabel"></div>
+  </div>
+  <div class="day-nav">
+    <button id="prevDay">‹</button>
+    <div class="day-label" id="dayLabel"></div>
+    <button id="nextDay">›</button>
+  </div>
+</div>
+
+<div class="save-status hidden" id="saveStatus"></div>
+
+<div class="tabs hidden" id="tabsBar">
+  <button class="tab-btn active" id="tabChecklist">Tugas hari ini</button>
+  <button class="tab-btn" id="tabProgress">Progress</button>
+  <button class="tab-btn" id="tabMatrix">Eisenhower matrix</button>
+</div>
+
+<div class="card hidden" id="checklistView">
+  <h1>Tugas untuk hari ini</h1>
+  <p class="desc">Setiap hari punya daftar tugas sendiri. Tambahkan tugas yang memang relevan untuk hari yang sedang kamu lihat.</p>
+
+  <div class="add-task-row">
+    <input type="text" id="newTaskInput" placeholder="Nama tugas...">
+    <input type="time" id="newTaskTime" value="08:00">
+    <select id="newTaskCategory">
+      <option value="ui">Urgent - Important</option>
+      <option value="ni">Not Urgent - Important</option>
+      <option value="uni">Urgent - Not Important</option>
+      <option value="nuni">Not Urgent - Not Important</option>
+    </select>
+    <button id="addTaskBtn">+ Tambah</button>
+  </div>
+
+  <div id="taskListContainer"></div>
+</div>
+
+<div class="card hidden" id="progressView">
+  <h1>Progress bulan ini</h1>
+  <p class="desc">Persentase tugas yang berhasil diselesaikan setiap hari. Data hari-hari sebelumnya tetap tersimpan, jadi kamu bisa lihat perkembanganmu dari waktu ke waktu.</p>
+
+  <div class="month-summary">
+    <div class="summary-stat">
+      <div class="stat-value" id="statAvg">0%</div>
+      <div class="stat-label">Rata-rata bulan ini</div>
+    </div>
+    <div class="summary-stat">
+      <div class="stat-value" id="statBest">0%</div>
+      <div class="stat-label">Hari terbaik</div>
+    </div>
+    <div class="summary-stat">
+      <div class="stat-value" id="statActiveDays">0</div>
+      <div class="stat-label">Hari terisi</div>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-bars" id="chartBars"></div>
+  </div>
+</div>
+
+<div class="card hidden" id="matrixView">
+  <h1>Eisenhower matrix</h1>
+  <p class="desc">Tugas hari yang sedang kamu lihat otomatis disortir ke 4 kuadran. Fokus utama ada di kuadran "Do".</p>
+
+  <div class="matrix-axis-label">Urgent ←——————→ Not urgent</div>
+  <div class="matrix-grid">
+    <div class="matrix-quad q-do">
+      <div class="quad-title">Do</div>
+      <div class="quad-sub">Urgent & important</div>
+      <div id="quadUI"></div>
+    </div>
+    <div class="matrix-quad q-schedule">
+      <div class="quad-title">Schedule</div>
+      <div class="quad-sub">Not urgent & important</div>
+      <div id="quadNI"></div>
+    </div>
+    <div class="matrix-quad q-delegate">
+      <div class="quad-title">Delegate</div>
+      <div class="quad-sub">Urgent & not important</div>
+      <div id="quadUNI"></div>
+    </div>
+    <div class="matrix-quad q-delete">
+      <div class="quad-title">Delete</div>
+      <div class="quad-sub">Not urgent & not important</div>
+      <div id="quadNUNI"></div>
+    </div>
+  </div>
+</div>
+
+<div class="app-footer">Mulai 2 Menit &middot; Advanced To Do List Tracker</div>
+
+<script>
+  var currentUser = null;
+  var today = new Date();
+  var viewDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  var dayData = { tasks: [] };
+
+  var monthNames = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+  var dayNames = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+  var catLabels = { ui: "Urgent-Important", ni: "Not Urgent-Important", uni: "Urgent-Not Important", nuni: "Not Urgent-Not Important" };
+
+  function slugify(name) { return name.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""); }
+  function dateKey(d) { return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); }
+  function monthKeyOf(d) { return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0"); }
+  function storageKey(user, dk) { return "todo-day:" + slugify(user) + ":" + dk; }
+  function localKey(user, dk) { return "todo-day-local:" + slugify(user) + ":" + dk; }
+  function daysInMonth(year, month) { return new Date(year, month + 1, 0).getDate(); }
+  function isSameDay(a, b) { return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
+
+  // ───── GUIDE MODAL ─────
+  document.getElementById("openGuide").addEventListener("click", function() { document.getElementById("guideModal").classList.remove("hidden"); });
+  document.getElementById("closeGuide").addEventListener("click", function() { document.getElementById("guideModal").classList.add("hidden"); });
+  document.getElementById("guideModal").addEventListener("click", function(e) { if (e.target === this) this.classList.add("hidden"); });
+
+  // ───── NAME GATE ─────
+  document.getElementById("nameSubmit").addEventListener("click", submitName);
+  document.getElementById("nameInput").addEventListener("keydown", function(e) { if (e.key === "Enter") submitName(); });
+
+  function submitName() {
+    var val = document.getElementById("nameInput").value.trim();
+    if (!val) { document.getElementById("nameError").textContent = "Nama tidak boleh kosong."; return; }
+    currentUser = val;
+    document.getElementById("nameGate").classList.add("hidden");
+    document.getElementById("userBar").classList.remove("hidden");
+    document.getElementById("tabsBar").classList.remove("hidden");
+    document.getElementById("checklistView").classList.remove("hidden");
+    document.getElementById("userNameLabel").textContent = currentUser;
+    loadDay();
+  }
+
+  document.getElementById("switchUserBtn").addEventListener("click", function() {
+    currentUser = null;
+    document.getElementById("nameGate").classList.remove("hidden");
+    document.getElementById("nameInput").value = "";
+    document.getElementById("nameError").textContent = "";
+    document.getElementById("userBar").classList.add("hidden");
+    document.getElementById("tabsBar").classList.add("hidden");
+    document.getElementById("checklistView").classList.add("hidden");
+    document.getElementById("progressView").classList.add("hidden");
+    document.getElementById("matrixView").classList.add("hidden");
+  });
+
+  // ───── DAY NAV ─────
+  document.getElementById("prevDay").addEventListener("click", function() {
+    viewDate.setDate(viewDate.getDate() - 1);
+    loadDay();
+  });
+  document.getElementById("nextDay").addEventListener("click", function() {
+    viewDate.setDate(viewDate.getDate() + 1);
+    loadDay();
+  });
+
+  // ───── TABS ─────
+  document.getElementById("tabChecklist").addEventListener("click", function() { setTab("checklist"); });
+  document.getElementById("tabProgress").addEventListener("click", function() { setTab("progress"); });
+  document.getElementById("tabMatrix").addEventListener("click", function() { setTab("matrix"); });
+  function setTab(tab) {
+    document.getElementById("tabChecklist").classList.toggle("active", tab === "checklist");
+    document.getElementById("tabProgress").classList.toggle("active", tab === "progress");
+    document.getElementById("tabMatrix").classList.toggle("active", tab === "matrix");
+    document.getElementById("checklistView").classList.toggle("hidden", tab !== "checklist");
+    document.getElementById("progressView").classList.toggle("hidden", tab !== "progress");
+    document.getElementById("matrixView").classList.toggle("hidden", tab !== "matrix");
+    if (tab === "matrix") renderMatrix();
+    if (tab === "progress") renderProgress();
+  }
+
+  // ───── STORAGE (per hari) ─────
+  // Strategi: localStorage adalah sumber utama untuk tampilan (instan, tidak pernah gagal).
+  // Server storage disinkronkan di belakang layar secara diam-diam (best effort),
+  // tanpa retry berlebihan dan tanpa memblokir tampilan.
+  async function backgroundSyncFromServer(key) {
+    try {
+      var result = await window.storage.get(key, false);
+      return result && result.value ? result.value : null;
+    } catch (e) {
+      // Diam-diam saja, baik untuk "belum ada data" maupun error server sementara.
+      // localStorage sudah jadi sumber tampilan, jadi ini tidak mengganggu pengalaman pakai.
+      return null;
+    }
+  }
+
+  async function backgroundSyncToServer(key, payload) {
+    try {
+      await window.storage.set(key, payload, false);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async function loadDay() {
+    var dk = dateKey(viewDate);
+    updateDayLabel();
+
+    // Tampilkan dulu dari localStorage secara instan, tanpa menunggu server.
+    var loaded = null;
+    try {
+      var local = localStorage.getItem(localKey(currentUser, dk));
+      if (local) loaded = JSON.parse(local);
+    } catch (e2) { console.warn("Gagal memuat cadangan lokal:", e2); }
+
+    dayData = loaded || { tasks: [] };
+    renderChecklist();
+
+    // Sinkronkan dari server di belakang layar. Kalau server punya versi
+    // dan localStorage kosong, pakai versi server. Kalau localStorage sudah
+    // ada isinya, anggap itu yang paling baru (sudah ditampilkan duluan).
+    if (!loaded) {
+      var raw = await backgroundSyncFromServer(storageKey(currentUser, dk));
+      if (raw && dk === dateKey(viewDate)) {
+        try {
+          var serverData = JSON.parse(raw);
+          dayData = serverData;
+          try { localStorage.setItem(localKey(currentUser, dk), raw); } catch (e3) {}
+          renderChecklist();
+        } catch (eParse) { console.warn("Gagal parse data server:", eParse); }
+      }
+    }
+  }
+
+  async function saveDay() {
+    var dk = dateKey(viewDate);
+    var key = storageKey(currentUser, dk);
+    var payload = JSON.stringify(dayData);
+
+    // Simpan ke localStorage dulu — ini yang menjamin data tidak hilang dan instan.
+    try {
+      localStorage.setItem(localKey(currentUser, dk), payload);
+      showSaveStatus("tersimpan");
+    } catch (eLocal) {
+      console.warn("Gagal menyimpan ke localStorage:", eLocal);
+    }
+
+    // Sinkronkan ke server di belakang layar, tanpa retry agresif dan tanpa
+    // memblokir atau mengubah status yang sudah ditampilkan ke user.
+    backgroundSyncToServer(key, payload);
+  }
+
+  function showSaveStatus(state) {
+    var el = document.getElementById("saveStatus");
+    if (state === "tersimpan") { el.textContent = "Tersimpan"; el.className = "save-status ok"; }
+    el.classList.remove("hidden");
+    clearTimeout(window._saveStatusTimer);
+    window._saveStatusTimer = setTimeout(function() { el.classList.add("hidden"); }, 1500);
+  }
+
+  // ───── DAY LABEL ─────
+  function updateDayLabel() {
+    var isToday = isSameDay(viewDate, today);
+    var label = dayNames[viewDate.getDay()] + ", " + viewDate.getDate() + " " + monthNames[viewDate.getMonth()] + " " + viewDate.getFullYear();
+    document.getElementById("dayLabel").innerHTML = label + (isToday ? '<span class="day-today-badge">Hari ini</span>' : '');
+  }
+
+  // ───── ADD TASK ─────
+  document.getElementById("addTaskBtn").addEventListener("click", addTask);
+  document.getElementById("newTaskInput").addEventListener("keydown", function(e) { if (e.key === "Enter") addTask(); });
+
+  function addTask() {
+    var input = document.getElementById("newTaskInput");
+    var name = input.value.trim();
+    if (!name) return;
+    var category = document.getElementById("newTaskCategory").value;
+    var time = document.getElementById("newTaskTime").value || "00:00";
+    dayData.tasks.push({
+      id: "t" + Date.now() + Math.floor(Math.random() * 1000),
+      name: name, category: category, time: time, done: false
+    });
+    input.value = "";
+    saveDay();
+    renderChecklist();
+  }
+
+  function deleteTask(id) {
+    dayData.tasks = dayData.tasks.filter(function(t) { return t.id !== id; });
+    saveDay();
+    renderChecklist();
+  }
+
+  function toggleDone(id) {
+    var task = dayData.tasks.find(function(t) { return t.id === id; });
+    if (!task) return;
+    task.done = !task.done;
+    saveDay();
+    renderChecklist();
+  }
+
+  // ───── RENDER CHECKLIST ─────
+  function renderChecklist() {
+    var container = document.getElementById("taskListContainer");
+    var sorted = dayData.tasks.slice().sort(function(a, b) { return a.time.localeCompare(b.time); });
+    var doneCount = sorted.filter(function(t) { return t.done; }).length;
+
+    document.getElementById("taskCountLabel").textContent = sorted.length
+      ? doneCount + " dari " + sorted.length + " tugas selesai"
+      : "Belum ada tugas untuk hari ini";
+
+    if (sorted.length === 0) {
+      container.innerHTML = '<div class="empty-state">Belum ada tugas. Tambahkan tugas pertama untuk hari ini di atas.</div>';
+      return;
+    }
+
+    var html = "";
+    sorted.forEach(function(task) {
+      var pillClass = { ui: "ui", ni: "ni", uni: "uni", nuni: "nuni" }[task.category];
+      html += '<div class="task-row">';
+      html += '<div class="task-check' + (task.done ? ' checked' : '') + '" data-task="' + task.id + '">' + (task.done ? '✓' : '') + '</div>';
+      html += '<div class="task-time">' + task.time + '</div>';
+      html += '<div style="flex:1;">';
+      html += '<div class="task-name' + (task.done ? ' done' : '') + '">' + escapeHtml(task.name) + '</div>';
+      html += '<span class="cat-pill ' + pillClass + '">' + catLabels[task.category] + '</span>';
+      html += '</div>';
+      html += '<button class="task-del" data-del="' + task.id + '">✕</button>';
+      html += '</div>';
+    });
+    container.innerHTML = html;
+
+    container.querySelectorAll(".task-check").forEach(function(el) {
+      el.addEventListener("click", function() { toggleDone(el.getAttribute("data-task")); });
+    });
+    container.querySelectorAll(".task-del").forEach(function(el) {
+      el.addEventListener("click", function() { deleteTask(el.getAttribute("data-del")); });
+    });
+  }
+
+  // ───── RENDER MATRIX ─────
+  function renderMatrix() {
+    var groups = { ui: [], ni: [], uni: [], nuni: [] };
+    dayData.tasks.forEach(function(t) { groups[t.category].push(t); });
+
+    function renderGroup(elId, items) {
+      var el = document.getElementById(elId);
+      if (items.length === 0) { el.innerHTML = '<div style="font-size:11px; color: var(--text-muted);">Tidak ada tugas</div>'; return; }
+      el.innerHTML = items.map(function(t) { return '<div class="quad-item">' + t.time + ' &middot; ' + escapeHtml(t.name) + '</div>'; }).join("");
+    }
+    renderGroup("quadUI", groups.ui);
+    renderGroup("quadNI", groups.ni);
+    renderGroup("quadUNI", groups.uni);
+    renderGroup("quadNUNI", groups.nuni);
+  }
+
+  // ───── RENDER PROGRESS (grafik %) ─────
+  function getDayTasksLocal(dk) {
+    try {
+      var local = localStorage.getItem(localKey(currentUser, dk));
+      if (local) return JSON.parse(local).tasks || [];
+    } catch (e) {}
+    return null;
+  }
+
+  function computeProgressFromLocal(year, month) {
+    var dim = daysInMonth(year, month);
+    var percentages = [];
+    for (var d = 1; d <= dim; d++) {
+      var dObj = new Date(year, month, d);
+      var dk = dateKey(dObj);
+      var dayTasks = (dk === dateKey(viewDate)) ? dayData.tasks : getDayTasksLocal(dk);
+
+      if (dayTasks && dayTasks.length > 0) {
+        var done = dayTasks.filter(function(t) { return t.done; }).length;
+        percentages.push({ day: d, pct: Math.round((done / dayTasks.length) * 100), hasData: true });
+      } else {
+        percentages.push({ day: d, pct: 0, hasData: false });
+      }
+    }
+    return percentages;
+  }
+
+  function drawProgressChart(percentages, year, month) {
+    var withData = percentages.filter(function(p) { return p.hasData; });
+    var avg = withData.length ? Math.round(withData.reduce(function(s, p) { return s + p.pct; }, 0) / withData.length) : 0;
+    var best = withData.length ? Math.max.apply(null, withData.map(function(p) { return p.pct; })) : 0;
+
+    document.getElementById("statAvg").textContent = avg + "%";
+    document.getElementById("statBest").textContent = best + "%";
+    document.getElementById("statActiveDays").textContent = withData.length;
+
+    var html = "";
+    percentages.forEach(function(p) {
+      var isToday = isSameDay(new Date(year, month, p.day), today);
+      var barHeight = Math.max(p.hasData ? (p.pct / 100) * 130 : 4, 4);
+      html += '<div class="chart-bar-col">';
+      html += '<div class="chart-pct-label">' + (p.hasData ? p.pct + '%' : '') + '</div>';
+      html += '<div class="chart-bar-track"><div class="chart-bar' + (p.hasData ? ' has-data' : '') + (isToday ? ' today-bar' : '') + '" style="height:' + barHeight + 'px;"></div></div>';
+      html += '<div class="chart-day-label' + (isToday ? ' today-label' : '') + '">' + p.day + '</div>';
+      html += '</div>';
+    });
+    document.getElementById("chartBars").innerHTML = html;
+  }
+
+  async function renderProgress() {
+    var year = viewDate.getFullYear();
+    var month = viewDate.getMonth();
+
+    // Render instan dari localStorage, tidak perlu menunggu jaringan sama sekali.
+    var percentages = computeProgressFromLocal(year, month);
+    drawProgressChart(percentages, year, month);
+
+    // Di belakang layar, coba lengkapi data dari server untuk hari-hari yang
+    // belum punya catatan lokal di device ini (misalnya device baru/beda).
+    // Dilakukan paralel, dan hasilnya hanya menggambar ulang kalau ada tambahan data.
+    var dim = daysInMonth(year, month);
+    var missingDays = [];
+    for (var d = 1; d <= dim; d++) {
+      if (!percentages[d - 1].hasData) missingDays.push(d);
+    }
+    if (missingDays.length === 0) return;
+
+    var results = await Promise.all(missingDays.map(function(d) {
+      var dk = dateKey(new Date(year, month, d));
+      return backgroundSyncFromServer(storageKey(currentUser, dk)).then(function(raw) {
+        return { day: d, raw: raw };
+      });
+    }));
+
+    var changed = false;
+    results.forEach(function(r) {
+      if (!r.raw) return;
+      try {
+        var parsed = JSON.parse(r.raw);
+        var tasks = parsed.tasks || [];
+        if (tasks.length > 0) {
+          var done = tasks.filter(function(t) { return t.done; }).length;
+          percentages[r.day - 1] = { day: r.day, pct: Math.round((done / tasks.length) * 100), hasData: true };
+          changed = true;
+        }
+      } catch (e) {}
+    });
+
+    if (changed) drawProgressChart(percentages, year, month);
+  }
+
+  function escapeHtml(str) {
+    var div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  }
+</script>
+
+</body>
+</html>

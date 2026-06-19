@@ -77,11 +77,41 @@
   .user-bar .greet span { color: var(--purple); }
   .user-bar .sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
-  .day-nav { display: flex; align-items: center; gap: 10px; }
+  .day-nav { display: flex; align-items: center; gap: 10px; position: relative; }
   .day-nav button { width: 30px; height: 30px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--border-soft); cursor: pointer; font-size: 14px; color: var(--text-soft); display: flex; align-items: center; justify-content: center; }
   .day-nav button:hover { background: var(--border); }
-  .day-nav .day-label { font-size: 13px; font-weight: 700; min-width: 150px; text-align: center; }
+  .day-nav .day-label { font-size: 13px; font-weight: 700; min-width: 150px; text-align: center; cursor: pointer; border-radius: 8px; padding: 4px 8px; transition: background 0.15s; }
+  .day-nav .day-label:hover { background: var(--border-soft); }
   .day-nav .day-today-badge { font-size: 10px; font-weight: 700; color: var(--teal); background: var(--teal-light); padding: 2px 8px; border-radius: 20px; margin-left: 6px; }
+
+  /* ── MINI CALENDAR POPUP ── */
+  .mini-cal-popup { position: fixed; background: var(--card); border-radius: 16px; box-shadow: 0 12px 40px rgba(43,38,32,0.18), 0 2px 8px rgba(0,0,0,0.06); padding: 16px; width: 284px; z-index: 200; border: 1px solid var(--border-soft); }
+  .mini-cal-popup.hidden { display: none !important; }
+  .mini-cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .mini-cal-header .mc-title { font-size: 13px; font-weight: 700; color: var(--text); }
+  .mini-cal-header button { width: 26px; height: 26px; border-radius: 7px; border: 1.5px solid var(--border); background: var(--border-soft); cursor: pointer; font-size: 13px; color: var(--text-soft); display: flex; align-items: center; justify-content: center; }
+  .mini-cal-header button:hover { background: var(--border); }
+  .mini-cal-monthyear { display: flex; gap: 6px; margin-bottom: 10px; }
+  .mini-cal-monthyear select { flex: 1; border: 1.5px solid var(--border); border-radius: 8px; padding: 6px 8px; font-size: 12px; font-family: inherit; background: var(--border-soft); color: var(--text); cursor: pointer; }
+  .mini-cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-bottom: 4px; }
+  .mini-cal-weekdays span { font-size: 10px; font-weight: 700; color: var(--text-muted); text-align: center; }
+  .mini-cal-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+  .mini-cal-day { position: relative; aspect-ratio: 1; border: none; background: transparent; border-radius: 8px; font-size: 12px; font-weight: 600; color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.12s; }
+  .mini-cal-day:hover { background: var(--border-soft); }
+  .mini-cal-day.empty { cursor: default; pointer-events: none; }
+  .mini-cal-day.is-today { color: var(--teal); font-weight: 800; }
+  .mini-cal-day.is-selected { background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: #fff; }
+  .mini-cal-day.has-data::after { content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; border-radius: 50%; background: var(--gold); }
+  .mini-cal-day.is-selected.has-data::after { background: #fff; }
+  .mini-cal-today-btn { width: 100%; margin-top: 10px; background: var(--border-soft); border: 1.5px solid var(--border); border-radius: 8px; padding: 7px; font-size: 12px; font-weight: 700; color: var(--purple); cursor: pointer; font-family: inherit; white-space: nowrap; }
+  .mini-cal-today-btn:hover { background: var(--border); }
+
+  .progress-title-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 4px; }
+  .progress-title-row h1 { margin-bottom: 0; }
+  .progress-month-picker { position: relative; }
+  .progress-month-btn { display: flex; align-items: center; gap: 6px; background: var(--purple-light); border: none; border-radius: 20px; padding: 8px 14px; font-size: 13px; font-weight: 700; color: var(--purple); cursor: pointer; font-family: inherit; white-space: nowrap; }
+  .progress-month-btn:hover { background: #F5CFC8; }
+  .progress-month-btn .chev { font-size: 10px; }
 
   .tabs { width: 100%; max-width: 760px; display: flex; gap: 8px; margin-bottom: 16px; }
   .tab-btn { flex: 1; padding: 10px 16px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--card); font-size: 13px; font-weight: 700; color: var(--text-soft); cursor: pointer; transition: all 0.15s; text-align: center; }
@@ -311,9 +341,22 @@
     <button id="prevDay">‹</button>
     <div class="day-label" id="dayLabel"></div>
     <button id="nextDay">›</button>
+    <div class="mini-cal-popup hidden" id="miniCalPopup">
+      <div class="mini-cal-header">
+        <button id="mcPrevMonth">‹</button>
+        <div class="mc-title" id="mcTitle"></div>
+        <button id="mcNextMonth">›</button>
+      </div>
+      <div class="mini-cal-monthyear">
+        <select id="mcMonthSelect"></select>
+        <select id="mcYearSelect"></select>
+      </div>
+      <div class="mini-cal-weekdays" id="mcWeekdays"></div>
+      <div class="mini-cal-days" id="mcDays"></div>
+      <button class="mini-cal-today-btn" id="mcTodayBtn">Hari ini</button>
+    </div>
   </div>
 </div>
-
 
 <div class="save-status hidden" id="saveStatus"></div>
 
@@ -343,7 +386,28 @@
 </div>
 
 <div class="card hidden" id="progressView">
-  <h1>Progress bulan ini</h1>
+  <div class="progress-title-row">
+    <div>
+      <h1>Progress <span id="progressMonthLabel">bulan ini</span></h1>
+    </div>
+    <div class="progress-month-picker">
+      <button class="progress-month-btn" id="progressMonthBtn">📅 <span id="progressMonthBtnLabel"></span> <span class="chev">▾</span></button>
+      <div class="mini-cal-popup hidden" id="progressCalPopup">
+        <div class="mini-cal-header">
+          <button id="pcPrevMonth">‹</button>
+          <div class="mc-title" id="pcTitle"></div>
+          <button id="pcNextMonth">›</button>
+        </div>
+        <div class="mini-cal-monthyear">
+          <select id="pcMonthSelect"></select>
+          <select id="pcYearSelect"></select>
+        </div>
+        <div class="mini-cal-weekdays" id="pcWeekdays"></div>
+        <div class="mini-cal-days" id="pcDays"></div>
+        <button class="mini-cal-today-btn" id="pcTodayBtn">Bulan ini</button>
+      </div>
+    </div>
+  </div>
   <p class="desc">Persentase tugas yang berhasil diselesaikan setiap hari. Data hari-hari sebelumnya tetap tersimpan, jadi kamu bisa lihat perkembanganmu dari waktu ke waktu.</p>
 
   <div class="month-summary">
@@ -401,6 +465,7 @@
   var currentUser = null;
   var today = new Date();
   var viewDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  var progressViewDate = new Date(today.getFullYear(), today.getMonth(), 1);
   var dayData = { tasks: [] };
 
   var monthNames = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
@@ -487,6 +552,10 @@
     viewDate.setDate(viewDate.getDate() + 1);
     loadDay();
   });
+  document.getElementById("dayLabel").addEventListener("click", function(e) {
+    e.stopPropagation();
+    toggleMiniCal();
+  });
 
   // ───── TABS ─────
   document.getElementById("tabChecklist").addEventListener("click", function() { setTab("checklist"); });
@@ -502,7 +571,6 @@
     if (tab === "matrix") renderMatrix();
     if (tab === "progress") renderProgress();
   }
-
   // ───── STORAGE (per hari, via Firestore) ─────
   // Strategi: localStorage tetap dipakai sebagai cache instan supaya tampilan
   // tidak menunggu jaringan. Firestore adalah sumber data yang sebenarnya,
@@ -726,8 +794,10 @@
   }
 
   async function renderProgress() {
-    var year = viewDate.getFullYear();
-    var month = viewDate.getMonth();
+    var year = progressViewDate.getFullYear();
+    var month = progressViewDate.getMonth();
+
+    updateProgressMonthLabel();
 
     // Render instan dari localStorage, tidak perlu menunggu jaringan sama sekali.
     var percentages = computeProgressFromLocal(year, month);
@@ -772,6 +842,226 @@
     div.textContent = str;
     return div.innerHTML;
   }
+
+  // ───── MINI CALENDAR (reusable) ─────
+  // Dipakai di dua tempat: (1) klik label tanggal di "Tugas hari ini" untuk
+  // lompat ke tanggal manapun, (2) tombol bulan di tab "Progress" untuk
+  // lompat ke bulan manapun. Tombol ‹ › lama tetap berfungsi seperti biasa,
+  // kalender ini cuma tambahan cara baru untuk pindah tanggal/bulan.
+  var weekdayShort = ["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
+  var mcCursor = new Date(); // bulan yang sedang ditampilkan di kalender harian
+  var pcCursor = new Date(); // bulan yang sedang ditampilkan di kalender progress
+
+  function hasLocalDataOnDay(dObj) {
+    var dk = dateKey(dObj);
+    if (dk === dateKey(viewDate) && dayData.tasks && dayData.tasks.length > 0) return true;
+    var tasks = getDayTasksLocal(dk);
+    return !!(tasks && tasks.length > 0);
+  }
+
+  function populateYearSelect(selectEl, centerYear) {
+    selectEl.innerHTML = "";
+    for (var y = centerYear - 6; y <= centerYear + 6; y++) {
+      var opt = document.createElement("option");
+      opt.value = y;
+      opt.textContent = y;
+      if (y === centerYear) opt.selected = true;
+      selectEl.appendChild(opt);
+    }
+  }
+
+  function populateMonthSelect(selectEl, selectedMonth) {
+    selectEl.innerHTML = "";
+    monthNames.forEach(function(name, idx) {
+      var opt = document.createElement("option");
+      opt.value = idx;
+      opt.textContent = name;
+      if (idx === selectedMonth) opt.selected = true;
+      selectEl.appendChild(opt);
+    });
+  }
+
+  function buildWeekdaysRow(container) {
+    container.innerHTML = weekdayShort.map(function(w) { return "<span>" + w + "</span>"; }).join("");
+  }
+
+  // Render grid kalender. onPick(dateObj) dipanggil saat user klik sebuah tanggal.
+  // selectedDate dipakai untuk highlight tanggal yang sedang aktif (boleh null
+  // kalau yang penting cuma highlight bulannya, seperti di kalender progress).
+  function renderCalGrid(container, cursorDate, selectedDate, markDots) {
+    var year = cursorDate.getFullYear();
+    var month = cursorDate.getMonth();
+    var dim = daysInMonth(year, month);
+    var firstDow = new Date(year, month, 1).getDay();
+
+    var html = "";
+    for (var i = 0; i < firstDow; i++) {
+      html += '<div class="mini-cal-day empty"></div>';
+    }
+    for (var d = 1; d <= dim; d++) {
+      var dObj = new Date(year, month, d);
+      var classes = "mini-cal-day";
+      if (isSameDay(dObj, today)) classes += " is-today";
+      if (selectedDate && isSameDay(dObj, selectedDate)) classes += " is-selected";
+      if (markDots && hasLocalDataOnDay(dObj)) classes += " has-data";
+      html += '<button type="button" class="' + classes + '" data-day="' + d + '">' + d + '</button>';
+    }
+    container.innerHTML = html;
+  }
+
+  // ── Kalender harian (popup di "Tugas hari ini") ──
+  var miniCalPopup = document.getElementById("miniCalPopup");
+  var mcMonthSelect = document.getElementById("mcMonthSelect");
+  var mcYearSelect = document.getElementById("mcYearSelect");
+  var mcDays = document.getElementById("mcDays");
+
+  function positionPopup(popup, anchor) {
+    var rect = anchor.getBoundingClientRect();
+    var popupW = 284;
+    var topPos = rect.bottom + 8;
+    var leftPos = rect.left + rect.width / 2 - popupW / 2;
+    // Pastikan tidak keluar kanan layar
+    if (leftPos + popupW > window.innerWidth - 8) leftPos = window.innerWidth - popupW - 8;
+    // Pastikan tidak keluar kiri layar
+    if (leftPos < 8) leftPos = 8;
+    popup.style.top = topPos + "px";
+    popup.style.left = leftPos + "px";
+  }
+
+  function toggleMiniCal() {
+    if (!miniCalPopup.classList.contains("hidden")) {
+      closeMiniCal();
+      return;
+    }
+    progressCalPopup.classList.add("hidden");
+    mcCursor = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
+    renderMiniCal();
+    miniCalPopup.classList.remove("hidden");
+    positionPopup(miniCalPopup, document.getElementById("dayLabel"));
+  }
+  function closeMiniCal() { miniCalPopup.classList.add("hidden"); }
+
+  function renderMiniCal() {
+    document.getElementById("mcTitle").textContent = monthNames[mcCursor.getMonth()] + " " + mcCursor.getFullYear();
+    populateMonthSelect(mcMonthSelect, mcCursor.getMonth());
+    populateYearSelect(mcYearSelect, mcCursor.getFullYear());
+    buildWeekdaysRow(document.getElementById("mcWeekdays"));
+    renderCalGrid(mcDays, mcCursor, viewDate, true);
+
+    mcDays.querySelectorAll(".mini-cal-day[data-day]").forEach(function(el) {
+      el.addEventListener("click", function() {
+        var d = parseInt(el.getAttribute("data-day"), 10);
+        viewDate = new Date(mcCursor.getFullYear(), mcCursor.getMonth(), d);
+        loadDay();
+        closeMiniCal();
+      });
+    });
+  }
+
+  document.getElementById("mcPrevMonth").addEventListener("click", function() {
+    mcCursor.setMonth(mcCursor.getMonth() - 1);
+    renderMiniCal();
+  });
+  document.getElementById("mcNextMonth").addEventListener("click", function() {
+    mcCursor.setMonth(mcCursor.getMonth() + 1);
+    renderMiniCal();
+  });
+  mcMonthSelect.addEventListener("change", function() {
+    mcCursor.setMonth(parseInt(mcMonthSelect.value, 10));
+    renderMiniCal();
+  });
+  mcYearSelect.addEventListener("change", function() {
+    mcCursor.setFullYear(parseInt(mcYearSelect.value, 10));
+    renderMiniCal();
+  });
+  document.getElementById("mcTodayBtn").addEventListener("click", function() {
+    viewDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    loadDay();
+    closeMiniCal();
+  });
+
+  // ── Kalender progress (popup di tab "Progress") ──
+  var progressCalPopup = document.getElementById("progressCalPopup");
+  var pcMonthSelect = document.getElementById("pcMonthSelect");
+  var pcYearSelect = document.getElementById("pcYearSelect");
+  var pcDays = document.getElementById("pcDays");
+
+  document.getElementById("progressMonthBtn").addEventListener("click", function(e) {
+    e.stopPropagation();
+    toggleProgressCal();
+  });
+
+  function toggleProgressCal() {
+    if (!progressCalPopup.classList.contains("hidden")) {
+      closeProgressCal();
+      return;
+    }
+    closeMiniCal();
+    pcCursor = new Date(progressViewDate.getFullYear(), progressViewDate.getMonth(), 1);
+    renderProgressCal();
+    progressCalPopup.classList.remove("hidden");
+    positionPopup(progressCalPopup, document.getElementById("progressMonthBtn"));
+  }
+  function closeProgressCal() { progressCalPopup.classList.add("hidden"); }
+
+  function renderProgressCal() {
+    document.getElementById("pcTitle").textContent = monthNames[pcCursor.getMonth()] + " " + pcCursor.getFullYear();
+    populateMonthSelect(pcMonthSelect, pcCursor.getMonth());
+    populateYearSelect(pcYearSelect, pcCursor.getFullYear());
+    buildWeekdaysRow(document.getElementById("pcWeekdays"));
+    // Di kalender progress, tanggal yang di-highlight cukup "hari ini" di
+    // bulan yang sama; klik tanggal manapun akan membuka bulan tersebut.
+    var highlightDate = (pcCursor.getFullYear() === progressViewDate.getFullYear() && pcCursor.getMonth() === progressViewDate.getMonth()) ? today : null;
+    renderCalGrid(pcDays, pcCursor, highlightDate, true);
+
+    pcDays.querySelectorAll(".mini-cal-day[data-day]").forEach(function(el) {
+      el.addEventListener("click", function() {
+        progressViewDate = new Date(pcCursor.getFullYear(), pcCursor.getMonth(), 1);
+        renderProgress();
+        closeProgressCal();
+      });
+    });
+  }
+
+  document.getElementById("pcPrevMonth").addEventListener("click", function() {
+    pcCursor.setMonth(pcCursor.getMonth() - 1);
+    renderProgressCal();
+  });
+  document.getElementById("pcNextMonth").addEventListener("click", function() {
+    pcCursor.setMonth(pcCursor.getMonth() + 1);
+    renderProgressCal();
+  });
+  pcMonthSelect.addEventListener("change", function() {
+    pcCursor.setMonth(parseInt(pcMonthSelect.value, 10));
+    renderProgressCal();
+  });
+  pcYearSelect.addEventListener("change", function() {
+    pcCursor.setFullYear(parseInt(pcYearSelect.value, 10));
+    renderProgressCal();
+  });
+  document.getElementById("pcTodayBtn").addEventListener("click", function() {
+    progressViewDate = new Date(today.getFullYear(), today.getMonth(), 1);
+    renderProgress();
+    closeProgressCal();
+  });
+
+  function updateProgressMonthLabel() {
+    var isCurrentMonth = (progressViewDate.getFullYear() === today.getFullYear() && progressViewDate.getMonth() === today.getMonth());
+    document.getElementById("progressMonthLabel").textContent = isCurrentMonth ? "bulan ini" : "";
+    document.getElementById("progressMonthBtnLabel").textContent = monthNames[progressViewDate.getMonth()] + " " + progressViewDate.getFullYear();
+  }
+
+  // Tutup popup kalender manapun saat klik di luar popup tersebut.
+  document.addEventListener("click", function(e) {
+    var clickedDayLabel = e.target.closest && e.target.closest("#dayLabel");
+    var clickedMonthBtn = e.target.closest && e.target.closest("#progressMonthBtn");
+    if (!miniCalPopup.classList.contains("hidden") && !miniCalPopup.contains(e.target) && !clickedDayLabel) {
+      closeMiniCal();
+    }
+    if (!progressCalPopup.classList.contains("hidden") && !progressCalPopup.contains(e.target) && !clickedMonthBtn) {
+      closeProgressCal();
+    }
+  });
 </script>
 
 </body>

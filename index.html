@@ -8,11 +8,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script>
   // Terapkan tema tersimpan sesegera mungkin supaya tidak ada kedipan warna brand
-  // sebelum berganti ke mono/dark saat halaman pertama kali dimuat.
+  // sebelum berganti ke monochrome saat halaman pertama kali dimuat.
   (function() {
     try {
       var t = localStorage.getItem("mulai2menit_theme");
-      if (t === "mono" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+      if (t === "mono") document.documentElement.setAttribute("data-theme", "mono");
     } catch (e) {}
   })();
 </script>
@@ -101,33 +101,6 @@
     --gate-logo-shadow: rgba(74,80,67,0.25);
   }
 
-  /* Dark mode: soft pastel (lavender + mint) di atas background gelap calm,
-     gaya "aesthetic dark mode" yang disukai Gen Z — bukan invert dari brand/mono. */
-  [data-theme="dark"] {
-    --purple: #A78BFA; --purple-dark: #8B6FE8; --purple-light: #2E2A45; --purple-mid: #C4B5FD;
-    --teal: #5EEAD4; --teal-light: #1B3A36;
-    --coral: #A78BFA; --coral-light: #2E2A45;
-    --gold: #FCA5D0; --gold-light: #3A2438;
-    --red: #FB7185; --red-light: #3A2230;
-    --bg: #14121F; --card: #1E1B2E;
-    --text: #EDE9FE; --text-soft: #B8B0D8; --text-muted: #756E94;
-    --border: #322C4A; --border-soft: #261F3A;
-    --on-accent: #14121F;
-    --bg-gradient-spot: #221D38;
-    --hover-tint: #3A3356;
-    --month-btn-hover: #3A3356;
-    --cat-ui-text: #C4B5FD; --cat-ni-text: #5EEAD4; --cat-uni-text: #FCA5D0;
-    --matrix-do-border: #3D3560; --matrix-schedule-border: #1F4843; --matrix-delegate-border: #4A2E48;
-    --save-ok-text: #5EEAD4; --save-warn-text: #FCA5D0;
-    --guide-tip-text: #C4B5FD; --guide-highlight-text: #FCA5D0;
-    --modal-bg: #1E1B2E; --modal-overlay: rgba(8,7,15,0.7);
-    --google-btn-bg: #EDE9FE;
-    --spinner-track: #322C4A;
-    --chart-today-end: #5EEAD4;
-    --logo-shadow: rgba(167,139,250,0.3);
-    --gate-logo-shadow: rgba(167,139,250,0.35);
-  }
-
 
   body, .modal, .name-gate, .chart-bar, .task-check, .cat-pill, .tab-btn, .mini-cal-day,
   .progress-month-btn, .save-status { transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease; }
@@ -181,8 +154,6 @@
   .week-day-btn .wd-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); margin-top: 1px; }
   .week-day-btn.is-selected .wd-dot { background: var(--purple); }
   .week-day-btn .wd-dot.invisible { visibility: hidden; }
-  .week-day-btn .wd-num { position: relative; }
-  .week-day-btn .wd-event-badge { position: absolute; top: -3px; right: -3px; font-size: 9px; line-height: 1; }
   @media (max-width: 600px) {
     .week-strip { padding: 10px 6px; gap: 2px; }
     .week-day-btn { padding: 6px 0; }
@@ -205,10 +176,9 @@
   .mini-cal-day:hover { background: var(--border-soft); }
   .mini-cal-day.empty { cursor: default; pointer-events: none; }
   .mini-cal-day.is-today { color: var(--teal); font-weight: 800; }
-  .mini-cal-day.is-selected { background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: var(--on-accent); }
+  .mini-cal-day.is-selected { background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: #fff; }
   .mini-cal-day.has-data::after { content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; border-radius: 50%; background: var(--gold); }
   .mini-cal-day.is-selected.has-data::after { background: #fff; }
-  .mini-cal-day .mc-event-badge { position: absolute; top: -4px; right: -2px; font-size: 8px; line-height: 1; }
   .mini-cal-today-btn { width: 100%; margin-top: 10px; background: var(--border-soft); border: 1.5px solid var(--border); border-radius: 8px; padding: 7px; font-size: 12px; font-weight: 700; color: var(--purple); cursor: pointer; font-family: inherit; white-space: nowrap; }
   .mini-cal-today-btn:hover { background: var(--border); }
 
@@ -221,7 +191,7 @@
 
   .tabs { width: 100%; max-width: 760px; display: flex; gap: 8px; margin-bottom: 16px; }
   .tab-btn { flex: 1; padding: 10px 16px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--card); font-size: 13px; font-weight: 700; color: var(--text-soft); cursor: pointer; transition: all 0.15s; text-align: center; }
-  .tab-btn.active { background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: var(--on-accent); border-color: transparent; }
+  .tab-btn.active { background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: #fff; border-color: transparent; }
 
   .card { background: var(--card); border-radius: 20px; max-width: 760px; width: 100%; padding: 28px; box-shadow: 0 4px 32px rgba(224,71,58,0.10), 0 1px 4px rgba(0,0,0,0.04); }
   .hidden { display: none !important; }
@@ -230,54 +200,23 @@
   p.desc { font-size: 13px; color: var(--text-soft); line-height: 1.6; margin-bottom: 20px; }
 
   /* ── ADD TASK ── */
-  .checklist-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
-  .checklist-header-row .desc { margin-bottom: 0; }
-  .checklist-header-actions { display: flex; gap: 8px; flex-shrink: 0; flex-wrap: wrap; }
-  .btn-soft { font-size: 12px; font-weight: 700; color: var(--purple); background: var(--purple-light); border: none; border-radius: 20px; padding: 8px 14px; cursor: pointer; white-space: nowrap; font-family: inherit; transition: background 0.15s; }
-  .btn-soft:hover { background: var(--hover-tint); }
-
-  .add-task-row { display: flex; gap: 8px; margin-bottom: 20px; margin-top: 16px; flex-wrap: wrap; }
+  .add-task-row { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
   .add-task-row input[type="text"] { flex: 1; min-width: 160px; border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 14px; font-family: inherit; background: var(--border-soft); color: var(--text); }
   .add-task-row input[type="text"]:focus { outline: none; border-color: var(--purple); background: #fff; }
   .add-task-row select, .add-task-row input[type="time"] { border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 13px; font-family: inherit; background: var(--border-soft); color: var(--text); cursor: pointer; }
-  .add-task-row button { background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: var(--on-accent); border: none; border-radius: 10px; padding: 10px 18px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+  .add-task-row button { background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: #fff; border: none; border-radius: 10px; padding: 10px 18px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
 
   .cat-pill { font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; }
   .cat-pill.ui { background: var(--coral-light); color: var(--cat-ui-text); }
   .cat-pill.ni { background: var(--teal-light); color: var(--cat-ni-text); }
   .cat-pill.uni { background: var(--gold-light); color: var(--cat-uni-text); }
   .cat-pill.nuni { background: var(--border-soft); color: var(--text-soft); }
-  .recur-badge { font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; background: var(--gold-light); color: var(--cat-uni-text); margin-left: 4px; }
-
-  /* ── EVENT BANNER ── */
-  #eventBanner:empty { display: none; }
-  .event-banner-item { display: flex; align-items: flex-start; gap: 10px; background: linear-gradient(135deg, var(--purple-light), var(--gold-light)); border: 1px solid var(--matrix-do-border); border-radius: 14px; padding: 12px 14px; margin-bottom: 16px; }
-  .event-banner-icon { font-size: 18px; flex-shrink: 0; }
-  .event-banner-title { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 2px; }
-  .event-banner-note { font-size: 12px; color: var(--text-soft); line-height: 1.5; }
-  .event-banner-del { margin-left: auto; background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 13px; flex-shrink: 0; padding: 2px 6px; }
-  .event-banner-del:hover { color: var(--red); }
-
-  /* ── RECURRING / EVENT MODAL LISTS ── */
-  .event-form-row { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
-  .event-form-row input, .event-form-row textarea { border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 14px; font-family: inherit; background: var(--border-soft); color: var(--text); resize: vertical; }
-  .event-form-row input:focus, .event-form-row textarea:focus { outline: none; border-color: var(--purple); background: #fff; }
-  .event-form-row button { background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: var(--on-accent); border: none; border-radius: 10px; padding: 11px 18px; font-size: 13px; font-weight: 700; cursor: pointer; }
-
-  .mini-list-row { display: flex; align-items: center; gap: 10px; padding: 10px 4px; border-bottom: 0.5px solid var(--border-soft); }
-  .mini-list-row:last-child { border-bottom: none; }
-  .mini-list-time { font-size: 11px; font-weight: 700; color: var(--purple); background: var(--purple-light); padding: 3px 8px; border-radius: 8px; white-space: nowrap; min-width: 48px; text-align: center; }
-  .mini-list-name { flex: 1; font-size: 14px; font-weight: 600; }
-  .mini-list-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-  .mini-list-del { width: 26px; height: 26px; border-radius: 7px; border: none; background: transparent; color: var(--text-muted); cursor: pointer; font-size: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-  .mini-list-del:hover { background: var(--red-light); color: var(--red); }
-
 
   /* ── TASK LIST ── */
   .task-row { display: flex; align-items: center; gap: 12px; padding: 12px 4px; border-bottom: 0.5px solid var(--border-soft); }
   .task-row:last-child { border-bottom: none; }
   .task-check { width: 22px; height: 22px; border-radius: 7px; border: 1.5px solid var(--border); background: var(--border-soft); cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; color: transparent; transition: all 0.15s; }
-  .task-check.checked { background: var(--teal); border-color: var(--teal); color: var(--on-accent); }
+  .task-check.checked { background: var(--teal); border-color: var(--teal); color: #fff; }
   .task-time { font-size: 11px; font-weight: 700; color: var(--purple); background: var(--purple-light); padding: 3px 8px; border-radius: 8px; white-space: nowrap; min-width: 48px; text-align: center; }
   .task-name { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
   .task-name.done { color: var(--text-muted); text-decoration: line-through; }
@@ -332,23 +271,6 @@
     .month-summary { justify-content: center; }
   }
 
-  /* ── BREAKDOWN BARS (wajib / tambahan / total) ── */
-  .breakdown-section { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; padding: 16px; background: var(--border-soft); border-radius: 14px; }
-  .breakdown-row { display: grid; grid-template-columns: 150px 1fr 42px; align-items: center; gap: 10px; }
-  .breakdown-label { font-size: 12px; font-weight: 700; color: var(--text-soft); white-space: nowrap; }
-  .breakdown-track { height: 8px; border-radius: 20px; background: var(--border); overflow: hidden; }
-  .breakdown-fill { height: 100%; border-radius: 20px; width: 0%; transition: width 0.5s ease; }
-  .breakdown-fill.recur-fill { background: linear-gradient(90deg, var(--gold), var(--gold)); }
-  .breakdown-fill.add-fill { background: linear-gradient(90deg, var(--teal), var(--teal)); }
-  .breakdown-fill.total-fill { background: linear-gradient(90deg, var(--purple-mid), var(--purple)); }
-  .breakdown-pct { font-size: 12px; font-weight: 800; color: var(--text); text-align: right; }
-  .breakdown-total { padding-top: 10px; border-top: 1px dashed var(--border); }
-  .breakdown-total .breakdown-label { color: var(--text); }
-  @media (max-width: 600px) {
-    .breakdown-row { grid-template-columns: 110px 1fr 36px; }
-    .breakdown-label { font-size: 11px; }
-  }
-
   .summary-stat { flex: 1; min-width: 100px; background: var(--border-soft); border-radius: 14px; padding: 14px; text-align: center; }
   .summary-stat .stat-value { font-size: 22px; font-weight: 800; color: var(--purple); }
   .summary-stat .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
@@ -376,7 +298,7 @@
   .modal h2 { font-size: 20px; font-weight: 800; color: var(--text); }
   .modal-close { width: 30px; height: 30px; border-radius: 8px; background: var(--border-soft); border: none; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--text-soft); }
   .guide-step { display: flex; gap: 14px; margin-bottom: 20px; }
-  .guide-num { width: 32px; height: 32px; border-radius: 10px; background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: var(--on-accent); font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .guide-num { width: 32px; height: 32px; border-radius: 10px; background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: #fff; font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .guide-content h3 { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
   .guide-content p { font-size: 13px; color: var(--text-soft); line-height: 1.65; }
   .guide-tip { background: var(--purple-light); border-radius: 12px; padding: 14px 16px; margin-top: 16px; }
@@ -395,7 +317,7 @@
   .name-gate p { font-size: 13px; color: var(--text-soft); line-height: 1.6; margin-bottom: 20px; }
   .name-gate input { width: 100%; border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 14px; font-size: 14px; font-family: inherit; background: var(--border-soft); margin-bottom: 12px; text-align: center; }
   .name-gate input:focus { outline: none; border-color: var(--purple); background: #fff; }
-  .name-gate button { width: 100%; background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: var(--on-accent); border: none; border-radius: 10px; padding: 13px; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .name-gate button { width: 100%; background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: #fff; border: none; border-radius: 10px; padding: 13px; font-size: 14px; font-weight: 700; cursor: pointer; }
   .name-gate .gate-error { font-size: 12px; color: var(--red); margin-top: 8px; min-height: 16px; }
 
   .name-gate .google-signin-btn {
@@ -478,55 +400,6 @@
   </div>
 </div>
 
-<div class="modal-overlay hidden" id="recurringModal">
-  <div class="modal">
-    <div class="modal-header">
-      <div>
-        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--purple);margin-bottom:4px;">Tugas Rutin</p>
-        <h2>Kelola tugas wajib harian</h2>
-      </div>
-      <button class="modal-close" id="closeRecurring">✕</button>
-    </div>
-    <p class="desc" style="margin-bottom:16px;">Tugas di sini otomatis muncul setiap hari dengan label "Rutin", jadi kamu tidak perlu mengetik ulang. Mengedit atau menghapus di sini hanya memengaruhi hari ini dan seterusnya — histori hari-hari sebelumnya tetap tersimpan apa adanya.</p>
-
-    <div class="add-task-row">
-      <input type="text" id="newRecurringInput" placeholder="Nama tugas rutin...">
-      <input type="time" id="newRecurringTime" value="08:00">
-      <select id="newRecurringCategory">
-        <option value="ui">Urgent - Important</option>
-        <option value="ni">Not Urgent - Important</option>
-        <option value="uni">Urgent - Not Important</option>
-        <option value="nuni">Not Urgent - Not Important</option>
-      </select>
-      <button id="addRecurringBtn">+ Tambah</button>
-    </div>
-
-    <div id="recurringListContainer"></div>
-  </div>
-</div>
-
-<div class="modal-overlay hidden" id="eventModal">
-  <div class="modal">
-    <div class="modal-header">
-      <div>
-        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--purple);margin-bottom:4px;">Event / Acara</p>
-        <h2>Tambah event besar</h2>
-      </div>
-      <button class="modal-close" id="closeEvent">✕</button>
-    </div>
-    <p class="desc" style="margin-bottom:16px;">Tandai tanggal penting seperti deadline, acara, atau hari besar. Event akan muncul sebagai badge di kalender dan banner khusus di hari itu.</p>
-
-    <div class="event-form-row">
-      <input type="text" id="newEventTitle" placeholder="Judul event... (mis. Deadline proposal)">
-      <input type="date" id="newEventDate">
-      <textarea id="newEventNote" placeholder="Catatan tambahan (opsional)" rows="2"></textarea>
-      <button id="addEventBtn">+ Tambah event</button>
-    </div>
-
-    <div id="eventListContainer"></div>
-  </div>
-</div>
-
 <div class="name-gate-overlay" id="nameGate">
   <div class="name-gate">
     <img src="data:image/png;base64,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" alt="Logo Mulai 2 Menit" class="gate-logo">
@@ -597,18 +470,8 @@
 </div>
 
 <div class="card hidden" id="checklistView">
-  <div class="checklist-header-row">
-    <div>
-      <h1>Tugas untuk hari ini</h1>
-      <p class="desc">Setiap hari punya daftar tugas sendiri. Tambahkan tugas yang memang relevan untuk hari yang sedang kamu lihat.</p>
-    </div>
-    <div class="checklist-header-actions">
-      <button class="btn-soft" id="openRecurringModal">🔁 Tugas rutin</button>
-      <button class="btn-soft" id="openEventModal">🎉 Tambah event</button>
-    </div>
-  </div>
-
-  <div id="eventBanner"></div>
+  <h1>Tugas untuk hari ini</h1>
+  <p class="desc">Setiap hari punya daftar tugas sendiri. Tambahkan tugas yang memang relevan untuk hari yang sedang kamu lihat.</p>
 
   <div class="add-task-row">
     <input type="text" id="newTaskInput" placeholder="Nama tugas...">
@@ -681,24 +544,6 @@
     </div>
   </div>
 
-  <div class="breakdown-section">
-    <div class="breakdown-row">
-      <div class="breakdown-label">🔁 Tugas wajib (rutin)</div>
-      <div class="breakdown-track"><div class="breakdown-fill recur-fill" id="breakdownRecurFill"></div></div>
-      <div class="breakdown-pct" id="breakdownRecurPct">0%</div>
-    </div>
-    <div class="breakdown-row">
-      <div class="breakdown-label">✏️ Tugas tambahan</div>
-      <div class="breakdown-track"><div class="breakdown-fill add-fill" id="breakdownAddFill"></div></div>
-      <div class="breakdown-pct" id="breakdownAddPct">0%</div>
-    </div>
-    <div class="breakdown-row breakdown-total">
-      <div class="breakdown-label">📊 Total keseluruhan</div>
-      <div class="breakdown-track"><div class="breakdown-fill total-fill" id="breakdownTotalFill"></div></div>
-      <div class="breakdown-pct" id="breakdownTotalPct">0%</div>
-    </div>
-  </div>
-
   <div class="chart-wrap">
     <div class="chart-bars" id="chartBars"></div>
   </div>
@@ -748,42 +593,30 @@
 <div class="app-footer">Mulai 2 Menit &middot; Advanced To Do List Tracker</div>
 
 <script>
-  // ───── THEME TOGGLE (3 mode) ─────
-  // "brand" (coral/cream asli) → "mono" (olive monochrome) → "dark" (pastel
-  // lavender/mint di atas gelap) → kembali ke "brand". Disimpan di
-  // localStorage supaya pilihan user tetap saat buka app lagi.
+  // ───── THEME TOGGLE ─────
+  // Mode default: warna brand asli ("brand"). Mode kedua: monochrome netral ("mono"),
+  // disimpan di localStorage supaya pilihan user tetap saat buka app lagi.
   var THEME_KEY = "mulai2menit_theme";
-  var THEME_CYCLE = ["brand", "mono", "dark"];
-  var THEME_META = {
-    brand: { icon: "☀️", title: "Ganti ke tampilan monochrome" },
-    mono: { icon: "⬜", title: "Ganti ke tampilan gelap" },
-    dark: { icon: "🌙", title: "Ganti ke tampilan warna" }
-  };
   function applyTheme(theme) {
-    if (theme === "mono" || theme === "dark") {
-      document.documentElement.setAttribute("data-theme", theme);
+    if (theme === "mono") {
+      document.documentElement.setAttribute("data-theme", "mono");
+      document.getElementById("themeToggleKnob").textContent = "⬜";
+      document.getElementById("themeToggle").setAttribute("title", "Ganti ke tampilan warna");
     } else {
       document.documentElement.removeAttribute("data-theme");
+      document.getElementById("themeToggleKnob").textContent = "☀️";
+      document.getElementById("themeToggle").setAttribute("title", "Ganti ke tampilan monochrome");
     }
-    var meta = THEME_META[theme] || THEME_META.brand;
-    document.getElementById("themeToggleKnob").textContent = meta.icon;
-    document.getElementById("themeToggle").setAttribute("title", meta.title);
-    document.getElementById("themeToggle").setAttribute("data-active-theme", theme);
   }
   function getStoredTheme() {
-    try {
-      var t = localStorage.getItem(THEME_KEY);
-      return THEME_CYCLE.indexOf(t) !== -1 ? t : "brand";
-    } catch (e) { return "brand"; }
+    try { return localStorage.getItem(THEME_KEY) || "brand"; } catch (e) { return "brand"; }
   }
   function setStoredTheme(theme) {
     try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
   }
   applyTheme(getStoredTheme());
   document.getElementById("themeToggle").addEventListener("click", function() {
-    var current = getStoredTheme();
-    var nextIndex = (THEME_CYCLE.indexOf(current) + 1) % THEME_CYCLE.length;
-    var next = THEME_CYCLE[nextIndex];
+    var next = getStoredTheme() === "mono" ? "brand" : "mono";
     setStoredTheme(next);
     applyTheme(next);
   });
@@ -793,8 +626,6 @@
   var viewDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   var progressViewDate = new Date(today.getFullYear(), today.getMonth(), 1);
   var dayData = { tasks: [] };
-  var recurringTasks = []; // master list tugas rutin harian, {id, name, category, time}
-  var events = []; // event/acara besar, {id, title, date (YYYY-MM-DD), note}
 
   var monthNames = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
   var dayNames = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
@@ -805,10 +636,6 @@
   function monthKeyOf(d) { return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0"); }
   function firestorePath(uid, dk) { return "users/" + uid + "/days/" + dk; }
   function localKey(uid, dk) { return "todo-day-local:" + uid + ":" + dk; }
-  function recurringFirestorePath(uid) { return "users/" + uid + "/settings/recurring"; }
-  function recurringLocalKey(uid) { return "todo-recurring-local:" + uid; }
-  function eventsFirestorePath(uid) { return "users/" + uid + "/settings/events"; }
-  function eventsLocalKey(uid) { return "todo-events-local:" + uid; }
   function daysInMonth(year, month) { return new Date(year, month + 1, 0).getDate(); }
   function isSameDay(a, b) { return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
 
@@ -856,7 +683,7 @@
     document.getElementById("userNameLabel").textContent = user.displayName || user.email || "Pengguna";
     var photoEl = document.getElementById("userPhoto");
     if (user.photoURL) { photoEl.src = user.photoURL; photoEl.style.display = "block"; }
-    loadRecurringAndEvents().then(function() { loadDay(); });
+    loadDay();
   }
 
   function onSignedOut() {
@@ -933,7 +760,6 @@
   async function loadDay() {
     var dk = dateKey(viewDate);
     updateDayLabel();
-    renderEventBanner();
 
     // Tampilkan dulu dari localStorage secara instan, tanpa menunggu jaringan.
     var loaded = null;
@@ -943,7 +769,6 @@
     } catch (e2) { console.warn("Gagal memuat cadangan lokal:", e2); }
 
     dayData = loaded || { tasks: [] };
-    injectRecurringTasks();
     renderChecklist();
 
     // Sinkronkan dari Firestore di belakang layar — ini sumber data yang
@@ -954,68 +779,9 @@
         var serverData = JSON.parse(raw);
         dayData = serverData;
         try { localStorage.setItem(localKey(currentUser, dk), raw); } catch (e3) {}
-        injectRecurringTasks();
         renderChecklist();
       } catch (eParse) { console.warn("Gagal parse data server:", eParse); }
     }
-  }
-
-  // Tambahkan tugas dari master recurring list ke dayData.tasks hari ini,
-  // kalau belum ada (dicek lewat id stabil "recur-<id>"). Sengaja tidak
-  // menyentuh tugas yang sudah ada supaya histori (termasuk status done dan
-  // hasil edit manual di hari itu) tidak pernah tertimpa.
-  function injectRecurringTasks() {
-    if (!recurringTasks.length) return;
-    var existingIds = {};
-    dayData.tasks.forEach(function(t) { existingIds[t.id] = true; });
-    var changed = false;
-    recurringTasks.forEach(function(rt) {
-      var stableId = "recur-" + rt.id;
-      if (!existingIds[stableId]) {
-        dayData.tasks.push({ id: stableId, name: rt.name, category: rt.category, time: rt.time, done: false, recurring: true });
-        changed = true;
-      }
-    });
-    if (changed) saveDay();
-  }
-
-  // ───── RECURRING TASKS & EVENTS (master list, tersimpan terpisah dari data harian) ─────
-  async function loadRecurringAndEvents() {
-    try {
-      var localR = localStorage.getItem(recurringLocalKey(currentUser));
-      if (localR) recurringTasks = JSON.parse(localR);
-    } catch (e) { console.warn("Gagal memuat tugas rutin lokal:", e); }
-    try {
-      var localE = localStorage.getItem(eventsLocalKey(currentUser));
-      if (localE) events = JSON.parse(localE);
-    } catch (e) { console.warn("Gagal memuat event lokal:", e); }
-
-    var rawR = await backgroundSyncFromServer(recurringFirestorePath(currentUser));
-    if (rawR) {
-      try {
-        var dataR = JSON.parse(rawR);
-        recurringTasks = dataR.items || [];
-        localStorage.setItem(recurringLocalKey(currentUser), JSON.stringify(recurringTasks));
-      } catch (e) { console.warn("Gagal parse tugas rutin server:", e); }
-    }
-    var rawE = await backgroundSyncFromServer(eventsFirestorePath(currentUser));
-    if (rawE) {
-      try {
-        var dataE = JSON.parse(rawE);
-        events = dataE.items || [];
-        localStorage.setItem(eventsLocalKey(currentUser), JSON.stringify(events));
-      } catch (e) { console.warn("Gagal parse event server:", e); }
-    }
-  }
-
-  function saveRecurringTasks() {
-    try { localStorage.setItem(recurringLocalKey(currentUser), JSON.stringify(recurringTasks)); } catch (e) {}
-    backgroundSyncToServer(recurringFirestorePath(currentUser), { items: recurringTasks });
-  }
-
-  function saveEvents() {
-    try { localStorage.setItem(eventsLocalKey(currentUser), JSON.stringify(events)); } catch (e) {}
-    backgroundSyncToServer(eventsFirestorePath(currentUser), { items: events });
   }
 
   async function saveDay() {
@@ -1067,10 +833,9 @@
       if (isSameDay(d, today)) classes += " is-today";
       if (isSameDay(d, viewDate)) classes += " is-selected";
       var dotClass = hasLocalDataOnDay(d) ? "wd-dot" : "wd-dot invisible";
-      var eventBadge = hasEventOnDay(d) ? '<span class="wd-event-badge">🎉</span>' : '';
       html += '<button type="button" class="' + classes + '" data-iso="' + dateKey(d) + '">' +
         '<span class="wd-name">' + weekDayShort[i] + '</span>' +
-        '<span class="wd-num">' + d.getDate() + eventBadge + '</span>' +
+        '<span class="wd-num">' + d.getDate() + '</span>' +
         '<span class="' + dotClass + '"></span>' +
         '</button>';
     }
@@ -1118,156 +883,6 @@
     renderChecklist();
   }
 
-  // ───── RECURRING TASKS MODAL ─────
-  document.getElementById("openRecurringModal").addEventListener("click", function() {
-    document.getElementById("recurringModal").classList.remove("hidden");
-    renderRecurringList();
-  });
-  document.getElementById("closeRecurring").addEventListener("click", function() { document.getElementById("recurringModal").classList.add("hidden"); });
-  document.getElementById("recurringModal").addEventListener("click", function(e) { if (e.target === this) this.classList.add("hidden"); });
-
-  document.getElementById("addRecurringBtn").addEventListener("click", addRecurringTask);
-  document.getElementById("newRecurringInput").addEventListener("keydown", function(e) { if (e.key === "Enter") addRecurringTask(); });
-
-  function addRecurringTask() {
-    var input = document.getElementById("newRecurringInput");
-    var name = input.value.trim();
-    if (!name) return;
-    var category = document.getElementById("newRecurringCategory").value;
-    var time = document.getElementById("newRecurringTime").value || "00:00";
-    recurringTasks.push({ id: "rt" + Date.now() + Math.floor(Math.random() * 1000), name: name, category: category, time: time });
-    input.value = "";
-    saveRecurringTasks();
-    renderRecurringList();
-    // Tugas rutin baru langsung muncul juga di hari yang sedang dilihat.
-    injectRecurringTasks();
-    renderChecklist();
-  }
-
-  function deleteRecurringTask(id) {
-    recurringTasks = recurringTasks.filter(function(rt) { return rt.id !== id; });
-    saveRecurringTasks();
-    renderRecurringList();
-    // Hapus juga instance yang belum dicentang di hari yang sedang dilihat,
-    // supaya tidak nyangkut sebagai "Rutin" padahal sudah dihapus dari master.
-    var stableId = "recur-" + id;
-    var task = dayData.tasks.find(function(t) { return t.id === stableId; });
-    if (task && !task.done) {
-      dayData.tasks = dayData.tasks.filter(function(t) { return t.id !== stableId; });
-      saveDay();
-      renderChecklist();
-    }
-  }
-
-  function renderRecurringList() {
-    var container = document.getElementById("recurringListContainer");
-    if (!recurringTasks.length) {
-      container.innerHTML = '<div class="empty-state">Belum ada tugas rutin. Tambahkan tugas yang ingin kamu lakukan setiap hari di atas.</div>';
-      return;
-    }
-    var sorted = recurringTasks.slice().sort(function(a, b) { return a.time.localeCompare(b.time); });
-    var html = "";
-    sorted.forEach(function(rt) {
-      html += '<div class="mini-list-row">';
-      html += '<div class="mini-list-time">' + rt.time + '</div>';
-      html += '<div style="flex:1;">';
-      html += '<div class="mini-list-name">' + escapeHtml(rt.name) + '</div>';
-      html += '<span class="cat-pill ' + rt.category + '">' + catLabels[rt.category] + '</span>';
-      html += '</div>';
-      html += '<button class="mini-list-del" data-del-recur="' + rt.id + '">✕</button>';
-      html += '</div>';
-    });
-    container.innerHTML = html;
-    container.querySelectorAll("[data-del-recur]").forEach(function(el) {
-      el.addEventListener("click", function() { deleteRecurringTask(el.getAttribute("data-del-recur")); });
-    });
-  }
-
-  // ───── EVENT MODAL ─────
-  document.getElementById("openEventModal").addEventListener("click", function() {
-    document.getElementById("eventModal").classList.remove("hidden");
-    document.getElementById("newEventDate").value = dateKey(viewDate);
-    renderEventList();
-  });
-  document.getElementById("closeEvent").addEventListener("click", function() { document.getElementById("eventModal").classList.add("hidden"); });
-  document.getElementById("eventModal").addEventListener("click", function(e) { if (e.target === this) this.classList.add("hidden"); });
-
-  document.getElementById("addEventBtn").addEventListener("click", addEvent);
-
-  function addEvent() {
-    var title = document.getElementById("newEventTitle").value.trim();
-    var date = document.getElementById("newEventDate").value;
-    var note = document.getElementById("newEventNote").value.trim();
-    if (!title || !date) return;
-    events.push({ id: "ev" + Date.now() + Math.floor(Math.random() * 1000), title: title, date: date, note: note });
-    document.getElementById("newEventTitle").value = "";
-    document.getElementById("newEventNote").value = "";
-    saveEvents();
-    renderEventList();
-    renderEventBanner();
-  }
-
-  function deleteEvent(id) {
-    events = events.filter(function(ev) { return ev.id !== id; });
-    saveEvents();
-    renderEventList();
-    renderEventBanner();
-  }
-
-  function renderEventList() {
-    var container = document.getElementById("eventListContainer");
-    if (!events.length) {
-      container.innerHTML = '<div class="empty-state">Belum ada event. Tambahkan tanggal penting di atas.</div>';
-      return;
-    }
-    var sorted = events.slice().sort(function(a, b) { return a.date.localeCompare(b.date); });
-    var html = "";
-    sorted.forEach(function(ev) {
-      var parts = ev.date.split("-");
-      var d = new Date(parseInt(parts[0],10), parseInt(parts[1],10)-1, parseInt(parts[2],10));
-      var label = d.getDate() + " " + monthNames[d.getMonth()] + " " + d.getFullYear();
-      html += '<div class="mini-list-row">';
-      html += '<div style="flex:1;">';
-      html += '<div class="mini-list-name">' + escapeHtml(ev.title) + '</div>';
-      html += '<div class="mini-list-sub">📅 ' + label + (ev.note ? ' &middot; ' + escapeHtml(ev.note) : '') + '</div>';
-      html += '</div>';
-      html += '<button class="mini-list-del" data-del-event="' + ev.id + '">✕</button>';
-      html += '</div>';
-    });
-    container.innerHTML = html;
-    container.querySelectorAll("[data-del-event]").forEach(function(el) {
-      el.addEventListener("click", function() { deleteEvent(el.getAttribute("data-del-event")); });
-    });
-  }
-
-  // Banner di halaman "Tugas hari ini" untuk event yang jatuh pada viewDate.
-  function renderEventBanner() {
-    var container = document.getElementById("eventBanner");
-    var dk = dateKey(viewDate);
-    var todaysEvents = events.filter(function(ev) { return ev.date === dk; });
-    if (!todaysEvents.length) { container.innerHTML = ""; return; }
-    var html = "";
-    todaysEvents.forEach(function(ev) {
-      html += '<div class="event-banner-item">';
-      html += '<div class="event-banner-icon">🎉</div>';
-      html += '<div style="flex:1;">';
-      html += '<div class="event-banner-title">' + escapeHtml(ev.title) + '</div>';
-      if (ev.note) html += '<div class="event-banner-note">' + escapeHtml(ev.note) + '</div>';
-      html += '</div>';
-      html += '<button class="event-banner-del" data-del-banner-event="' + ev.id + '">✕</button>';
-      html += '</div>';
-    });
-    container.innerHTML = html;
-    container.querySelectorAll("[data-del-banner-event]").forEach(function(el) {
-      el.addEventListener("click", function() { deleteEvent(el.getAttribute("data-del-banner-event")); });
-    });
-  }
-
-  function hasEventOnDay(dObj) {
-    var dk = dateKey(dObj);
-    return events.some(function(ev) { return ev.date === dk; });
-  }
-
   // ───── RENDER CHECKLIST ─────
   function renderChecklist() {
     var container = document.getElementById("taskListContainer");
@@ -1292,7 +907,6 @@
       html += '<div style="flex:1;">';
       html += '<div class="task-name' + (task.done ? ' done' : '') + '">' + escapeHtml(task.name) + '</div>';
       html += '<span class="cat-pill ' + pillClass + '">' + catLabels[task.category] + '</span>';
-      if (task.recurring) html += '<span class="recur-badge">🔁 Rutin</span>';
       html += '</div>';
       html += '<button class="task-del" data-del="' + task.id + '">✕</button>';
       html += '</div>';
@@ -1342,17 +956,9 @@
 
       if (dayTasks && dayTasks.length > 0) {
         var done = dayTasks.filter(function(t) { return t.done; }).length;
-        var recurTasks = dayTasks.filter(function(t) { return t.recurring; });
-        var addTasks = dayTasks.filter(function(t) { return !t.recurring; });
-        var recurDone = recurTasks.filter(function(t) { return t.done; }).length;
-        var addDone = addTasks.filter(function(t) { return t.done; }).length;
-        percentages.push({
-          day: d, pct: Math.round((done / dayTasks.length) * 100), hasData: true,
-          recurPct: recurTasks.length ? Math.round((recurDone / recurTasks.length) * 100) : null,
-          addPct: addTasks.length ? Math.round((addDone / addTasks.length) * 100) : null
-        });
+        percentages.push({ day: d, pct: Math.round((done / dayTasks.length) * 100), hasData: true });
       } else {
-        percentages.push({ day: d, pct: 0, hasData: false, recurPct: null, addPct: null });
+        percentages.push({ day: d, pct: 0, hasData: false });
       }
     }
     return percentages;
@@ -1375,15 +981,6 @@
     document.getElementById("ringPctText").textContent = clamped + "%";
   }
 
-  function updateBreakdownBars(recurAvg, addAvg, totalAvg) {
-    document.getElementById("breakdownRecurFill").style.width = recurAvg + "%";
-    document.getElementById("breakdownRecurPct").textContent = recurAvg + "%";
-    document.getElementById("breakdownAddFill").style.width = addAvg + "%";
-    document.getElementById("breakdownAddPct").textContent = addAvg + "%";
-    document.getElementById("breakdownTotalFill").style.width = totalAvg + "%";
-    document.getElementById("breakdownTotalPct").textContent = totalAvg + "%";
-  }
-
   function drawProgressChart(percentages, year, month) {
     var withData = percentages.filter(function(p) { return p.hasData; });
     var avg = withData.length ? Math.round(withData.reduce(function(s, p) { return s + p.pct; }, 0) / withData.length) : 0;
@@ -1393,12 +990,6 @@
     document.getElementById("statBest").textContent = best + "%";
     document.getElementById("statActiveDays").textContent = withData.length;
     updateRingChart(avg);
-
-    var withRecur = percentages.filter(function(p) { return p.recurPct !== null; });
-    var withAdd = percentages.filter(function(p) { return p.addPct !== null; });
-    var recurAvg = withRecur.length ? Math.round(withRecur.reduce(function(s, p) { return s + p.recurPct; }, 0) / withRecur.length) : 0;
-    var addAvg = withAdd.length ? Math.round(withAdd.reduce(function(s, p) { return s + p.addPct; }, 0) / withAdd.length) : 0;
-    updateBreakdownBars(recurAvg, addAvg, avg);
 
     var html = "";
     percentages.forEach(function(p) {
@@ -1524,8 +1115,7 @@
       if (isSameDay(dObj, today)) classes += " is-today";
       if (selectedDate && isSameDay(dObj, selectedDate)) classes += " is-selected";
       if (markDots && hasLocalDataOnDay(dObj)) classes += " has-data";
-      var eventBadge = hasEventOnDay(dObj) ? '<span class="mc-event-badge">🎉</span>' : '';
-      html += '<button type="button" class="' + classes + '" data-day="' + d + '">' + d + eventBadge + '</button>';
+      html += '<button type="button" class="' + classes + '" data-day="' + d + '">' + d + '</button>';
     }
     container.innerHTML = html;
   }

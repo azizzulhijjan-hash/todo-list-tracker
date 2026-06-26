@@ -8,11 +8,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script>
   // Terapkan tema tersimpan sesegera mungkin supaya tidak ada kedipan warna brand
-  // sebelum berganti ke monochrome saat halaman pertama kali dimuat.
+  // sebelum berganti ke mono/dark saat halaman pertama kali dimuat.
   (function() {
     try {
       var t = localStorage.getItem("mulai2menit_theme");
-      if (t === "mono") document.documentElement.setAttribute("data-theme", "mono");
+      if (t === "mono" || t === "dark") document.documentElement.setAttribute("data-theme", t);
     } catch (e) {}
   })();
 </script>
@@ -101,6 +101,33 @@
     --gate-logo-shadow: rgba(74,80,67,0.25);
   }
 
+  /* Dark mode: soft pastel (lavender + mint) di atas background gelap calm,
+     gaya "aesthetic dark mode" yang disukai Gen Z — bukan invert dari brand/mono. */
+  [data-theme="dark"] {
+    --purple: #A78BFA; --purple-dark: #8B6FE8; --purple-light: #2E2A45; --purple-mid: #C4B5FD;
+    --teal: #5EEAD4; --teal-light: #1B3A36;
+    --coral: #A78BFA; --coral-light: #2E2A45;
+    --gold: #FCA5D0; --gold-light: #3A2438;
+    --red: #FB7185; --red-light: #3A2230;
+    --bg: #14121F; --card: #1E1B2E;
+    --text: #EDE9FE; --text-soft: #B8B0D8; --text-muted: #756E94;
+    --border: #322C4A; --border-soft: #261F3A;
+    --on-accent: #14121F;
+    --bg-gradient-spot: #221D38;
+    --hover-tint: #3A3356;
+    --month-btn-hover: #3A3356;
+    --cat-ui-text: #C4B5FD; --cat-ni-text: #5EEAD4; --cat-uni-text: #FCA5D0;
+    --matrix-do-border: #3D3560; --matrix-schedule-border: #1F4843; --matrix-delegate-border: #4A2E48;
+    --save-ok-text: #5EEAD4; --save-warn-text: #FCA5D0;
+    --guide-tip-text: #C4B5FD; --guide-highlight-text: #FCA5D0;
+    --modal-bg: #1E1B2E; --modal-overlay: rgba(8,7,15,0.7);
+    --google-btn-bg: #EDE9FE;
+    --spinner-track: #322C4A;
+    --chart-today-end: #5EEAD4;
+    --logo-shadow: rgba(167,139,250,0.3);
+    --gate-logo-shadow: rgba(167,139,250,0.35);
+  }
+
 
   body, .modal, .name-gate, .chart-bar, .task-check, .cat-pill, .tab-btn, .mini-cal-day,
   .progress-month-btn, .save-status { transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease; }
@@ -154,6 +181,8 @@
   .week-day-btn .wd-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); margin-top: 1px; }
   .week-day-btn.is-selected .wd-dot { background: var(--purple); }
   .week-day-btn .wd-dot.invisible { visibility: hidden; }
+  .week-day-btn .wd-num { position: relative; }
+  .week-day-btn .wd-event-badge { position: absolute; top: -3px; right: -3px; font-size: 9px; line-height: 1; }
   @media (max-width: 600px) {
     .week-strip { padding: 10px 6px; gap: 2px; }
     .week-day-btn { padding: 6px 0; }
@@ -176,9 +205,10 @@
   .mini-cal-day:hover { background: var(--border-soft); }
   .mini-cal-day.empty { cursor: default; pointer-events: none; }
   .mini-cal-day.is-today { color: var(--teal); font-weight: 800; }
-  .mini-cal-day.is-selected { background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: #fff; }
+  .mini-cal-day.is-selected { background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: var(--on-accent); }
   .mini-cal-day.has-data::after { content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; border-radius: 50%; background: var(--gold); }
   .mini-cal-day.is-selected.has-data::after { background: #fff; }
+  .mini-cal-day .mc-event-badge { position: absolute; top: -4px; right: -2px; font-size: 8px; line-height: 1; }
   .mini-cal-today-btn { width: 100%; margin-top: 10px; background: var(--border-soft); border: 1.5px solid var(--border); border-radius: 8px; padding: 7px; font-size: 12px; font-weight: 700; color: var(--purple); cursor: pointer; font-family: inherit; white-space: nowrap; }
   .mini-cal-today-btn:hover { background: var(--border); }
 
@@ -191,7 +221,7 @@
 
   .tabs { width: 100%; max-width: 760px; display: flex; gap: 8px; margin-bottom: 16px; }
   .tab-btn { flex: 1; padding: 10px 16px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--card); font-size: 13px; font-weight: 700; color: var(--text-soft); cursor: pointer; transition: all 0.15s; text-align: center; }
-  .tab-btn.active { background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: #fff; border-color: transparent; }
+  .tab-btn.active { background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: var(--on-accent); border-color: transparent; }
 
   .card { background: var(--card); border-radius: 20px; max-width: 760px; width: 100%; padding: 28px; box-shadow: 0 4px 32px rgba(224,71,58,0.10), 0 1px 4px rgba(0,0,0,0.04); }
   .hidden { display: none !important; }
@@ -200,28 +230,68 @@
   p.desc { font-size: 13px; color: var(--text-soft); line-height: 1.6; margin-bottom: 20px; }
 
   /* ── ADD TASK ── */
-  .add-task-row { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .checklist-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+  .checklist-header-row .desc { margin-bottom: 0; }
+  .checklist-header-actions { display: flex; gap: 8px; flex-shrink: 0; flex-wrap: wrap; }
+  .btn-soft { font-size: 12px; font-weight: 700; color: var(--purple); background: var(--purple-light); border: none; border-radius: 20px; padding: 8px 14px; cursor: pointer; white-space: nowrap; font-family: inherit; transition: background 0.15s; }
+  .btn-soft:hover { background: var(--hover-tint); }
+
+  .add-task-row { display: flex; gap: 8px; margin-bottom: 20px; margin-top: 16px; flex-wrap: wrap; }
   .add-task-row input[type="text"] { flex: 1; min-width: 160px; border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 14px; font-family: inherit; background: var(--border-soft); color: var(--text); }
   .add-task-row input[type="text"]:focus { outline: none; border-color: var(--purple); background: #fff; }
   .add-task-row select, .add-task-row input[type="time"] { border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 13px; font-family: inherit; background: var(--border-soft); color: var(--text); cursor: pointer; }
-  .add-task-row button { background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: #fff; border: none; border-radius: 10px; padding: 10px 18px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+  .add-task-row button { background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: var(--on-accent); border: none; border-radius: 10px; padding: 10px 18px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
 
   .cat-pill { font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; }
   .cat-pill.ui { background: var(--coral-light); color: var(--cat-ui-text); }
   .cat-pill.ni { background: var(--teal-light); color: var(--cat-ni-text); }
   .cat-pill.uni { background: var(--gold-light); color: var(--cat-uni-text); }
   .cat-pill.nuni { background: var(--border-soft); color: var(--text-soft); }
+  .recur-badge { font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; background: var(--gold-light); color: var(--cat-uni-text); margin-left: 4px; }
+
+  /* ── EVENT BANNER ── */
+  #eventBanner:empty { display: none; }
+  .event-banner-item { display: flex; align-items: flex-start; gap: 10px; background: linear-gradient(135deg, var(--purple-light), var(--gold-light)); border: 1px solid var(--matrix-do-border); border-radius: 14px; padding: 12px 14px; margin-bottom: 16px; }
+  .event-banner-icon { font-size: 18px; flex-shrink: 0; }
+  .event-banner-title { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 2px; }
+  .event-banner-note { font-size: 12px; color: var(--text-soft); line-height: 1.5; }
+  .event-banner-del { margin-left: auto; background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 13px; flex-shrink: 0; padding: 2px 6px; }
+  .event-banner-del:hover { color: var(--red); }
+
+  /* ── RECURRING / EVENT MODAL LISTS ── */
+  .event-form-row { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+  .event-form-row input, .event-form-row textarea { border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 14px; font-family: inherit; background: var(--border-soft); color: var(--text); resize: vertical; }
+  .event-form-row input:focus, .event-form-row textarea:focus { outline: none; border-color: var(--purple); background: #fff; }
+  .event-form-row button { background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: var(--on-accent); border: none; border-radius: 10px; padding: 11px 18px; font-size: 13px; font-weight: 700; cursor: pointer; }
+
+  .mini-list-row { display: flex; align-items: center; gap: 10px; padding: 10px 4px; border-bottom: 0.5px solid var(--border-soft); }
+  .mini-list-row:last-child { border-bottom: none; }
+  .mini-list-time { font-size: 11px; font-weight: 700; color: var(--purple); background: var(--purple-light); padding: 3px 8px; border-radius: 8px; white-space: nowrap; min-width: 48px; text-align: center; }
+  .mini-list-name { flex: 1; font-size: 14px; font-weight: 600; }
+  .mini-list-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .mini-list-del { width: 26px; height: 26px; border-radius: 7px; border: none; background: transparent; color: var(--text-muted); cursor: pointer; font-size: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .mini-list-del:hover { background: var(--red-light); color: var(--red); }
+
 
   /* ── TASK LIST ── */
   .task-row { display: flex; align-items: center; gap: 12px; padding: 12px 4px; border-bottom: 0.5px solid var(--border-soft); }
   .task-row:last-child { border-bottom: none; }
   .task-check { width: 22px; height: 22px; border-radius: 7px; border: 1.5px solid var(--border); background: var(--border-soft); cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; color: transparent; transition: all 0.15s; }
-  .task-check.checked { background: var(--teal); border-color: var(--teal); color: #fff; }
+  .task-check.checked { background: var(--teal); border-color: var(--teal); color: var(--on-accent); }
   .task-time { font-size: 11px; font-weight: 700; color: var(--purple); background: var(--purple-light); padding: 3px 8px; border-radius: 8px; white-space: nowrap; min-width: 48px; text-align: center; }
   .task-name { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
   .task-name.done { color: var(--text-muted); text-decoration: line-through; }
   .task-del { width: 26px; height: 26px; border-radius: 7px; border: none; background: transparent; color: var(--text-muted); cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; }
   .task-del:hover { background: var(--red-light); color: var(--red); }
+  .task-bell { width: 28px; height: 28px; border-radius: 8px; border: none; background: transparent; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; transition: background 0.15s; color: var(--text-muted); }
+  .task-bell:hover { background: var(--border-soft); }
+  .task-bell.bell-on { background: var(--gold-light); }
+
+  /* ── REMINDER PERMISSION BANNER ── */
+  #reminderBanner { display: none; }
+  #reminderBanner.visible { display: flex; align-items: center; gap: 10px; background: var(--gold-light); border: 1px solid var(--gold); border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; font-size: 13px; font-weight: 600; color: var(--text); }
+  #reminderBanner button { margin-left: auto; background: var(--gold); color: var(--on-accent); border: none; border-radius: 8px; padding: 6px 14px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap; }
+  #reminderBanner .banner-dismiss { background: transparent; color: var(--text-muted); padding: 4px 8px; }
 
   .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 13px; }
 
@@ -271,6 +341,23 @@
     .month-summary { justify-content: center; }
   }
 
+  /* ── BREAKDOWN BARS (wajib / tambahan / total) ── */
+  .breakdown-section { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; padding: 16px; background: var(--border-soft); border-radius: 14px; }
+  .breakdown-row { display: grid; grid-template-columns: 150px 1fr 42px; align-items: center; gap: 10px; }
+  .breakdown-label { font-size: 12px; font-weight: 700; color: var(--text-soft); white-space: nowrap; }
+  .breakdown-track { height: 8px; border-radius: 20px; background: var(--border); overflow: hidden; }
+  .breakdown-fill { height: 100%; border-radius: 20px; width: 0%; transition: width 0.5s ease; }
+  .breakdown-fill.recur-fill { background: linear-gradient(90deg, var(--gold), var(--gold)); }
+  .breakdown-fill.add-fill { background: linear-gradient(90deg, var(--teal), var(--teal)); }
+  .breakdown-fill.total-fill { background: linear-gradient(90deg, var(--purple-mid), var(--purple)); }
+  .breakdown-pct { font-size: 12px; font-weight: 800; color: var(--text); text-align: right; }
+  .breakdown-total { padding-top: 10px; border-top: 1px dashed var(--border); }
+  .breakdown-total .breakdown-label { color: var(--text); }
+  @media (max-width: 600px) {
+    .breakdown-row { grid-template-columns: 110px 1fr 36px; }
+    .breakdown-label { font-size: 11px; }
+  }
+
   .summary-stat { flex: 1; min-width: 100px; background: var(--border-soft); border-radius: 14px; padding: 14px; text-align: center; }
   .summary-stat .stat-value { font-size: 22px; font-weight: 800; color: var(--purple); }
   .summary-stat .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
@@ -298,7 +385,7 @@
   .modal h2 { font-size: 20px; font-weight: 800; color: var(--text); }
   .modal-close { width: 30px; height: 30px; border-radius: 8px; background: var(--border-soft); border: none; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--text-soft); }
   .guide-step { display: flex; gap: 14px; margin-bottom: 20px; }
-  .guide-num { width: 32px; height: 32px; border-radius: 10px; background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: #fff; font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .guide-num { width: 32px; height: 32px; border-radius: 10px; background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: var(--on-accent); font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .guide-content h3 { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
   .guide-content p { font-size: 13px; color: var(--text-soft); line-height: 1.65; }
   .guide-tip { background: var(--purple-light); border-radius: 12px; padding: 14px 16px; margin-top: 16px; }
@@ -317,7 +404,7 @@
   .name-gate p { font-size: 13px; color: var(--text-soft); line-height: 1.6; margin-bottom: 20px; }
   .name-gate input { width: 100%; border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 14px; font-size: 14px; font-family: inherit; background: var(--border-soft); margin-bottom: 12px; text-align: center; }
   .name-gate input:focus { outline: none; border-color: var(--purple); background: #fff; }
-  .name-gate button { width: 100%; background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: #fff; border: none; border-radius: 10px; padding: 13px; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .name-gate button { width: 100%; background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: var(--on-accent); border: none; border-radius: 10px; padding: 13px; font-size: 14px; font-weight: 700; cursor: pointer; }
   .name-gate .gate-error { font-size: 12px; color: var(--red); margin-top: 8px; min-height: 16px; }
 
   .name-gate .google-signin-btn {
@@ -349,54 +436,127 @@
     <div class="guide-step">
       <div class="guide-num">1</div>
       <div class="guide-content">
-        <h3>Login dengan akun Google kamu</h3>
-        <p>Data tugasmu tersimpan di akun Google yang kamu pakai untuk login, jadi kalau kamu buka app ini dari device manapun (HP, laptop, tablet) dan login dengan akun yang sama, semua tugas dan history-nya akan tetap ada.</p>
+        <h3>Login & sinkronisasi antar device</h3>
+        <p>Login dengan akun Google. Data tersimpan di cloud — buka dari HP, laptop, atau tablet manapun dengan akun yang sama, semua tugas dan histori tetap tersinkron otomatis.</p>
       </div>
     </div>
 
     <div class="guide-step">
       <div class="guide-num">2</div>
       <div class="guide-content">
-        <h3>Setiap hari punya daftar tugasnya sendiri</h3>
-        <p>Tidak seperti to do list biasa, di sini tugas yang kamu isi hari ini tidak akan tercampur dengan hari lain. Gunakan navigasi ‹ › untuk pindah ke tanggal lain dan isi tugas yang relevan untuk hari itu saja.</p>
+        <h3>Navigasi tanggal — 3 cara</h3>
+        <p>Klik hari di <strong>strip mingguan</strong> (Min–Sab) untuk lompat cepat dalam minggu yang sama. Klik <strong>label tanggal</strong> di tengah untuk buka kalender popup bulan penuh. Atau gunakan tombol <strong>‹ ›</strong> untuk maju/mundur satu hari.</p>
       </div>
     </div>
 
     <div class="guide-step">
       <div class="guide-num">3</div>
       <div class="guide-content">
-        <h3>Tambahkan tugas, jam, dan kategorinya</h3>
-        <p>Tulis nama tugas, tentukan jam pelaksanaannya, lalu pilih kategori sesuai Eisenhower Matrix: Urgent-Important, Not Urgent-Important, Urgent-Not Important, atau Not Urgent-Not Important.</p>
+        <h3>Tambah tugas harian</h3>
+        <p>Ketik nama tugas, tentukan jam, pilih kategori Eisenhower (Urgent-Important, Not Urgent-Important, dll), lalu klik <strong>+ Tambah</strong>. Tugas otomatis diurutkan dari pagi ke malam. Centang kotak di sebelah kiri saat selesai.</p>
       </div>
     </div>
 
     <div class="guide-step">
       <div class="guide-num">4</div>
       <div class="guide-content">
-        <h3>Centang tugas yang sudah selesai</h3>
-        <p>Klik kotak di sebelah tugas untuk menandainya selesai. Tugas akan otomatis tersusun berdasarkan jam, dari pagi ke malam.</p>
+        <h3>Tugas rutin (wajib harian)</h3>
+        <p>Klik <strong>🔁 Tugas rutin</strong> untuk mengelola tugas yang ingin muncul otomatis setiap hari — seperti olahraga, ibadah, minum air. Tugas rutin akan tampil dengan label <strong>🔁 RUTIN</strong> dan tidak perlu diketik ulang. Hapus dari daftar rutin kapan saja; histori hari-hari sebelumnya tetap aman.</p>
       </div>
     </div>
 
     <div class="guide-step">
       <div class="guide-num">5</div>
       <div class="guide-content">
-        <h3>Pantau progres lewat grafik bulanan</h3>
-        <p>Tab Progress menampilkan persentase keberhasilan tugasmu setiap hari dalam bentuk grafik batang. Tinggi batang menunjukkan seberapa banyak tugas hari itu yang berhasil diselesaikan. Data hari-hari sebelumnya tetap tersimpan dan tidak akan hilang.</p>
+        <h3>Event / acara besar</h3>
+        <p>Klik <strong>🎉 Tambah event</strong> untuk menandai tanggal penting seperti deadline, ulang tahun, atau acara besar. Event akan muncul sebagai <strong>banner khusus</strong> di hari itu, dan badge 🎉 muncul di strip mingguan serta kalender popup sebagai pengingat visual.</p>
+      </div>
+    </div>
+
+    <div class="guide-step">
+      <div class="guide-num">6</div>
+      <div class="guide-content">
+        <h3>Reminder notifikasi per tugas</h3>
+        <p>Klik ikon <strong>🔕</strong> di sebelah kanan tugas untuk aktifkan reminder — ikon berubah jadi <strong>🔔</strong>. Saat jam tugas tiba, notifikasi popup akan muncul di layar HP atau laptop. Pastikan izin notifikasi browser sudah diberikan saat pertama kali mengaktifkan.</p>
+      </div>
+    </div>
+
+    <div class="guide-step">
+      <div class="guide-num">7</div>
+      <div class="guide-content">
+        <h3>Tab Progress — pantau perkembangan bulanan</h3>
+        <p>Ring chart besar menampilkan rata-rata persentase bulan ini. Di bawahnya ada breakdown 3 bar: <strong>🔁 Tugas wajib</strong> (rutin), <strong>✏️ Tugas tambahan</strong> (harian), dan <strong>📊 Total keseluruhan</strong>. Grafik batang di bawah menunjukkan tren per hari sepanjang bulan. Klik tombol bulan di pojok kanan untuk melihat bulan lain.</p>
+      </div>
+    </div>
+
+    <div class="guide-step">
+      <div class="guide-num">8</div>
+      <div class="guide-content">
+        <h3>Eisenhower Matrix</h3>
+        <p>Tab ini menyortir otomatis tugas hari yang sedang kamu lihat ke 4 kuadran berdasarkan kategori yang dipilih saat tambah tugas. Fokus utama di kuadran <strong>Do</strong> (urgent & important) dan <strong>Schedule</strong> (not urgent & important).</p>
       </div>
     </div>
 
     <div class="guide-step" style="margin-bottom:0;">
-      <div class="guide-num">6</div>
+      <div class="guide-num">9</div>
       <div class="guide-content">
-        <h3>Gunakan Eisenhower Matrix untuk prioritas</h3>
-        <p>Tab ini otomatis menyortir tugas hari yang sedang kamu lihat ke 4 kuadran: Do, Schedule, Delegate, dan Delete. Fokuskan energi di kuadran Do dan Schedule.</p>
+        <h3>Ganti tampilan — 3 mode</h3>
+        <p>Klik toggle di pojok kanan header untuk berganti mode: <strong>☀️ Brand</strong> (coral/cream, warna asli Mulai 2 Menit) → <strong>⬜ Mono</strong> (olive monochrome, netral & maskulin) → <strong>🌙 Dark</strong> (lavender & mint pastel di atas gelap, aesthetic night mode) → kembali ke Brand. Pilihan tersimpan otomatis.</p>
       </div>
     </div>
 
     <div class="guide-highlight">
-      <p><strong>Waktu terbaik untuk mengisi:</strong> isi to do list ini di malam hari, setelah semua kegiatan hari itu selesai. Dengan begitu kamu mencatat apa yang benar-benar terjadi, bukan sekadar rencana, dan grafik progresmu jadi lebih akurat untuk dievaluasi besok paginya.</p>
+      <p><strong>Waktu terbaik untuk mengisi:</strong> isi to do list ini di malam hari setelah semua kegiatan selesai. Dengan begitu kamu mencatat apa yang benar-benar terjadi, bukan sekadar rencana — grafik progresmu jadi lebih akurat dan jujur untuk dievaluasi keesokan harinya.</p>
     </div>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="recurringModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--purple);margin-bottom:4px;">Tugas Rutin</p>
+        <h2>Kelola tugas wajib harian</h2>
+      </div>
+      <button class="modal-close" id="closeRecurring">✕</button>
+    </div>
+    <p class="desc" style="margin-bottom:16px;">Tugas di sini otomatis muncul setiap hari dengan label "Rutin", jadi kamu tidak perlu mengetik ulang. Mengedit atau menghapus di sini hanya memengaruhi hari ini dan seterusnya — histori hari-hari sebelumnya tetap tersimpan apa adanya.</p>
+
+    <div class="add-task-row">
+      <input type="text" id="newRecurringInput" placeholder="Nama tugas rutin...">
+      <input type="time" id="newRecurringTime" value="08:00">
+      <select id="newRecurringCategory">
+        <option value="ui">Urgent - Important</option>
+        <option value="ni">Not Urgent - Important</option>
+        <option value="uni">Urgent - Not Important</option>
+        <option value="nuni">Not Urgent - Not Important</option>
+      </select>
+      <button id="addRecurringBtn">+ Tambah</button>
+    </div>
+
+    <div id="recurringListContainer"></div>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="eventModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--purple);margin-bottom:4px;">Event / Acara</p>
+        <h2>Tambah event besar</h2>
+      </div>
+      <button class="modal-close" id="closeEvent">✕</button>
+    </div>
+    <p class="desc" style="margin-bottom:16px;">Tandai tanggal penting seperti deadline, acara, atau hari besar. Event akan muncul sebagai badge di kalender dan banner khusus di hari itu.</p>
+
+    <div class="event-form-row">
+      <input type="text" id="newEventTitle" placeholder="Judul event... (mis. Deadline proposal)">
+      <input type="date" id="newEventDate">
+      <textarea id="newEventNote" placeholder="Catatan tambahan (opsional)" rows="2"></textarea>
+      <button id="addEventBtn">+ Tambah event</button>
+    </div>
+
+    <div id="eventListContainer"></div>
   </div>
 </div>
 
@@ -470,8 +630,18 @@
 </div>
 
 <div class="card hidden" id="checklistView">
-  <h1>Tugas untuk hari ini</h1>
-  <p class="desc">Setiap hari punya daftar tugas sendiri. Tambahkan tugas yang memang relevan untuk hari yang sedang kamu lihat.</p>
+  <div class="checklist-header-row">
+    <div>
+      <h1>Tugas untuk hari ini</h1>
+      <p class="desc">Setiap hari punya daftar tugas sendiri. Tambahkan tugas yang memang relevan untuk hari yang sedang kamu lihat.</p>
+    </div>
+    <div class="checklist-header-actions">
+      <button class="btn-soft" id="openRecurringModal">🔁 Tugas rutin</button>
+      <button class="btn-soft" id="openEventModal">🎉 Tambah event</button>
+    </div>
+  </div>
+
+  <div id="eventBanner"></div>
 
   <div class="add-task-row">
     <input type="text" id="newTaskInput" placeholder="Nama tugas...">
@@ -483,6 +653,13 @@
       <option value="nuni">Not Urgent - Not Important</option>
     </select>
     <button id="addTaskBtn">+ Tambah</button>
+  </div>
+
+  <div id="reminderBanner">
+    <span>🔔</span>
+    <span>Izinkan notifikasi untuk mengaktifkan reminder tugas</span>
+    <button id="reminderGrantBtn">Izinkan</button>
+    <button class="banner-dismiss" id="reminderDismissBtn">✕</button>
   </div>
 
   <div id="taskListContainer"></div>
@@ -544,6 +721,24 @@
     </div>
   </div>
 
+  <div class="breakdown-section">
+    <div class="breakdown-row">
+      <div class="breakdown-label">🔁 Tugas wajib (rutin)</div>
+      <div class="breakdown-track"><div class="breakdown-fill recur-fill" id="breakdownRecurFill"></div></div>
+      <div class="breakdown-pct" id="breakdownRecurPct">0%</div>
+    </div>
+    <div class="breakdown-row">
+      <div class="breakdown-label">✏️ Tugas tambahan</div>
+      <div class="breakdown-track"><div class="breakdown-fill add-fill" id="breakdownAddFill"></div></div>
+      <div class="breakdown-pct" id="breakdownAddPct">0%</div>
+    </div>
+    <div class="breakdown-row breakdown-total">
+      <div class="breakdown-label">📊 Total keseluruhan</div>
+      <div class="breakdown-track"><div class="breakdown-fill total-fill" id="breakdownTotalFill"></div></div>
+      <div class="breakdown-pct" id="breakdownTotalPct">0%</div>
+    </div>
+  </div>
+
   <div class="chart-wrap">
     <div class="chart-bars" id="chartBars"></div>
   </div>
@@ -593,30 +788,42 @@
 <div class="app-footer">Mulai 2 Menit &middot; Advanced To Do List Tracker</div>
 
 <script>
-  // ───── THEME TOGGLE ─────
-  // Mode default: warna brand asli ("brand"). Mode kedua: monochrome netral ("mono"),
-  // disimpan di localStorage supaya pilihan user tetap saat buka app lagi.
+  // ───── THEME TOGGLE (3 mode) ─────
+  // "brand" (coral/cream asli) → "mono" (olive monochrome) → "dark" (pastel
+  // lavender/mint di atas gelap) → kembali ke "brand". Disimpan di
+  // localStorage supaya pilihan user tetap saat buka app lagi.
   var THEME_KEY = "mulai2menit_theme";
+  var THEME_CYCLE = ["brand", "mono", "dark"];
+  var THEME_META = {
+    brand: { icon: "☀️", title: "Ganti ke tampilan monochrome" },
+    mono: { icon: "⬜", title: "Ganti ke tampilan gelap" },
+    dark: { icon: "🌙", title: "Ganti ke tampilan warna" }
+  };
   function applyTheme(theme) {
-    if (theme === "mono") {
-      document.documentElement.setAttribute("data-theme", "mono");
-      document.getElementById("themeToggleKnob").textContent = "⬜";
-      document.getElementById("themeToggle").setAttribute("title", "Ganti ke tampilan warna");
+    if (theme === "mono" || theme === "dark") {
+      document.documentElement.setAttribute("data-theme", theme);
     } else {
       document.documentElement.removeAttribute("data-theme");
-      document.getElementById("themeToggleKnob").textContent = "☀️";
-      document.getElementById("themeToggle").setAttribute("title", "Ganti ke tampilan monochrome");
     }
+    var meta = THEME_META[theme] || THEME_META.brand;
+    document.getElementById("themeToggleKnob").textContent = meta.icon;
+    document.getElementById("themeToggle").setAttribute("title", meta.title);
+    document.getElementById("themeToggle").setAttribute("data-active-theme", theme);
   }
   function getStoredTheme() {
-    try { return localStorage.getItem(THEME_KEY) || "brand"; } catch (e) { return "brand"; }
+    try {
+      var t = localStorage.getItem(THEME_KEY);
+      return THEME_CYCLE.indexOf(t) !== -1 ? t : "brand";
+    } catch (e) { return "brand"; }
   }
   function setStoredTheme(theme) {
     try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
   }
   applyTheme(getStoredTheme());
   document.getElementById("themeToggle").addEventListener("click", function() {
-    var next = getStoredTheme() === "mono" ? "brand" : "mono";
+    var current = getStoredTheme();
+    var nextIndex = (THEME_CYCLE.indexOf(current) + 1) % THEME_CYCLE.length;
+    var next = THEME_CYCLE[nextIndex];
     setStoredTheme(next);
     applyTheme(next);
   });
@@ -626,6 +833,8 @@
   var viewDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   var progressViewDate = new Date(today.getFullYear(), today.getMonth(), 1);
   var dayData = { tasks: [] };
+  var recurringTasks = []; // master list tugas rutin harian, {id, name, category, time}
+  var events = []; // event/acara besar, {id, title, date (YYYY-MM-DD), note}
 
   var monthNames = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
   var dayNames = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
@@ -636,6 +845,10 @@
   function monthKeyOf(d) { return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0"); }
   function firestorePath(uid, dk) { return "users/" + uid + "/days/" + dk; }
   function localKey(uid, dk) { return "todo-day-local:" + uid + ":" + dk; }
+  function recurringFirestorePath(uid) { return "users/" + uid + "/settings/recurring"; }
+  function recurringLocalKey(uid) { return "todo-recurring-local:" + uid; }
+  function eventsFirestorePath(uid) { return "users/" + uid + "/settings/events"; }
+  function eventsLocalKey(uid) { return "todo-events-local:" + uid; }
   function daysInMonth(year, month) { return new Date(year, month + 1, 0).getDate(); }
   function isSameDay(a, b) { return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
 
@@ -683,7 +896,11 @@
     document.getElementById("userNameLabel").textContent = user.displayName || user.email || "Pengguna";
     var photoEl = document.getElementById("userPhoto");
     if (user.photoURL) { photoEl.src = user.photoURL; photoEl.style.display = "block"; }
-    loadDay();
+    loadRecurringAndEvents().then(function() {
+      loadDay();
+      startReminderLoop();
+      updateReminderBanner();
+    });
   }
 
   function onSignedOut() {
@@ -760,6 +977,7 @@
   async function loadDay() {
     var dk = dateKey(viewDate);
     updateDayLabel();
+    renderEventBanner();
 
     // Tampilkan dulu dari localStorage secara instan, tanpa menunggu jaringan.
     var loaded = null;
@@ -769,19 +987,102 @@
     } catch (e2) { console.warn("Gagal memuat cadangan lokal:", e2); }
 
     dayData = loaded || { tasks: [] };
+    injectRecurringTasks(); // inject saja, belum save — tunggu sync selesai
     renderChecklist();
 
-    // Sinkronkan dari Firestore di belakang layar — ini sumber data yang
-    // benar-benar terikat ke akun, jadi sama di semua device.
+    // Sinkronkan dari Firestore di belakang layar.
+    // PENTING: jangan overwrite mentah — merge dengan cara memprioritaskan
+    // versi yang lebih lengkap (lebih banyak task non-recurring), supaya
+    // task tambahan yang baru ditambah user tidak hilang karena race condition
+    // antara inject recurring + save.
     var raw = await backgroundSyncFromServer(firestorePath(currentUser, dk));
     if (raw && dk === dateKey(viewDate)) {
       try {
         var serverData = JSON.parse(raw);
-        dayData = serverData;
-        try { localStorage.setItem(localKey(currentUser, dk), raw); } catch (e3) {}
+        var serverNonRecur = (serverData.tasks || []).filter(function(t) { return !t.recurring; });
+        var localNonRecur = dayData.tasks.filter(function(t) { return !t.recurring; });
+
+        // Pilih sumber yang lebih lengkap untuk task non-recurring.
+        // Jika server punya lebih banyak atau sama → pakai server sebagai base.
+        // Jika lokal punya lebih banyak (user baru tambah) → pakai lokal sebagai base.
+        var baseData;
+        if (serverNonRecur.length >= localNonRecur.length) {
+          baseData = serverData;
+        } else {
+          // Lokal punya task yang belum sempat sync ke server — pertahankan lokal,
+          // tapi ambil status done dari server kalau ada (untuk cross-device sync).
+          var serverDoneMap = {};
+          serverData.tasks.forEach(function(t) { serverDoneMap[t.id] = t.done; });
+          baseData = { tasks: dayData.tasks.map(function(t) {
+            return (t.id in serverDoneMap) ? Object.assign({}, t, { done: serverDoneMap[t.id] }) : t;
+          })};
+        }
+
+        dayData = baseData;
+        try { localStorage.setItem(localKey(currentUser, dk), JSON.stringify(dayData)); } catch (e3) {}
+        var injected = injectRecurringTasks();
+        if (injected) saveDay(); // save hanya jika recurring baru ditambahkan
         renderChecklist();
       } catch (eParse) { console.warn("Gagal parse data server:", eParse); }
     }
+  }
+
+  // Tambahkan tugas dari master recurring list ke dayData.tasks hari ini,
+  // kalau belum ada (dicek lewat id stabil "recur-<id>"). Return true jika ada
+  // perubahan. Caller yang bertanggung jawab untuk memanggil saveDay() jika perlu,
+  // supaya tidak terjadi race condition saat sync dari server sedang berjalan.
+  function injectRecurringTasks() {
+    if (!recurringTasks.length) return false;
+    var existingIds = {};
+    dayData.tasks.forEach(function(t) { existingIds[t.id] = true; });
+    var changed = false;
+    recurringTasks.forEach(function(rt) {
+      var stableId = "recur-" + rt.id;
+      if (!existingIds[stableId]) {
+        dayData.tasks.push({ id: stableId, name: rt.name, category: rt.category, time: rt.time, done: false, recurring: true });
+        changed = true;
+      }
+    });
+    return changed;
+  }
+
+  // ───── RECURRING TASKS & EVENTS (master list, tersimpan terpisah dari data harian) ─────
+  async function loadRecurringAndEvents() {
+    try {
+      var localR = localStorage.getItem(recurringLocalKey(currentUser));
+      if (localR) recurringTasks = JSON.parse(localR);
+    } catch (e) { console.warn("Gagal memuat tugas rutin lokal:", e); }
+    try {
+      var localE = localStorage.getItem(eventsLocalKey(currentUser));
+      if (localE) events = JSON.parse(localE);
+    } catch (e) { console.warn("Gagal memuat event lokal:", e); }
+
+    var rawR = await backgroundSyncFromServer(recurringFirestorePath(currentUser));
+    if (rawR) {
+      try {
+        var dataR = JSON.parse(rawR);
+        recurringTasks = dataR.items || [];
+        localStorage.setItem(recurringLocalKey(currentUser), JSON.stringify(recurringTasks));
+      } catch (e) { console.warn("Gagal parse tugas rutin server:", e); }
+    }
+    var rawE = await backgroundSyncFromServer(eventsFirestorePath(currentUser));
+    if (rawE) {
+      try {
+        var dataE = JSON.parse(rawE);
+        events = dataE.items || [];
+        localStorage.setItem(eventsLocalKey(currentUser), JSON.stringify(events));
+      } catch (e) { console.warn("Gagal parse event server:", e); }
+    }
+  }
+
+  function saveRecurringTasks() {
+    try { localStorage.setItem(recurringLocalKey(currentUser), JSON.stringify(recurringTasks)); } catch (e) {}
+    backgroundSyncToServer(recurringFirestorePath(currentUser), { items: recurringTasks });
+  }
+
+  function saveEvents() {
+    try { localStorage.setItem(eventsLocalKey(currentUser), JSON.stringify(events)); } catch (e) {}
+    backgroundSyncToServer(eventsFirestorePath(currentUser), { items: events });
   }
 
   async function saveDay() {
@@ -833,9 +1134,10 @@
       if (isSameDay(d, today)) classes += " is-today";
       if (isSameDay(d, viewDate)) classes += " is-selected";
       var dotClass = hasLocalDataOnDay(d) ? "wd-dot" : "wd-dot invisible";
+      var eventBadge = hasEventOnDay(d) ? '<span class="wd-event-badge">🎉</span>' : '';
       html += '<button type="button" class="' + classes + '" data-iso="' + dateKey(d) + '">' +
         '<span class="wd-name">' + weekDayShort[i] + '</span>' +
-        '<span class="wd-num">' + d.getDate() + '</span>' +
+        '<span class="wd-num">' + d.getDate() + eventBadge + '</span>' +
         '<span class="' + dotClass + '"></span>' +
         '</button>';
     }
@@ -883,6 +1185,295 @@
     renderChecklist();
   }
 
+  // ───── REMINDER SYSTEM ─────
+  // Pakai Web Notifications API. Interval cek setiap menit apakah ada task
+  // yang waktunya cocok dengan jam sekarang. Berjalan selama browser terbuka.
+  // Preferensi reminder per task disimpan di localStorage per user.
+
+  var REMINDER_KEY_PREFIX = "mulai2menit-reminders:";
+  var reminderInterval = null;
+  var firedToday = {}; // cache task id yang sudah difire hari ini, reset tiap hari
+
+  function reminderStoreKey() { return REMINDER_KEY_PREFIX + (currentUser || "anon"); }
+
+  function loadReminderPrefs() {
+    try {
+      var raw = localStorage.getItem(reminderStoreKey());
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) { return {}; }
+  }
+
+  function saveReminderPrefs(prefs) {
+    try { localStorage.setItem(reminderStoreKey(), JSON.stringify(prefs)); } catch (e) {}
+  }
+
+  function isReminderEnabled(taskId) {
+    return !!loadReminderPrefs()[taskId];
+  }
+
+  function toggleReminder(taskId) {
+    // Cek izin notifikasi dulu sebelum aktifkan
+    if (!isReminderEnabled(taskId) && Notification.permission !== "granted") {
+      requestNotificationPermission(function(granted) {
+        if (granted) { doToggleReminder(taskId); }
+      });
+    } else {
+      doToggleReminder(taskId);
+    }
+  }
+
+  function doToggleReminder(taskId) {
+    var prefs = loadReminderPrefs();
+    if (prefs[taskId]) {
+      delete prefs[taskId];
+    } else {
+      prefs[taskId] = true;
+    }
+    saveReminderPrefs(prefs);
+    renderChecklist();
+    updateReminderBanner();
+  }
+
+  function requestNotificationPermission(callback) {
+    if (!("Notification" in window)) { callback(false); return; }
+    if (Notification.permission === "granted") { callback(true); return; }
+    if (Notification.permission === "denied") {
+      alert("Izin notifikasi diblokir browser. Buka pengaturan browser dan aktifkan izin notifikasi untuk situs ini.");
+      callback(false); return;
+    }
+    Notification.requestPermission().then(function(perm) {
+      callback(perm === "granted");
+      updateReminderBanner();
+    });
+  }
+
+  function updateReminderBanner() {
+    var banner = document.getElementById("reminderBanner");
+    if (!banner) return;
+    // Tampilkan banner jika ada task dengan reminder ON tapi izin belum diberikan
+    var prefs = loadReminderPrefs();
+    var hasAnyReminder = Object.keys(prefs).length > 0;
+    var needsPermission = Notification.permission !== "granted" && Notification.permission !== "denied";
+    if (hasAnyReminder && needsPermission) {
+      banner.classList.add("visible");
+    } else {
+      banner.classList.remove("visible");
+    }
+  }
+
+  function startReminderLoop() {
+    if (reminderInterval) clearInterval(reminderInterval);
+    firedToday = {};
+    checkReminders(); // cek sekali langsung
+    reminderInterval = setInterval(function() {
+      // Reset cache fired jika hari sudah berganti
+      var nowKey = dateKey(new Date());
+      if (!firedToday._date || firedToday._date !== nowKey) {
+        firedToday = { _date: nowKey };
+      }
+      checkReminders();
+    }, 60 * 1000); // cek setiap menit
+  }
+
+  function checkReminders() {
+    if (Notification.permission !== "granted") return;
+    var now = new Date();
+    var todayKey = dateKey(now);
+    var currentTimeStr = String(now.getHours()).padStart(2, "0") + ":" + String(now.getMinutes()).padStart(2, "0");
+    var prefs = loadReminderPrefs();
+
+    // Ambil tugas hari ini dari dayData (jika viewDate = today) atau localStorage
+    var tasks = isSameDay(viewDate, now) ? dayData.tasks : (getDayTasksLocal(todayKey) || []);
+
+    tasks.forEach(function(task) {
+      if (!prefs[task.id]) return;
+      if (task.done) return;
+      if (task.time !== currentTimeStr) return;
+      var fireKey = todayKey + "-" + task.id;
+      if (firedToday[fireKey]) return; // sudah difire hari ini di menit ini
+      firedToday[fireKey] = true;
+      fireNotification(task);
+    });
+  }
+
+  function fireNotification(task) {
+    var title = "🔔 " + task.name;
+    var body = "Sudah waktunya! " + task.time + " · " + (catLabels[task.category] || "");
+    try {
+      var n = new Notification(title, {
+        body: body,
+        icon: "https://em-content.zobj.net/source/twitter/376/alarm-clock_23f0.png",
+        tag: "mulai2menit-" + task.id,
+        requireInteraction: false
+      });
+      n.onclick = function() {
+        window.focus();
+        n.close();
+      };
+    } catch (e) { console.warn("Gagal kirim notifikasi:", e); }
+  }
+
+  // Init: banner + reminder loop dimulai saat signed in
+  document.getElementById("reminderGrantBtn").addEventListener("click", function() {
+    requestNotificationPermission(function(granted) {
+      if (granted) updateReminderBanner();
+    });
+  });
+  document.getElementById("reminderDismissBtn").addEventListener("click", function() {
+    document.getElementById("reminderBanner").classList.remove("visible");
+  });
+
+  // ───── RECURRING TASKS MODAL ─────
+  document.getElementById("openRecurringModal").addEventListener("click", function() {
+    document.getElementById("recurringModal").classList.remove("hidden");
+    renderRecurringList();
+  });
+  document.getElementById("closeRecurring").addEventListener("click", function() { document.getElementById("recurringModal").classList.add("hidden"); });
+  document.getElementById("recurringModal").addEventListener("click", function(e) { if (e.target === this) this.classList.add("hidden"); });
+
+  document.getElementById("addRecurringBtn").addEventListener("click", addRecurringTask);
+  document.getElementById("newRecurringInput").addEventListener("keydown", function(e) { if (e.key === "Enter") addRecurringTask(); });
+
+  function addRecurringTask() {
+    var input = document.getElementById("newRecurringInput");
+    var name = input.value.trim();
+    if (!name) return;
+    var category = document.getElementById("newRecurringCategory").value;
+    var time = document.getElementById("newRecurringTime").value || "00:00";
+    recurringTasks.push({ id: "rt" + Date.now() + Math.floor(Math.random() * 1000), name: name, category: category, time: time });
+    input.value = "";
+    saveRecurringTasks();
+    renderRecurringList();
+    // Tugas rutin baru langsung muncul juga di hari yang sedang dilihat.
+    var injected = injectRecurringTasks();
+    if (injected) saveDay();
+    renderChecklist();
+  }
+
+  function deleteRecurringTask(id) {
+    recurringTasks = recurringTasks.filter(function(rt) { return rt.id !== id; });
+    saveRecurringTasks();
+    renderRecurringList();
+    // Hapus juga instance yang belum dicentang di hari yang sedang dilihat,
+    // supaya tidak nyangkut sebagai "Rutin" padahal sudah dihapus dari master.
+    var stableId = "recur-" + id;
+    var task = dayData.tasks.find(function(t) { return t.id === stableId; });
+    if (task && !task.done) {
+      dayData.tasks = dayData.tasks.filter(function(t) { return t.id !== stableId; });
+      saveDay();
+      renderChecklist();
+    }
+  }
+
+  function renderRecurringList() {
+    var container = document.getElementById("recurringListContainer");
+    if (!recurringTasks.length) {
+      container.innerHTML = '<div class="empty-state">Belum ada tugas rutin. Tambahkan tugas yang ingin kamu lakukan setiap hari di atas.</div>';
+      return;
+    }
+    var sorted = recurringTasks.slice().sort(function(a, b) { return a.time.localeCompare(b.time); });
+    var html = "";
+    sorted.forEach(function(rt) {
+      html += '<div class="mini-list-row">';
+      html += '<div class="mini-list-time">' + rt.time + '</div>';
+      html += '<div style="flex:1;">';
+      html += '<div class="mini-list-name">' + escapeHtml(rt.name) + '</div>';
+      html += '<span class="cat-pill ' + rt.category + '">' + catLabels[rt.category] + '</span>';
+      html += '</div>';
+      html += '<button class="mini-list-del" data-del-recur="' + rt.id + '">✕</button>';
+      html += '</div>';
+    });
+    container.innerHTML = html;
+    container.querySelectorAll("[data-del-recur]").forEach(function(el) {
+      el.addEventListener("click", function() { deleteRecurringTask(el.getAttribute("data-del-recur")); });
+    });
+  }
+
+  // ───── EVENT MODAL ─────
+  document.getElementById("openEventModal").addEventListener("click", function() {
+    document.getElementById("eventModal").classList.remove("hidden");
+    document.getElementById("newEventDate").value = dateKey(viewDate);
+    renderEventList();
+  });
+  document.getElementById("closeEvent").addEventListener("click", function() { document.getElementById("eventModal").classList.add("hidden"); });
+  document.getElementById("eventModal").addEventListener("click", function(e) { if (e.target === this) this.classList.add("hidden"); });
+
+  document.getElementById("addEventBtn").addEventListener("click", addEvent);
+
+  function addEvent() {
+    var title = document.getElementById("newEventTitle").value.trim();
+    var date = document.getElementById("newEventDate").value;
+    var note = document.getElementById("newEventNote").value.trim();
+    if (!title || !date) return;
+    events.push({ id: "ev" + Date.now() + Math.floor(Math.random() * 1000), title: title, date: date, note: note });
+    document.getElementById("newEventTitle").value = "";
+    document.getElementById("newEventNote").value = "";
+    saveEvents();
+    renderEventList();
+    renderEventBanner();
+  }
+
+  function deleteEvent(id) {
+    events = events.filter(function(ev) { return ev.id !== id; });
+    saveEvents();
+    renderEventList();
+    renderEventBanner();
+  }
+
+  function renderEventList() {
+    var container = document.getElementById("eventListContainer");
+    if (!events.length) {
+      container.innerHTML = '<div class="empty-state">Belum ada event. Tambahkan tanggal penting di atas.</div>';
+      return;
+    }
+    var sorted = events.slice().sort(function(a, b) { return a.date.localeCompare(b.date); });
+    var html = "";
+    sorted.forEach(function(ev) {
+      var parts = ev.date.split("-");
+      var d = new Date(parseInt(parts[0],10), parseInt(parts[1],10)-1, parseInt(parts[2],10));
+      var label = d.getDate() + " " + monthNames[d.getMonth()] + " " + d.getFullYear();
+      html += '<div class="mini-list-row">';
+      html += '<div style="flex:1;">';
+      html += '<div class="mini-list-name">' + escapeHtml(ev.title) + '</div>';
+      html += '<div class="mini-list-sub">📅 ' + label + (ev.note ? ' &middot; ' + escapeHtml(ev.note) : '') + '</div>';
+      html += '</div>';
+      html += '<button class="mini-list-del" data-del-event="' + ev.id + '">✕</button>';
+      html += '</div>';
+    });
+    container.innerHTML = html;
+    container.querySelectorAll("[data-del-event]").forEach(function(el) {
+      el.addEventListener("click", function() { deleteEvent(el.getAttribute("data-del-event")); });
+    });
+  }
+
+  // Banner di halaman "Tugas hari ini" untuk event yang jatuh pada viewDate.
+  function renderEventBanner() {
+    var container = document.getElementById("eventBanner");
+    var dk = dateKey(viewDate);
+    var todaysEvents = events.filter(function(ev) { return ev.date === dk; });
+    if (!todaysEvents.length) { container.innerHTML = ""; return; }
+    var html = "";
+    todaysEvents.forEach(function(ev) {
+      html += '<div class="event-banner-item">';
+      html += '<div class="event-banner-icon">🎉</div>';
+      html += '<div style="flex:1;">';
+      html += '<div class="event-banner-title">' + escapeHtml(ev.title) + '</div>';
+      if (ev.note) html += '<div class="event-banner-note">' + escapeHtml(ev.note) + '</div>';
+      html += '</div>';
+      html += '<button class="event-banner-del" data-del-banner-event="' + ev.id + '">✕</button>';
+      html += '</div>';
+    });
+    container.innerHTML = html;
+    container.querySelectorAll("[data-del-banner-event]").forEach(function(el) {
+      el.addEventListener("click", function() { deleteEvent(el.getAttribute("data-del-banner-event")); });
+    });
+  }
+
+  function hasEventOnDay(dObj) {
+    var dk = dateKey(dObj);
+    return events.some(function(ev) { return ev.date === dk; });
+  }
+
   // ───── RENDER CHECKLIST ─────
   function renderChecklist() {
     var container = document.getElementById("taskListContainer");
@@ -901,13 +1492,18 @@
     var html = "";
     sorted.forEach(function(task) {
       var pillClass = { ui: "ui", ni: "ni", uni: "uni", nuni: "nuni" }[task.category];
+      var isReminderOn = isReminderEnabled(task.id);
+      var bellClass = "task-bell" + (isReminderOn ? " bell-on" : "");
+      var bellTitle = isReminderOn ? "Reminder aktif — klik untuk nonaktifkan" : "Aktifkan reminder untuk tugas ini";
       html += '<div class="task-row">';
       html += '<div class="task-check' + (task.done ? ' checked' : '') + '" data-task="' + task.id + '">' + (task.done ? '✓' : '') + '</div>';
       html += '<div class="task-time">' + task.time + '</div>';
       html += '<div style="flex:1;">';
       html += '<div class="task-name' + (task.done ? ' done' : '') + '">' + escapeHtml(task.name) + '</div>';
       html += '<span class="cat-pill ' + pillClass + '">' + catLabels[task.category] + '</span>';
+      if (task.recurring) html += '<span class="recur-badge">🔁 Rutin</span>';
       html += '</div>';
+      html += '<button class="' + bellClass + '" data-bell="' + task.id + '" title="' + bellTitle + '">' + (isReminderOn ? '🔔' : '🔕') + '</button>';
       html += '<button class="task-del" data-del="' + task.id + '">✕</button>';
       html += '</div>';
     });
@@ -918,6 +1514,9 @@
     });
     container.querySelectorAll(".task-del").forEach(function(el) {
       el.addEventListener("click", function() { deleteTask(el.getAttribute("data-del")); });
+    });
+    container.querySelectorAll(".task-bell").forEach(function(el) {
+      el.addEventListener("click", function() { toggleReminder(el.getAttribute("data-bell")); });
     });
   }
 
@@ -956,9 +1555,17 @@
 
       if (dayTasks && dayTasks.length > 0) {
         var done = dayTasks.filter(function(t) { return t.done; }).length;
-        percentages.push({ day: d, pct: Math.round((done / dayTasks.length) * 100), hasData: true });
+        var recurTasks = dayTasks.filter(function(t) { return t.recurring; });
+        var addTasks = dayTasks.filter(function(t) { return !t.recurring; });
+        var recurDone = recurTasks.filter(function(t) { return t.done; }).length;
+        var addDone = addTasks.filter(function(t) { return t.done; }).length;
+        percentages.push({
+          day: d, pct: Math.round((done / dayTasks.length) * 100), hasData: true,
+          recurPct: recurTasks.length ? Math.round((recurDone / recurTasks.length) * 100) : null,
+          addPct: addTasks.length ? Math.round((addDone / addTasks.length) * 100) : null
+        });
       } else {
-        percentages.push({ day: d, pct: 0, hasData: false });
+        percentages.push({ day: d, pct: 0, hasData: false, recurPct: null, addPct: null });
       }
     }
     return percentages;
@@ -981,6 +1588,15 @@
     document.getElementById("ringPctText").textContent = clamped + "%";
   }
 
+  function updateBreakdownBars(recurAvg, addAvg, totalAvg) {
+    document.getElementById("breakdownRecurFill").style.width = recurAvg + "%";
+    document.getElementById("breakdownRecurPct").textContent = recurAvg + "%";
+    document.getElementById("breakdownAddFill").style.width = addAvg + "%";
+    document.getElementById("breakdownAddPct").textContent = addAvg + "%";
+    document.getElementById("breakdownTotalFill").style.width = totalAvg + "%";
+    document.getElementById("breakdownTotalPct").textContent = totalAvg + "%";
+  }
+
   function drawProgressChart(percentages, year, month) {
     var withData = percentages.filter(function(p) { return p.hasData; });
     var avg = withData.length ? Math.round(withData.reduce(function(s, p) { return s + p.pct; }, 0) / withData.length) : 0;
@@ -990,6 +1606,12 @@
     document.getElementById("statBest").textContent = best + "%";
     document.getElementById("statActiveDays").textContent = withData.length;
     updateRingChart(avg);
+
+    var withRecur = percentages.filter(function(p) { return p.recurPct !== null; });
+    var withAdd = percentages.filter(function(p) { return p.addPct !== null; });
+    var recurAvg = withRecur.length ? Math.round(withRecur.reduce(function(s, p) { return s + p.recurPct; }, 0) / withRecur.length) : 0;
+    var addAvg = withAdd.length ? Math.round(withAdd.reduce(function(s, p) { return s + p.addPct; }, 0) / withAdd.length) : 0;
+    updateBreakdownBars(recurAvg, addAvg, avg);
 
     var html = "";
     percentages.forEach(function(p) {
@@ -1115,7 +1737,8 @@
       if (isSameDay(dObj, today)) classes += " is-today";
       if (selectedDate && isSameDay(dObj, selectedDate)) classes += " is-selected";
       if (markDots && hasLocalDataOnDay(dObj)) classes += " has-data";
-      html += '<button type="button" class="' + classes + '" data-day="' + d + '">' + d + '</button>';
+      var eventBadge = hasEventOnDay(dObj) ? '<span class="mc-event-badge">🎉</span>' : '';
+      html += '<button type="button" class="' + classes + '" data-day="' + d + '">' + d + eventBadge + '</button>';
     }
     container.innerHTML = html;
   }

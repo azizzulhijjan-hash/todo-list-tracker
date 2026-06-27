@@ -991,57 +991,79 @@
     renderChecklist();
 
     // Sinkronkan dari Firestore di belakang layar.
-    // PENTING: jangan overwrite mentah — merge dengan cara memprioritaskan
-    // versi yang lebih lengkap (lebih banyak task non-recurring), supaya
-    // task tambahan yang baru ditambah user tidak hilang karena race condition
-    // antara inject recurring + save.
+    // Gunakan UNION berbasis ID: gabungkan semua task dari server dan lokal,
+    // tidak ada yang dibuang. Untuk task yang ada di keduanya, status done
+    // dari server dimenangkan (untuk sync cross-device). Task yang hanya ada
+    // di lokal (baru ditambah belum sempat sync) tetap dipertahankan.
+    // Khusus task recurring: deduplicate juga berdasarkan nama supaya
+    // tidak muncul ganda jika ID di server berbeda dari inject lokal.
     var raw = await backgroundSyncFromServer(firestorePath(currentUser, dk));
     if (raw && dk === dateKey(viewDate)) {
       try {
         var serverData = JSON.parse(raw);
-        var serverNonRecur = (serverData.tasks || []).filter(function(t) { return !t.recurring; });
-        var localNonRecur = dayData.tasks.filter(function(t) { return !t.recurring; });
+        var serverTasks = serverData.tasks || [];
+        var localTasks = dayData.tasks || [];
 
-        // Pilih sumber yang lebih lengkap untuk task non-recurring.
-        // Jika server punya lebih banyak atau sama → pakai server sebagai base.
-        // Jika lokal punya lebih banyak (user baru tambah) → pakai lokal sebagai base.
-        var baseData;
-        if (serverNonRecur.length >= localNonRecur.length) {
-          baseData = serverData;
-        } else {
-          // Lokal punya task yang belum sempat sync ke server — pertahankan lokal,
-          // tapi ambil status done dari server kalau ada (untuk cross-device sync).
-          var serverDoneMap = {};
-          serverData.tasks.forEach(function(t) { serverDoneMap[t.id] = t.done; });
-          baseData = { tasks: dayData.tasks.map(function(t) {
-            return (t.id in serverDoneMap) ? Object.assign({}, t, { done: serverDoneMap[t.id] }) : t;
-          })};
-        }
+        // Map semua task lokal berdasarkan ID
+        var merged = {};
+        localTasks.forEach(function(t) { merged[t.id] = t; });
 
-        dayData = baseData;
+        // Map nama recurring yang sudah ada di lokal (untuk deteksi duplikat)
+        var localRecurNames = {};
+        localTasks.forEach(function(t) {
+          if (t.recurring) localRecurNames[t.name.toLowerCase().trim()] = t.id;
+        });
+
+        serverTasks.forEach(function(st) {
+          if (merged[st.id]) {
+            // Task sama ID di lokal dan server → update done saja
+            merged[st.id] = Object.assign({}, merged[st.id], { done: st.done });
+          } else if (st.recurring) {
+            // Task recurring dari server — cek apakah sudah ada di lokal by nama
+            var nameKey = st.name.toLowerCase().trim();
+            if (localRecurNames[nameKey]) {
+              // Sudah ada recurring dengan nama sama → update done di entry lokal
+              var localId = localRecurNames[nameKey];
+              merged[localId] = Object.assign({}, merged[localId], { done: st.done });
+            } else {
+              // Recurring baru dari server yang belum ada di lokal
+              merged[st.id] = st;
+            }
+          } else {
+            // Task non-recurring hanya ada di server (dari device lain) → tambahkan
+            merged[st.id] = st;
+          }
+        });
+
+        dayData = { tasks: Object.values(merged) };
         try { localStorage.setItem(localKey(currentUser, dk), JSON.stringify(dayData)); } catch (e3) {}
         var injected = injectRecurringTasks();
-        if (injected) saveDay(); // save hanya jika recurring baru ditambahkan
+        if (injected) saveDay();
         renderChecklist();
       } catch (eParse) { console.warn("Gagal parse data server:", eParse); }
     }
   }
 
   // Tambahkan tugas dari master recurring list ke dayData.tasks hari ini,
-  // kalau belum ada (dicek lewat id stabil "recur-<id>"). Return true jika ada
-  // perubahan. Caller yang bertanggung jawab untuk memanggil saveDay() jika perlu,
-  // supaya tidak terjadi race condition saat sync dari server sedang berjalan.
+  // kalau belum ada. Cek via ID stabil "recur-<rtId>" DAN via nama task
+  // (sebagai fallback supaya tidak muncul duplikat jika ID berubah).
   function injectRecurringTasks() {
     if (!recurringTasks.length) return false;
     var existingIds = {};
-    dayData.tasks.forEach(function(t) { existingIds[t.id] = true; });
+    var existingRecurNames = {};
+    dayData.tasks.forEach(function(t) {
+      existingIds[t.id] = true;
+      if (t.recurring) existingRecurNames[t.name.toLowerCase().trim()] = true;
+    });
     var changed = false;
     recurringTasks.forEach(function(rt) {
       var stableId = "recur-" + rt.id;
-      if (!existingIds[stableId]) {
-        dayData.tasks.push({ id: stableId, name: rt.name, category: rt.category, time: rt.time, done: false, recurring: true });
-        changed = true;
-      }
+      var nameKey = rt.name.toLowerCase().trim();
+      // Skip jika sudah ada by ID atau by nama (cegah duplikat)
+      if (existingIds[stableId] || existingRecurNames[nameKey]) return;
+      dayData.tasks.push({ id: stableId, name: rt.name, category: rt.category, time: rt.time, done: false, recurring: true });
+      existingRecurNames[nameKey] = true;
+      changed = true;
     });
     return changed;
   }
@@ -1164,7 +1186,8 @@
     var time = document.getElementById("newTaskTime").value || "00:00";
     dayData.tasks.push({
       id: "t" + Date.now() + Math.floor(Math.random() * 1000),
-      name: name, category: category, time: time, done: false
+      name: name, category: category, time: time, done: false,
+      createdAt: Date.now()
     });
     input.value = "";
     saveDay();

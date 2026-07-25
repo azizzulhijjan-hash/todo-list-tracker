@@ -287,6 +287,70 @@
   .task-bell:hover { background: var(--border-soft); }
   .task-bell.bell-on { background: var(--gold-light); }
 
+  /* ── READING TRACKER OVERLAY ── */
+  .reading-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 90; overflow-y: auto; }
+  .reading-overlay.hidden { display: none !important; }
+  .reading-inner { max-width: 760px; margin: 0 auto; padding: 24px 20px 48px; }
+  .reading-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
+  .reading-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--purple); margin-bottom: 4px; }
+  .reading-title { font-size: 24px; font-weight: 800; color: var(--text); margin: 0; }
+  .reading-close { width: 36px; height: 36px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--border-soft); cursor: pointer; font-size: 16px; color: var(--text-soft); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .reading-close:hover { background: var(--border); }
+  .reading-desc { font-size: 13px; color: var(--text-soft); line-height: 1.6; margin-bottom: 28px; }
+  .reading-section-title { font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 14px; }
+
+  /* Kartu 3 buku */
+  .book-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 32px; }
+  @media (max-width: 680px) { .book-cards { grid-template-columns: 1fr; } }
+  .book-card { background: var(--card); border-radius: 18px; padding: 18px; border: 1.5px solid var(--border-soft); display: flex; flex-direction: column; gap: 10px; position: relative; }
+  .book-card-session { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--purple); margin-bottom: 2px; }
+  .book-card-title { font-size: 15px; font-weight: 800; color: var(--text); line-height: 1.3; }
+  .book-card-author { font-size: 12px; color: var(--text-muted); }
+  .book-card-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 160px; border: 2px dashed var(--border); border-radius: 16px; cursor: pointer; background: transparent; width: 100%; padding: 20px; font-family: inherit; transition: border-color 0.15s; }
+  .book-card-empty:hover { border-color: var(--purple); }
+  .book-card-empty .empty-icon { font-size: 28px; }
+  .book-card-empty .empty-label { font-size: 13px; font-weight: 700; color: var(--text-soft); }
+  .book-card-empty .empty-sub { font-size: 11px; color: var(--text-muted); }
+
+  /* Progress ring mini per kartu */
+  .book-ring-row { display: flex; align-items: center; gap: 12px; }
+  .book-ring-wrap { flex-shrink: 0; }
+  .book-ring-svg { width: 56px; height: 56px; transform: rotate(-90deg); }
+  .book-ring-track { fill: none; stroke: var(--border); stroke-width: 5; }
+  .book-ring-fill { fill: none; stroke: var(--purple); stroke-width: 5; stroke-linecap: round; transition: stroke-dasharray 0.4s ease; }
+  .book-ring-pct { font-size: 11px; font-weight: 800; fill: var(--text); transform: rotate(90deg); transform-origin: 28px 28px; font-family: 'Plus Jakarta Sans', sans-serif; }
+  .book-ring-info { flex: 1; }
+  .book-ring-pages { font-size: 12px; font-weight: 700; color: var(--text); }
+  .book-ring-remain { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  /* Status badge */
+  .book-status { font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 20px; align-self: flex-start; }
+  .book-status.on-track { background: var(--teal-light); color: var(--teal); }
+  .book-status.behind { background: var(--red-light); color: var(--red); }
+  .book-status.ahead { background: var(--gold-light); color: var(--gold); }
+  .book-status.done { background: var(--purple-light); color: var(--purple); }
+  .book-status.no-target { background: var(--border-soft); color: var(--text-muted); }
+
+  /* Target info */
+  .book-target-row { font-size: 11px; color: var(--text-soft); display: flex; align-items: center; gap: 6px; }
+  .book-target-row strong { color: var(--text); }
+
+  /* Tombol aksi per kartu */
+  .book-card-actions { display: flex; gap: 6px; margin-top: 2px; }
+  .book-card-btn { flex: 1; border: 1.5px solid var(--border); background: var(--border-soft); border-radius: 9px; padding: 8px 4px; font-size: 11px; font-weight: 700; color: var(--text-soft); cursor: pointer; font-family: inherit; transition: all 0.15s; }
+  .book-card-btn:hover { background: var(--border); color: var(--text); }
+  .book-card-btn.primary { background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: var(--on-accent); border-color: transparent; }
+  .book-card-btn.primary:hover { opacity: 0.9; }
+
+  /* Kalender konsistensi baca */
+  .reading-monthly { background: var(--card); border-radius: 18px; padding: 20px; border: 1.5px solid var(--border-soft); }
+  .reading-calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .reading-cal-day { aspect-ratio: 1; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--text-muted); background: var(--border-soft); cursor: default; }
+  .reading-cal-day.has-read { background: var(--purple-light); color: var(--purple); }
+  .reading-cal-day.has-read.all-sessions { background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: var(--on-accent); }
+  .reading-cal-day.is-today { outline: 2px solid var(--purple); outline-offset: 1px; }
+  .reading-cal-weekday { font-size: 9px; font-weight: 800; color: var(--text-muted); text-align: center; padding-bottom: 4px; text-transform: uppercase; }
+
   /* ── REMINDER PERMISSION BANNER ── */
   #reminderBanner { display: none; }
   #reminderBanner.visible { display: flex; align-items: center; gap: 10px; background: var(--gold-light); border: 1px solid var(--gold); border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; font-size: 13px; font-weight: 600; color: var(--text); }
@@ -560,6 +624,77 @@
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════════════════════
+     READING TRACKER OVERLAY
+     ══════════════════════════════════════════════════════════ -->
+<div class="reading-overlay hidden" id="readingOverlay">
+  <div class="reading-inner">
+
+    <div class="reading-header">
+      <div>
+        <p class="reading-eyebrow">📚 Reading Tracker</p>
+        <h1 class="reading-title">Buku yang sedang dibaca</h1>
+      </div>
+      <button class="reading-close" id="closeReading">✕</button>
+    </div>
+
+    <p class="reading-desc">Pantau progress 3 buku harianmu — pagi, siang, dan malam. Input halaman terakhir yang kamu baca setiap hari, dan sistem akan menghitung otomatis apakah kamu on-track menuju target selesai.</p>
+
+    <!-- 3 kartu buku: Pagi / Siang / Malam -->
+    <div class="book-cards" id="bookCards"></div>
+
+    <!-- Progress bulanan -->
+    <div class="reading-monthly">
+      <h2 class="reading-section-title">📊 Konsistensi baca bulan ini</h2>
+      <div class="reading-calendar" id="readingCalendar"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal tambah/edit buku -->
+<div class="modal-overlay hidden" id="bookEditModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--purple);margin-bottom:4px;" id="bookEditEyebrow">Sesi Pagi</p>
+        <h2 id="bookEditTitle">Tambah buku</h2>
+      </div>
+      <button class="modal-close" id="closeBookEdit">✕</button>
+    </div>
+    <div class="event-form-row">
+      <input type="text" id="bookTitleInput" placeholder="Judul buku...">
+      <input type="text" id="bookAuthorInput" placeholder="Penulis (opsional)">
+      <div style="display:flex;gap:8px;">
+        <input type="number" id="bookTotalPages" placeholder="Total halaman" min="1" style="flex:1;">
+        <input type="number" id="bookCurrentPage" placeholder="Halaman sekarang" min="0" style="flex:1;">
+      </div>
+      <label style="font-size:12px;font-weight:700;color:var(--text-soft);">Target selesai</label>
+      <input type="date" id="bookDeadline">
+      <button id="saveBookBtn">Simpan buku</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal input halaman harian -->
+<div class="modal-overlay hidden" id="pageLogModal">
+  <div class="modal" style="max-width:380px;">
+    <div class="modal-header">
+      <div>
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--purple);margin-bottom:4px;" id="pageLogEyebrow">Update progress</p>
+        <h2 id="pageLogBookTitle">Judul buku</h2>
+      </div>
+      <button class="modal-close" id="closePageLog">✕</button>
+    </div>
+    <p style="font-size:13px;color:var(--text-soft);margin-bottom:16px;" id="pageLogCurrent"></p>
+    <div class="event-form-row">
+      <label style="font-size:12px;font-weight:700;color:var(--text-soft);">Hari ini baca sampai halaman:</label>
+      <input type="number" id="pageLogInput" min="0" placeholder="Nomor halaman...">
+      <button id="savePageLogBtn">Simpan</button>
+    </div>
+  </div>
+</div>
+
 <div class="name-gate-overlay" id="nameGate">
   <div class="name-gate">
     <img src="data:image/png;base64,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" alt="Logo Mulai 2 Menit" class="gate-logo">
@@ -585,6 +720,7 @@
     <button class="theme-toggle" id="themeToggle" title="Ganti tampilan" aria-label="Ganti tampilan">
       <span class="toggle-knob" id="themeToggleKnob">☀️</span>
     </button>
+    <button class="btn-ghost" id="openReading">📚 Buku</button>
     <button class="btn-ghost" id="openGuide">📖 Cara pakai</button>
     <button class="btn-ghost hidden" id="switchUserBtn">Keluar</button>
   </div>
@@ -898,6 +1034,7 @@
     if (user.photoURL) { photoEl.src = user.photoURL; photoEl.style.display = "block"; }
     loadRecurringAndEvents().then(function() {
       loadDay();
+      loadReadingData();
       startReminderLoop();
       updateReminderBanner();
     });
@@ -1692,6 +1829,326 @@
 
     if (changed) drawProgressChart(percentages, year, month);
   }
+
+  // ═══════════════════════════════════════════════════════════════
+  // READING TRACKER
+  // ═══════════════════════════════════════════════════════════════
+  // Data: { pagi, siang, malam } masing-masing = {
+  //   title, author, totalPages, currentPage, deadline, logs: { "YYYY-MM-DD": pageNum }
+  // }
+  // Disimpan di Firestore path: users/{uid}/settings/reading
+  // + localStorage backup seperti fitur lain
+
+  var SESSIONS = ["pagi", "siang", "malam"];
+  var SESSION_LABELS = { pagi: "🌅 Pagi", siang: "☀️ Siang / Sore", malam: "🌙 Malam" };
+  var SESSION_COLORS = { pagi: "var(--gold)", siang: "var(--teal)", malam: "var(--purple)" };
+  var readingData = { pagi: null, siang: null, malam: null };
+  var editingSession = null; // sesi yang sedang diedit
+  var pageLogSession = null; // sesi yang sedang di-log halaman
+
+  function readingFirestorePath(uid) { return "users/" + uid + "/settings/reading"; }
+  function readingLocalKey(uid) { return "mulai2menit-reading:" + uid; }
+
+  async function loadReadingData() {
+    try {
+      var local = localStorage.getItem(readingLocalKey(currentUser));
+      if (local) readingData = JSON.parse(local);
+    } catch (e) {}
+    var raw = await backgroundSyncFromServer(readingFirestorePath(currentUser));
+    if (raw) {
+      try {
+        var server = JSON.parse(raw);
+        readingData = server;
+        localStorage.setItem(readingLocalKey(currentUser), raw);
+      } catch (e) {}
+    }
+  }
+
+  function saveReadingData() {
+    try { localStorage.setItem(readingLocalKey(currentUser), JSON.stringify(readingData)); } catch (e) {}
+    backgroundSyncToServer(readingFirestorePath(currentUser), readingData);
+  }
+
+  // ── Buka / tutup overlay ──
+  document.getElementById("openReading").addEventListener("click", function() {
+    if (!currentUser) return;
+    document.getElementById("readingOverlay").classList.remove("hidden");
+    loadReadingData().then(function() { renderReadingTracker(); });
+  });
+  document.getElementById("closeReading").addEventListener("click", function() {
+    document.getElementById("readingOverlay").classList.add("hidden");
+  });
+
+  // ── Render utama ──
+  function renderReadingTracker() {
+    renderBookCards();
+    renderReadingCalendar();
+  }
+
+  function renderBookCards() {
+    var container = document.getElementById("bookCards");
+    var html = "";
+    SESSIONS.forEach(function(sess) {
+      var book = readingData[sess];
+      if (!book || !book.title) {
+        // Kartu kosong — ajak tambah buku
+        html += '<button class="book-card-empty" data-add-sess="' + sess + '">' +
+          '<span class="empty-icon">📖</span>' +
+          '<span class="empty-label">' + SESSION_LABELS[sess] + '</span>' +
+          '<span class="empty-sub">Tap untuk tambah buku</span>' +
+          '</button>';
+      } else {
+        html += buildBookCard(sess, book);
+      }
+    });
+    container.innerHTML = html;
+
+    // Event listeners
+    container.querySelectorAll("[data-add-sess]").forEach(function(el) {
+      el.addEventListener("click", function() { openBookEdit(el.getAttribute("data-add-sess")); });
+    });
+    container.querySelectorAll("[data-log-sess]").forEach(function(el) {
+      el.addEventListener("click", function() { openPageLog(el.getAttribute("data-log-sess")); });
+    });
+    container.querySelectorAll("[data-edit-sess]").forEach(function(el) {
+      el.addEventListener("click", function() { openBookEdit(el.getAttribute("data-edit-sess")); });
+    });
+    container.querySelectorAll("[data-done-sess]").forEach(function(el) {
+      el.addEventListener("click", function() { markBookDone(el.getAttribute("data-done-sess")); });
+    });
+  }
+
+  function buildBookCard(sess, book) {
+    var total = parseInt(book.totalPages) || 0;
+    var current = parseInt(book.currentPage) || 0;
+    var pct = total > 0 ? Math.min(100, Math.round((current / total) * 100)) : 0;
+    var remaining = Math.max(0, total - current);
+    var RING_R = 23;
+    var RING_C = 2 * Math.PI * RING_R;
+    var fillLen = (pct / 100) * RING_C;
+
+    // Hitung status on-track / behind / ahead
+    var status = computeBookStatus(book);
+    var statusHtml = '<span class="book-status ' + status.cls + '">' + status.label + '</span>';
+
+    // Target harian yang diperlukan
+    var targetInfo = computeTargetInfo(book);
+
+    var html = '<div class="book-card">';
+    html += '<div>';
+    html += '<div class="book-card-session">' + SESSION_LABELS[sess] + '</div>';
+    html += '<div class="book-card-title">' + escapeHtml(book.title) + '</div>';
+    if (book.author) html += '<div class="book-card-author">' + escapeHtml(book.author) + '</div>';
+    html += '</div>';
+
+    // Ring + info halaman
+    html += '<div class="book-ring-row">';
+    html += '<div class="book-ring-wrap"><svg class="book-ring-svg" viewBox="0 0 56 56">';
+    html += '<circle cx="28" cy="28" r="' + RING_R + '" class="book-ring-track"></circle>';
+    html += '<circle cx="28" cy="28" r="' + RING_R + '" class="book-ring-fill" style="stroke:' + SESSION_COLORS[sess] + ';stroke-dasharray:' + (pct > 0 ? fillLen + ' ' + RING_C : '0 ' + RING_C) + ';stroke-opacity:' + (pct > 0 ? 1 : 0) + '"></circle>';
+    html += '<text x="28" y="32" text-anchor="middle" class="book-ring-pct">' + pct + '%</text>';
+    html += '</svg></div>';
+    html += '<div class="book-ring-info">';
+    html += '<div class="book-ring-pages">hal. ' + current + ' / ' + total + '</div>';
+    html += '<div class="book-ring-remain">' + remaining + ' hal. tersisa</div>';
+    if (targetInfo) html += '<div class="book-ring-remain" style="margin-top:4px;color:var(--purple);font-weight:700;">' + targetInfo + '</div>';
+    html += '</div></div>';
+
+    html += statusHtml;
+
+    if (book.deadline) {
+      var parts = book.deadline.split("-");
+      var dl = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+      var dlLabel = dl.getDate() + " " + monthNames[dl.getMonth()] + " " + dl.getFullYear();
+      html += '<div class="book-target-row">🎯 Target selesai: <strong>' + dlLabel + '</strong></div>';
+    }
+
+    html += '<div class="book-card-actions">';
+    html += '<button class="book-card-btn primary" data-log-sess="' + sess + '">📝 Update halaman</button>';
+    html += '<button class="book-card-btn" data-edit-sess="' + sess + '">✏️</button>';
+    html += '</div>';
+    html += '</div>';
+    return html;
+  }
+
+  function computeBookStatus(book) {
+    var total = parseInt(book.totalPages) || 0;
+    var current = parseInt(book.currentPage) || 0;
+    if (current >= total && total > 0) return { cls: "done", label: "✅ Selesai!" };
+    if (!book.deadline) return { cls: "no-target", label: "📖 Sedang dibaca" };
+
+    var parts = book.deadline.split("-");
+    var deadline = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+    var now = new Date();
+    var daysLeft = Math.max(0, Math.ceil((deadline - now) / (1000 * 60 * 60 * 24)));
+    if (daysLeft === 0) return { cls: "behind", label: "⏰ Deadline hari ini!" };
+
+    var remaining = total - current;
+    var neededPerDay = remaining / daysLeft;
+
+    // Hitung pace aktual dari log
+    var logs = book.logs || {};
+    var logDates = Object.keys(logs).sort();
+    var actualPace = 0;
+    if (logDates.length >= 2) {
+      var firstPage = parseInt(logs[logDates[0]]) || 0;
+      var lastPage = parseInt(logs[logDates[logDates.length - 1]]) || current;
+      var daySpan = Math.max(1, logDates.length);
+      actualPace = (lastPage - firstPage) / daySpan;
+    }
+
+    if (actualPace > 0) {
+      if (actualPace >= neededPerDay * 1.1) return { cls: "ahead", label: "🚀 Ahead of schedule" };
+      if (actualPace >= neededPerDay * 0.8) return { cls: "on-track", label: "✅ On track" };
+      return { cls: "behind", label: "⚠️ Behind schedule" };
+    }
+
+    return { cls: "on-track", label: "📅 " + daysLeft + " hari tersisa" };
+  }
+
+  function computeTargetInfo(book) {
+    var total = parseInt(book.totalPages) || 0;
+    var current = parseInt(book.currentPage) || 0;
+    if (!book.deadline || current >= total) return null;
+    var parts = book.deadline.split("-");
+    var deadline = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+    var daysLeft = Math.max(1, Math.ceil((deadline - new Date()) / (1000 * 60 * 60 * 24)));
+    var needed = Math.ceil((total - current) / daysLeft);
+    return needed + " hal/hari untuk on-track";
+  }
+
+  function markBookDone(sess) {
+    if (!readingData[sess]) return;
+    readingData[sess].currentPage = readingData[sess].totalPages;
+    var today = dateKey(new Date());
+    if (!readingData[sess].logs) readingData[sess].logs = {};
+    readingData[sess].logs[today] = readingData[sess].totalPages;
+    saveReadingData();
+    renderBookCards();
+    renderReadingCalendar();
+  }
+
+  // ── Kalender konsistensi ──
+  function renderReadingCalendar() {
+    var container = document.getElementById("readingCalendar");
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = now.getMonth();
+    var dim = daysInMonth(year, month);
+    var firstDow = new Date(year, month, 1).getDay();
+
+    var weekdays = ["Min","Sen","Sel","Rab","Kam","Jum","Sab"];
+    var html = weekdays.map(function(w) { return '<div class="reading-cal-weekday">' + w + '</div>'; }).join("");
+
+    // Padding awal
+    for (var i = 0; i < firstDow; i++) html += '<div></div>';
+
+    for (var d = 1; d <= dim; d++) {
+      var dObj = new Date(year, month, d);
+      var dk = dateKey(dObj);
+      var sessRead = SESSIONS.filter(function(s) {
+        return readingData[s] && readingData[s].logs && readingData[s].logs[dk] !== undefined;
+      });
+      var cls = "reading-cal-day";
+      if (sessRead.length > 0) cls += " has-read";
+      if (sessRead.length === 3) cls += " all-sessions";
+      if (isSameDay(dObj, now)) cls += " is-today";
+      var title = sessRead.length > 0 ? sessRead.length + " sesi" : "";
+      html += '<div class="' + cls + '" title="' + title + '">' + d + '</div>';
+    }
+    container.innerHTML = html;
+  }
+
+  // ── Modal tambah/edit buku ──
+  document.getElementById("closeBookEdit").addEventListener("click", function() {
+    document.getElementById("bookEditModal").classList.add("hidden");
+  });
+  document.getElementById("bookEditModal").addEventListener("click", function(e) {
+    if (e.target === this) this.classList.add("hidden");
+  });
+
+  function openBookEdit(sess) {
+    editingSession = sess;
+    var book = readingData[sess] || {};
+    document.getElementById("bookEditEyebrow").textContent = SESSION_LABELS[sess];
+    document.getElementById("bookEditTitle").textContent = book.title ? "Edit buku" : "Tambah buku";
+    document.getElementById("bookTitleInput").value = book.title || "";
+    document.getElementById("bookAuthorInput").value = book.author || "";
+    document.getElementById("bookTotalPages").value = book.totalPages || "";
+    document.getElementById("bookCurrentPage").value = book.currentPage || "";
+    // Default deadline: 3 bulan dari sekarang
+    if (book.deadline) {
+      document.getElementById("bookDeadline").value = book.deadline;
+    } else {
+      var def = new Date();
+      def.setMonth(def.getMonth() + 3);
+      document.getElementById("bookDeadline").value = dateKey(def);
+    }
+    document.getElementById("bookEditModal").classList.remove("hidden");
+    document.getElementById("bookTitleInput").focus();
+  }
+
+  document.getElementById("saveBookBtn").addEventListener("click", function() {
+    var title = document.getElementById("bookTitleInput").value.trim();
+    if (!title) { document.getElementById("bookTitleInput").focus(); return; }
+    var totalPages = parseInt(document.getElementById("bookTotalPages").value) || 0;
+    var currentPage = parseInt(document.getElementById("bookCurrentPage").value) || 0;
+    var existing = readingData[editingSession] || {};
+    readingData[editingSession] = {
+      title: title,
+      author: document.getElementById("bookAuthorInput").value.trim(),
+      totalPages: totalPages,
+      currentPage: Math.min(currentPage, totalPages),
+      deadline: document.getElementById("bookDeadline").value,
+      logs: existing.logs || {}
+    };
+    saveReadingData();
+    document.getElementById("bookEditModal").classList.add("hidden");
+    renderReadingTracker();
+  });
+
+  // ── Modal update halaman harian ──
+  document.getElementById("closePageLog").addEventListener("click", function() {
+    document.getElementById("pageLogModal").classList.add("hidden");
+  });
+  document.getElementById("pageLogModal").addEventListener("click", function(e) {
+    if (e.target === this) this.classList.add("hidden");
+  });
+
+  function openPageLog(sess) {
+    pageLogSession = sess;
+    var book = readingData[sess];
+    if (!book) return;
+    document.getElementById("pageLogEyebrow").textContent = SESSION_LABELS[sess];
+    document.getElementById("pageLogBookTitle").textContent = escapeHtml(book.title);
+    document.getElementById("pageLogCurrent").textContent =
+      "Halaman terakhir yang tercatat: " + (book.currentPage || 0) + " dari " + (book.totalPages || 0);
+    document.getElementById("pageLogInput").value = book.currentPage || "";
+    document.getElementById("pageLogModal").classList.remove("hidden");
+    document.getElementById("pageLogInput").focus();
+  }
+
+  document.getElementById("savePageLogBtn").addEventListener("click", function() {
+    var newPage = parseInt(document.getElementById("pageLogInput").value);
+    if (isNaN(newPage) || newPage < 0) return;
+    var book = readingData[pageLogSession];
+    if (!book) return;
+    newPage = Math.min(newPage, parseInt(book.totalPages) || newPage);
+    book.currentPage = newPage;
+    if (!book.logs) book.logs = {};
+    book.logs[dateKey(new Date())] = newPage;
+    saveReadingData();
+    document.getElementById("pageLogModal").classList.add("hidden");
+    renderReadingTracker();
+  });
+
+  // Enter key untuk simpan
+  document.getElementById("pageLogInput").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") document.getElementById("savePageLogBtn").click();
+  });
+  document.getElementById("bookTitleInput").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") document.getElementById("saveBookBtn").click();
+  });
 
   function escapeHtml(str) {
     var div = document.createElement("div");

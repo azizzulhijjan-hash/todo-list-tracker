@@ -139,15 +139,28 @@
     display: flex; flex-direction: column; align-items: center; padding: 24px 16px 60px;
   }
 
-  .app-header { width: 100%; max-width: 760px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-  .app-logo { display: flex; align-items: center; gap: 8px; }
-  .app-logo .brand-logo { width: 36px; height: 36px; border-radius: 10px; object-fit: cover; box-shadow: 0 2px 8px var(--logo-shadow); transition: filter 0.25s ease; }
+  .app-header { width: 100%; max-width: 760px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 8px; flex-wrap: nowrap; overflow: hidden; }
+  .app-logo { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .app-logo .brand-logo { width: 32px; height: 32px; border-radius: 10px; object-fit: cover; box-shadow: 0 2px 8px var(--logo-shadow); transition: filter 0.25s ease; flex-shrink: 0; }
   [data-theme="mono"] .app-logo .brand-logo { filter: grayscale(1) contrast(1.05); }
-  .app-logo .brand-name { font-size: 13px; font-weight: 700; color: var(--text); }
-  .app-logo .brand-sub { font-size: 11px; color: var(--text-muted); font-weight: 500; }
-  .header-actions { display: flex; gap: 8px; align-items: center; }
-  .btn-ghost { font-size: 12px; font-weight: 600; color: var(--purple); background: var(--purple-light); border: none; border-radius: 20px; padding: 6px 14px; cursor: pointer; transition: all 0.15s; }
+  .app-logo .brand-name { font-size: 13px; font-weight: 700; color: var(--text); white-space: nowrap; }
+  .app-logo .brand-sub { font-size: 11px; color: var(--text-muted); font-weight: 500; white-space: nowrap; }
+  .header-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+  .btn-ghost { font-size: 11px; font-weight: 600; color: var(--purple); background: var(--purple-light); border: none; border-radius: 20px; padding: 6px 10px; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
   .btn-ghost:hover { background: var(--hover-tint); }
+  /* Label teks tombol header — tersembunyi di mobile, tampil di desktop */
+  .btn-ghost .btn-label { display: inline; }
+  @media (max-width: 600px) {
+    .app-logo .brand-sub { display: none; }
+    .app-logo .brand-name { display: none; }
+    /* Di mobile: tombol header jadi icon-only, teks disembunyikan */
+    .btn-ghost .btn-label { display: none; }
+    .btn-ghost { padding: 7px 9px; font-size: 15px; border-radius: 12px; }
+    .header-actions { gap: 4px; }
+    .theme-toggle { width: 44px; height: 26px; }
+    .theme-toggle .toggle-knob { width: 19px; height: 19px; font-size: 11px; top: 2px; left: 2px; }
+    [data-theme="mono"] .theme-toggle .toggle-knob, [data-theme="dark"] .theme-toggle .toggle-knob { left: 22px; }
+  }
 
   /* ── THEME TOGGLE ── */
   .theme-toggle { width: 52px; height: 28px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--border-soft); cursor: pointer; position: relative; padding: 0; flex-shrink: 0; transition: background 0.2s, border-color 0.2s; }
@@ -156,19 +169,24 @@
 
   .user-bar {
     width: 100%; max-width: 760px; background: var(--card); border-radius: 16px;
-    padding: 16px 20px; margin-bottom: 12px; box-shadow: 0 2px 16px rgba(224,71,58,0.08);
-    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 2px 16px rgba(224,71,58,0.08);
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: nowrap; gap: 8px;
   }
   .user-bar .greet { font-size: 14px; font-weight: 600; }
   .user-bar .greet span { color: var(--purple); }
   .user-bar .sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
-  .day-nav { display: flex; align-items: center; gap: 10px; position: relative; }
-  .day-nav button { width: 30px; height: 30px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--border-soft); cursor: pointer; font-size: 14px; color: var(--text-soft); display: flex; align-items: center; justify-content: center; }
+  .day-nav { display: flex; align-items: center; gap: 6px; position: relative; flex-shrink: 0; }
+  .day-nav button { width: 28px; height: 28px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--border-soft); cursor: pointer; font-size: 13px; color: var(--text-soft); display: flex; align-items: center; justify-content: center; }
   .day-nav button:hover { background: var(--border); }
-  .day-nav .day-label { font-size: 13px; font-weight: 700; min-width: 150px; text-align: center; cursor: pointer; border-radius: 8px; padding: 4px 8px; transition: background 0.15s; }
+  .day-nav .day-label { font-size: 12px; font-weight: 700; min-width: 0; text-align: center; cursor: pointer; border-radius: 8px; padding: 4px 6px; transition: background 0.15s; white-space: nowrap; }
   .day-nav .day-label:hover { background: var(--border-soft); }
-  .day-nav .day-today-badge { font-size: 10px; font-weight: 700; color: var(--teal); background: var(--teal-light); padding: 2px 8px; border-radius: 20px; margin-left: 6px; }
+  .day-nav .day-today-badge { font-size: 10px; font-weight: 700; color: var(--teal); background: var(--teal-light); padding: 2px 6px; border-radius: 20px; margin-left: 4px; white-space: nowrap; }
+  @media (max-width: 600px) {
+    .user-bar { padding: 12px 14px; }
+    .day-nav .day-label { font-size: 11px; }
+    .day-nav .day-today-badge { display: none; }
+  }
 
   /* ── WEEKLY STRIP ── */
   .week-strip { width: 100%; max-width: 760px; background: var(--card); border-radius: 16px; padding: 12px 14px; margin-bottom: 12px; box-shadow: 0 2px 16px rgba(224,71,58,0.06); display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
@@ -230,9 +248,10 @@
   p.desc { font-size: 13px; color: var(--text-soft); line-height: 1.6; margin-bottom: 20px; }
 
   /* ── ADD TASK ── */
-  .checklist-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+  .checklist-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
   .checklist-header-row .desc { margin-bottom: 0; }
-  .checklist-header-actions { display: flex; gap: 8px; flex-shrink: 0; flex-wrap: wrap; }
+  .checklist-header-actions { display: flex; gap: 6px; flex-shrink: 0; flex-wrap: nowrap; }
+  .checklist-header-actions .btn-soft { font-size: 11px; padding: 6px 10px; }
   .btn-soft { font-size: 12px; font-weight: 700; color: var(--purple); background: var(--purple-light); border: none; border-radius: 20px; padding: 8px 14px; cursor: pointer; white-space: nowrap; font-family: inherit; transition: background 0.15s; }
   .btn-soft:hover { background: var(--hover-tint); }
 
@@ -407,8 +426,11 @@
   .matrix-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
   @media (max-width: 600px) {
     .matrix-grid { grid-template-columns: 1fr; }
-    .add-task-row { flex-direction: column; }
-    .add-task-row input, .add-task-row select, .add-task-row button { width: 100%; }
+    .add-task-row { display: grid; grid-template-columns: 1fr 1fr; grid-template-areas: "name name" "time cat" "btn btn"; gap: 8px; }
+    .add-task-row input[type="text"] { grid-area: name; min-width: unset; }
+    .add-task-row input[type="time"] { grid-area: time; }
+    .add-task-row select { grid-area: cat; }
+    .add-task-row button { grid-area: btn; width: 100%; }
   }
   .matrix-quad { border-radius: 14px; padding: 14px; min-height: 140px; }
   .matrix-quad.q-do { background: var(--coral-light); border: 1px solid var(--matrix-do-border); }
@@ -866,9 +888,9 @@
     <button class="theme-toggle" id="themeToggle" title="Ganti tampilan" aria-label="Ganti tampilan">
       <span class="toggle-knob" id="themeToggleKnob">☀️</span>
     </button>
-    <button class="btn-ghost" id="openReading">📚 Buku</button>
-    <button class="btn-ghost" id="openJournal">✍️ Jurnal</button>
-    <button class="btn-ghost" id="openGuide">📖 Cara pakai</button>
+    <button class="btn-ghost" id="openReading">📚 <span class="btn-label">Buku</span></button>
+    <button class="btn-ghost" id="openJournal">✍️ <span class="btn-label">Jurnal</span></button>
+    <button class="btn-ghost" id="openGuide">📖 <span class="btn-label">Cara pakai</span></button>
     <button class="btn-ghost hidden" id="switchUserBtn">Keluar</button>
   </div>
 </div>

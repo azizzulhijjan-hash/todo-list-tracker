@@ -590,6 +590,110 @@
   .loading-row { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 24px; }
   .spinner { width: 16px; height: 16px; border: 2px solid var(--spinner-track); border-top-color: var(--purple); border-radius: 50%; animation: spin 0.7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ═════ LAYOUT RESPONSIF: HP / IPAD PORTRAIT / LAPTOP + IPAD LANDSCAPE ═════ */
+  .app-shell { width: 100%; max-width: 760px; display: flex; flex-direction: column; align-items: center; }
+  .app-main, .right-panel { display: contents; }
+  .app-header { order: 0; } .user-bar { order: 1; } .week-strip { order: 2; } .save-status { order: 3; } .tabs { order: 4; }
+  #checklistView, #progressView, #matrixView { order: 5; } .app-footer { order: 6; }
+  .rp-extra, .desk-only, .sidebar-brand { display: none; }
+  .journal-placeholder { display: none; }
+
+  .rp-card { background: var(--border-soft); border-radius: 14px; padding: 12px 14px; }
+  .rp-summary { align-items: center; gap: 12px; }
+  .rp-ring-track { fill: none; stroke: var(--border); stroke-width: 6; }
+  .rp-ring-fill { fill: none; stroke: var(--purple); stroke-width: 6; stroke-linecap: round; transition: stroke-dasharray 0.4s ease; }
+  .rp-ring-text { font-size: 12px; font-weight: 800; fill: var(--text); font-family: inherit; }
+  .rp-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
+  .rp-main { font-size: 15px; font-weight: 800; color: var(--text); }
+  .rp-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .rp-empty { font-size: 12px; color: var(--text-muted); }
+  .rp-item { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.4; }
+  .rp-item + .rp-item { margin-top: 8px; }
+  .rp-item small { display: block; font-size: 11px; font-weight: 500; color: var(--text-soft); margin-top: 2px; }
+  .sidebar-item.on { background: var(--purple-light); }
+  .sidebar-item.on .si-label { color: var(--purple); }
+
+  /* ── iPad portrait: 2 kolom, sidebar tetap berupa drawer (tombol menu) ── */
+  @media (min-width: 601px) and (max-width: 1023px) {
+    body { padding: 20px 20px 48px; }
+    .app-shell { max-width: none; display: grid; grid-template-columns: minmax(0, 1fr) 250px; grid-template-areas: "hdr hdr" "main side"; column-gap: 20px; align-items: start; }
+    .app-header { grid-area: hdr; max-width: none; }
+    .app-main { display: block; grid-area: main; min-width: 0; }
+    .right-panel { display: flex; flex-direction: column; gap: 12px; grid-area: side; }
+    .user-bar, .save-status, .tabs, .card, .app-footer, .week-strip { max-width: none; }
+    .hamburger-btn { display: flex; }
+    .header-actions { display: none; }
+    .week-strip { order: 0; box-shadow: none; margin-bottom: 0; padding: 10px 6px; gap: 2px; }
+    .week-day-btn { padding: 6px 0; }
+    .week-day-btn .wd-num { width: 26px; height: 26px; font-size: 12px; }
+    .rp-card.rp-extra { display: block; background: var(--card); }
+    .rp-card.rp-summary.rp-extra { display: flex; }
+  }
+
+  /* ── Laptop dan iPad landscape: sidebar permanen + konten + panel kanan ── */
+  @media (min-width: 1024px) {
+    body { display: block; padding: 0; }
+    .app-shell { max-width: none; display: grid; grid-template-columns: 224px minmax(0, 1fr) 288px; align-items: start; min-height: 100vh; }
+    .app-header, .hamburger-btn, .sidebar-overlay, .sidebar-close, .tabs { display: none !important; }
+    .sidebar { position: sticky; top: 0; grid-column: 1; grid-row: 1; height: 100vh; width: auto; max-width: none; transform: none; transition: none; z-index: 1; box-shadow: none; border-right: 1px solid var(--border-soft); }
+    .sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 22px 20px 6px; }
+    .sidebar-brand img { width: 34px; height: 34px; border-radius: 10px; object-fit: cover; box-shadow: 0 2px 8px var(--logo-shadow); }
+    [data-theme="mono"] .sidebar-brand img, [data-theme="dark"] .sidebar-brand img { filter: grayscale(1) contrast(1.05); }
+    .sidebar-brand .sb-name { font-size: 14px; font-weight: 800; color: var(--text); }
+    .sidebar-brand .sb-sub { font-size: 11px; color: var(--text-muted); }
+    .sidebar-user { padding: 16px 20px; margin-top: 10px; }
+    .sidebar-item.desk-only { display: flex; }
+    .sidebar-section-label.desk-only { display: block; }
+
+    .app-main { display: block; grid-column: 2; grid-row: 1; min-width: 0; padding: 24px 28px 48px; }
+    .right-panel { display: flex; flex-direction: column; gap: 14px; grid-column: 3; grid-row: 1; position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 24px 18px; background: var(--card); border-left: 1px solid var(--border-soft); }
+    .user-bar, .save-status, .tabs, .card, .app-footer, .week-strip { max-width: none; }
+    .week-strip { order: 0; background: var(--border-soft); box-shadow: none; margin-bottom: 0; padding: 12px 6px; gap: 2px; }
+    .week-day-btn { padding: 6px 0; }
+    .week-day-btn .wd-num { width: 28px; height: 28px; font-size: 12px; }
+    .rp-card.rp-extra { display: block; }
+    .rp-card.rp-summary.rp-extra { display: flex; }
+
+    /* Halaman penuh: Buku dan Jurnal tetap menyisakan sidebar di kiri */
+    .reading-overlay, .journal-overlay { left: 224px; }
+    .reading-inner { max-width: none; padding: 28px 32px 56px; }
+    .book-cards { gap: 18px; }
+    .reading-calendar .reading-cal-day { aspect-ratio: auto; height: 42px; }
+    .journal-inner { max-width: none; padding: 28px 32px 56px; display: grid; grid-template-columns: minmax(320px, 400px) minmax(0, 1fr); column-gap: 32px; align-items: start; }
+    #journalListView { grid-column: 1; grid-row: 1; }
+    #journalWriteView, .journal-placeholder { grid-column: 2; grid-row: 1; }
+    .journal-inner .reading-title { font-size: 20px; }
+    .journal-free-area { min-height: 260px; }
+    #journalWriteView.hidden + .journal-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 10px; min-height: 60vh; border: 2px dashed var(--border); border-radius: 20px; color: var(--text-muted); font-size: 14px; line-height: 1.6; padding: 24px; }
+    .journal-placeholder .jp-icon { font-size: 40px; }
+
+    /* Progress: ring + statistik di kiri, rincian di kanan, grafik harian selebar halaman */
+    #progressView:not(.hidden) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 32px; align-items: center; }
+    #progressView > .progress-title-row, #progressView > .desc { grid-column: 1 / -1; }
+    #progressView .progress-overview { grid-column: 1; grid-row: 3; flex-direction: column; align-items: stretch; gap: 16px; margin-bottom: 24px; }
+    #progressView .ring-chart-wrap { align-self: center; }
+    #progressView .month-summary { flex-direction: row; flex-wrap: nowrap; min-width: 0; flex: none; gap: 10px; }
+    #progressView .month-summary .summary-stat { flex: 1; min-width: 0; padding-left: 8px; padding-right: 8px; }
+    #progressView .breakdown-section { grid-column: 2; grid-row: 3; margin-bottom: 24px; }
+    #progressView .chart-wrap { grid-column: 1 / -1; grid-row: 4; }
+    .chart-bars { width: 100%; min-width: 0; gap: 5px; }
+    .chart-bar-col { flex: 1 1 0; width: auto; min-width: 0; }
+    .chart-bar { width: 70%; max-width: 22px; }
+    .chart-bar-track { width: 100%; justify-content: center; }
+
+    .matrix-grid { gap: 16px; }
+    .matrix-quad { min-height: 210px; }
+  }
+  @media (min-width: 1280px) {
+    .app-shell { grid-template-columns: 248px minmax(0, 1fr) 320px; }
+    .app-main { padding: 28px 36px 56px; }
+    .reading-overlay, .journal-overlay { left: 248px; }
+  }
+  @media (min-width: 1500px) {
+    #taskListContainer { column-count: 2; column-gap: 44px; }
+    #taskListContainer .task-row { break-inside: avoid; }
+  }
 </style>
 </head>
 <body>
@@ -689,6 +793,14 @@
       <div class="guide-content">
         <h3>✍️ Jurnal Harian — cerita harianmu</h3>
         <p>Klik <strong>✍️ Jurnal</strong> di header untuk buka jurnal. Setiap malam tulis entry baru — ada 3 prompt opsional sebagai pemancing (momen berkesan, refleksi, rasa syukur) dan area tulis bebas untuk cerita panjang. Pilih mood hari ini (😄🙂😐😔😞). Semua entry tersimpan aman dan bisa dibaca ulang kapan saja. Kalender konsistensi menunjukkan hari mana saja kamu konsisten jurnal.</p>
+      </div>
+    </div>
+
+    <div class="guide-step" style="margin-bottom:0;">
+      <div class="guide-num">12</div>
+      <div class="guide-content">
+        <h3>Tampilan laptop dan iPad</h3>
+        <p>Di laptop dan iPad landscape, semua menu tampil permanen di <strong>sidebar kiri</strong> (Tugas, Progress, Matrix, Buku, Jurnal, mode warna), dan <strong>panel kanan</strong> menampilkan strip mingguan, ringkasan tugas hari itu, event, serta reminder berikutnya. Di iPad portrait dan HP, menu dibuka lewat tombol <strong>☰</strong> di pojok kiri atas.</p>
       </div>
     </div>
 
@@ -901,6 +1013,11 @@
       </div>
     </div>
 
+    <div class="journal-placeholder" id="journalPlaceholder">
+      <div class="jp-icon">✍️</div>
+      <p>Pilih entry di kiri untuk membaca atau mengedit,<br>atau klik <strong>+ Tulis hari ini</strong>.</p>
+    </div>
+
   </div>
 </div>
 
@@ -917,6 +1034,7 @@
   </div>
 </div>
 
+<div class="app-shell" id="appShell">
 <div class="app-header">
   <div style="display:flex;align-items:center;gap:10px;">
     <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu">
@@ -945,6 +1063,10 @@
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 <div class="sidebar" id="sidebar">
   <button class="sidebar-close" id="sidebarClose">✕</button>
+  <div class="sidebar-brand">
+    <img id="sidebarLogo" src="" alt="Logo Mulai 2 Menit">
+    <div><div class="sb-name">Mulai 2 Menit</div><div class="sb-sub">To Do List Tracker</div></div>
+  </div>
   <div class="sidebar-user" id="sidebarUser">
     <img id="sidebarPhoto" src="" alt="" class="sidebar-user-photo">
     <div class="sidebar-user-avatar" id="sidebarAvatar">M</div>
@@ -954,12 +1076,26 @@
     </div>
   </div>
   <div class="sidebar-nav">
+    <div class="sidebar-section-label desk-only">Menu</div>
+    <button class="sidebar-item desk-only on" id="sb_tabChecklist" data-nav="checklist">
+      <div class="si-icon" style="background:var(--purple-light);">✅</div>
+      <div class="si-text"><div class="si-label">Tugas</div><div class="si-sub">Checklist harianmu</div></div>
+    </button>
+    <button class="sidebar-item desk-only" id="sb_tabProgress" data-nav="progress">
+      <div class="si-icon" style="background:var(--teal-light);">📊</div>
+      <div class="si-text"><div class="si-label">Progress</div><div class="si-sub">Ring dan grafik bulanan</div></div>
+    </button>
+    <button class="sidebar-item desk-only" id="sb_tabMatrix" data-nav="matrix">
+      <div class="si-icon" style="background:var(--gold-light);">🧭</div>
+      <div class="si-text"><div class="si-label">Eisenhower matrix</div><div class="si-sub">Prioritas 4 kuadran</div></div>
+    </button>
+
     <div class="sidebar-section-label">Fitur</div>
-    <button class="sidebar-item" id="sb_openReading">
+    <button class="sidebar-item" id="sb_openReading" data-nav="reading">
       <div class="si-icon" style="background:var(--gold-light);">📚</div>
       <div class="si-text"><div class="si-label">Buku</div><div class="si-sub">Reading tracker</div></div>
     </button>
-    <button class="sidebar-item" id="sb_openJournal">
+    <button class="sidebar-item" id="sb_openJournal" data-nav="journal">
       <div class="si-icon" style="background:var(--purple-light);">✍️</div>
       <div class="si-text"><div class="si-label">Jurnal</div><div class="si-sub">Cerita harianmu</div></div>
     </button>
@@ -982,6 +1118,7 @@
   </div>
 </div>
 
+<main class="app-main">
 <div class="user-bar hidden" id="userBar">
   <div style="display:flex; align-items:center; gap:10px;">
     <img id="userPhoto" src="" alt="" style="width:32px;height:32px;border-radius:50%;display:none;">
@@ -1010,8 +1147,6 @@
     </div>
   </div>
 </div>
-
-<div class="week-strip" id="weekStrip"></div>
 
 <div class="save-status hidden" id="saveStatus"></div>
 
@@ -1178,6 +1313,31 @@
 </div>
 
 <div class="app-footer">Mulai 2 Menit &middot; Advanced To Do List Tracker</div>
+</main>
+
+<aside class="right-panel" id="rightPanel">
+  <div class="week-strip" id="weekStrip"></div>
+  <div class="rp-card rp-extra rp-summary">
+    <svg width="52" height="52" viewBox="0 0 52 52" aria-hidden="true">
+      <circle cx="26" cy="26" r="20" class="rp-ring-track" transform="rotate(-90 26 26)"></circle>
+      <circle id="rpRingFill" cx="26" cy="26" r="20" class="rp-ring-fill" transform="rotate(-90 26 26)"></circle>
+      <text id="rpRingText" x="26" y="30" text-anchor="middle" class="rp-ring-text">0%</text>
+    </svg>
+    <div>
+      <div class="rp-main" id="rpSummaryMain"></div>
+      <div class="rp-sub" id="rpSummarySub"></div>
+    </div>
+  </div>
+  <div class="rp-card rp-extra">
+    <div class="rp-label">Event hari ini</div>
+    <div id="rpEventBody"></div>
+  </div>
+  <div class="rp-card rp-extra">
+    <div class="rp-label">Reminder berikutnya</div>
+    <div id="rpReminderBody"></div>
+  </div>
+</aside>
+</div>
 
 <script>
   // ───── THEME TOGGLE (3 mode) ─────
@@ -1419,6 +1579,8 @@
     document.getElementById("matrixView").classList.toggle("hidden", tab !== "matrix");
     if (tab === "matrix") renderMatrix();
     if (tab === "progress") renderProgress();
+    currentTab = tab;
+    syncSidebarActive();
   }
   // ───── STORAGE (per hari, via Firestore) ─────
   // Strategi: localStorage tetap dipakai sebagai cache instan supaya tampilan
@@ -1944,6 +2106,7 @@
 
   // Banner di halaman "Tugas hari ini" untuk event yang jatuh pada viewDate.
   function renderEventBanner() {
+    updateRightPanel();
     var container = document.getElementById("eventBanner");
     var dk = dateKey(viewDate);
     var todaysEvents = events.filter(function(ev) { return ev.date === dk; });
@@ -1972,6 +2135,7 @@
 
   // ───── RENDER CHECKLIST ─────
   function renderChecklist() {
+    updateRightPanel();
     var container = document.getElementById("taskListContainer");
     var sorted = dayData.tasks.slice().sort(function(a, b) { return a.time.localeCompare(b.time); });
     var doneCount = sorted.filter(function(t) { return t.done; }).length;
@@ -2629,7 +2793,7 @@
     document.getElementById("journalMoodLabel").textContent = "";
     document.getElementById("journalDeleteRow").classList.add("hidden");
     document.querySelectorAll(".mood-btn").forEach(function(b) { b.classList.remove("selected"); });
-    document.getElementById("journalListView").classList.add("hidden");
+    if (!isWideLayout()) document.getElementById("journalListView").classList.add("hidden");
     document.getElementById("journalWriteView").classList.remove("hidden");
     document.getElementById("journalFreeText").focus();
   }
@@ -2652,7 +2816,7 @@
     document.querySelectorAll(".mood-btn").forEach(function(b) {
       b.classList.toggle("selected", parseInt(b.getAttribute("data-mood")) === journalSelectedMood);
     });
-    document.getElementById("journalListView").classList.add("hidden");
+    if (!isWideLayout()) document.getElementById("journalListView").classList.add("hidden");
     document.getElementById("journalWriteView").classList.remove("hidden");
   }
 
@@ -2934,6 +3098,89 @@
       closeProgressCal();
     }
   });
+
+  // ═══════════════════════════════════════════════════════════════
+  // LAYOUT LAPTOP / IPAD: sidebar permanen + panel kanan
+  // ═══════════════════════════════════════════════════════════════
+  var currentTab;
+  function isWideLayout() { return window.matchMedia("(min-width:1024px)").matches; }
+
+  function syncSidebarActive() {
+    var key = currentTab || "checklist";
+    var r = document.getElementById("readingOverlay");
+    var j = document.getElementById("journalOverlay");
+    if (r && !r.classList.contains("hidden")) key = "reading";
+    else if (j && !j.classList.contains("hidden")) key = "journal";
+    document.querySelectorAll(".sidebar-item[data-nav]").forEach(function(el) {
+      el.classList.toggle("on", el.getAttribute("data-nav") === key);
+    });
+  }
+
+  function hideOverlays() {
+    document.getElementById("readingOverlay").classList.add("hidden");
+    document.getElementById("journalOverlay").classList.add("hidden");
+  }
+
+  [["sb_tabChecklist", "checklist"], ["sb_tabProgress", "progress"], ["sb_tabMatrix", "matrix"]].forEach(function(p) {
+    document.getElementById(p[0]).addEventListener("click", function() {
+      hideOverlays();
+      setTab(p[1]);
+    });
+  });
+  document.getElementById("sb_openReading").addEventListener("click", function() {
+    document.getElementById("journalOverlay").classList.add("hidden");
+    syncSidebarActive();
+  });
+  document.getElementById("sb_openJournal").addEventListener("click", function() {
+    document.getElementById("readingOverlay").classList.add("hidden");
+    syncSidebarActive();
+  });
+  ["openReading", "openJournal", "closeReading", "closeJournal"].forEach(function(id) {
+    document.getElementById(id).addEventListener("click", syncSidebarActive);
+  });
+
+  (function() {
+    var src = document.querySelector(".app-header .brand-logo");
+    var target = document.getElementById("sidebarLogo");
+    if (src && target) target.src = src.src;
+  })();
+
+  // Panel kanan: ringkasan hari, event, dan reminder berikutnya
+  function updateRightPanel() {
+    var fill = document.getElementById("rpRingFill");
+    if (!fill) return;
+    var tasks = (dayData && dayData.tasks) || [];
+    var total = tasks.length;
+    var done = tasks.filter(function(t) { return t.done; }).length;
+    var pct = total ? Math.round((done / total) * 100) : 0;
+    var C = 2 * Math.PI * 20;
+    fill.style.strokeDasharray = (pct / 100 * C) + " " + C;
+    fill.style.opacity = pct > 0 ? "1" : "0";
+    document.getElementById("rpRingText").textContent = pct + "%";
+    document.getElementById("rpSummaryMain").textContent = total ? done + " dari " + total : "Belum ada tugas";
+    document.getElementById("rpSummarySub").textContent = total ? "tugas selesai" : "untuk hari ini";
+
+    var dk = dateKey(viewDate);
+    var evs = (events || []).filter(function(e) { return e.date === dk; });
+    document.getElementById("rpEventBody").innerHTML = evs.length
+      ? evs.map(function(e) {
+          return '<div class="rp-item">' + escapeHtml(e.title) + (e.note ? '<small>' + escapeHtml(e.note) + '</small>' : '') + '</div>';
+        }).join("")
+      : '<div class="rp-empty">Tidak ada event hari ini.</div>';
+
+    var prefs = loadReminderPrefs();
+    var now = new Date();
+    var nowStr = String(now.getHours()).padStart(2, "0") + ":" + String(now.getMinutes()).padStart(2, "0");
+    var upcoming = tasks.filter(function(t) {
+      return prefs[t.id] && !t.done && (!isSameDay(viewDate, now) || t.time >= nowStr);
+    }).sort(function(a, b) { return a.time.localeCompare(b.time); });
+    document.getElementById("rpReminderBody").innerHTML = upcoming.length
+      ? '<div class="rp-item">' + upcoming[0].time + ' &middot; ' + escapeHtml(upcoming[0].name) + '<small>' + (upcoming.length > 1 ? upcoming.length + ' reminder aktif' : '1 reminder aktif') + '</small></div>'
+      : '<div class="rp-empty">Belum ada reminder aktif.</div>';
+  }
+
+  syncSidebarActive();
+  updateRightPanel();
 </script>
 
 </body>

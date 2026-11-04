@@ -694,6 +694,24 @@
     #taskListContainer { column-count: 2; column-gap: 44px; }
     #taskListContainer .task-row { break-inside: avoid; }
   }
+
+  /* ═════ PERBAIKAN HP: baris tugas tidak keluar kartu + cegah zoom otomatis iOS ═════ */
+  .task-row > div[style*="flex:1"], .mini-list-row > div[style*="flex:1"], .event-banner-item > div[style*="flex:1"] { min-width: 0; }
+  .task-name { overflow-wrap: anywhere; }
+  .task-row .cat-pill, .task-row .recur-badge { display: inline-block; margin: 0 4px 4px 0; }
+  .task-time, .task-bell, .task-del { flex-shrink: 0; }
+  @media (pointer: coarse), (max-width: 1023px) {
+    body input, body select, body textarea { font-size: 16px !important; }
+  }
+  @media (max-width: 600px) {
+    .add-task-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .add-task-row > * { min-width: 0; max-width: 100%; box-sizing: border-box; }
+  }
+  @media (max-width: 479px) {
+    .add-task-row { grid-template-columns: minmax(0, 1fr); grid-template-areas: "name" "time" "cat" "btn"; }
+  }
+  .event-form-row input, .event-form-row textarea, .event-form-row select, .event-form-row > div > input { min-width: 0; max-width: 100%; box-sizing: border-box; }
+  .event-form-row > div { min-width: 0; }
 </style>
 </head>
 <body>

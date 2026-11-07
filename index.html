@@ -656,7 +656,7 @@
     .rp-card.rp-summary.rp-extra { display: flex; }
 
     /* Halaman penuh: Buku dan Jurnal tetap menyisakan sidebar di kiri */
-    .reading-overlay, .journal-overlay { left: 224px; }
+    .reading-overlay, .journal-overlay, .goal-overlay { left: 224px; }
     .reading-inner { max-width: none; padding: 28px 32px 56px; }
     .book-cards { gap: 18px; }
     .reading-calendar .reading-cal-day { aspect-ratio: auto; height: 42px; }
@@ -688,7 +688,7 @@
   @media (min-width: 1280px) {
     .app-shell { grid-template-columns: 248px minmax(0, 1fr) 320px; }
     .app-main { padding: 28px 36px 56px; }
-    .reading-overlay, .journal-overlay { left: 248px; }
+    .reading-overlay, .journal-overlay, .goal-overlay { left: 248px; }
   }
   @media (min-width: 1500px) {
     #taskListContainer { column-count: 2; column-gap: 44px; }
@@ -712,6 +712,108 @@
   }
   .event-form-row input, .event-form-row textarea, .event-form-row select, .event-form-row > div > input { min-width: 0; max-width: 100%; box-sizing: border-box; }
   .event-form-row > div { min-width: 0; }
+
+  /* ═════ GOAL TAHUNAN ═════ */
+  .goal-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 90; overflow-y: auto; }
+  .goal-overlay.hidden { display: none !important; }
+  .goal-year-row { display: flex; align-items: center; gap: 12px; margin: 4px 0 12px; }
+  .goal-year-btn { width: 34px; height: 34px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--border-soft); cursor: pointer; font-size: 16px; color: var(--text-soft); display: flex; align-items: center; justify-content: center; }
+  .goal-year-btn:hover { background: var(--border); }
+  .goal-year-label { font-size: 22px; font-weight: 800; color: var(--text); min-width: 64px; text-align: center; }
+  .goal-summary { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+  .goal-summary:empty { display: none; }
+  .goal-sum-ring { flex: 2 1 260px; display: flex; align-items: center; gap: 14px; background: var(--card); border: 1.5px solid var(--border-soft); border-radius: 18px; padding: 14px 18px; }
+  .goal-sum-ring .gs-main { font-size: 14px; font-weight: 800; color: var(--text); }
+  .goal-sum-ring .gs-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .goal-stat { flex: 1 1 130px; background: var(--card); border: 1.5px solid var(--border-soft); border-radius: 18px; padding: 14px 18px; display: flex; flex-direction: column; justify-content: center; }
+  .goal-stat .gv { font-size: 22px; font-weight: 800; color: var(--purple); }
+  .goal-stat .gl { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .goal-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .goal-chip { border: 1.5px solid var(--border); background: var(--card); border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 700; color: var(--text-soft); cursor: pointer; font-family: inherit; }
+  .goal-chip.on { background: var(--purple-light); color: var(--purple); border-color: var(--purple); }
+  .goal-section-title { font-size: 13px; font-weight: 800; color: var(--text); margin: 18px 0 10px; }
+  .goal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; }
+  .goal-card { background: var(--card); border: 1.5px solid var(--border-soft); border-radius: 18px; padding: 16px; cursor: pointer; display: flex; flex-direction: column; gap: 10px; transition: border-color 0.15s; min-width: 0; }
+  .goal-card:hover { border-color: var(--purple); }
+  .goal-card.prio { border-color: var(--gold); }
+  .gc-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .gc-cat { font-size: 11px; font-weight: 700; color: var(--text-soft); }
+  .gc-status { font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; }
+  .st-belum { background: var(--border-soft); color: var(--text-muted); }
+  .st-berjalan { background: var(--teal-light); color: var(--teal); }
+  .st-tercapai { background: var(--purple-light); color: var(--purple); }
+  .st-ditunda { background: var(--gold-light); color: var(--gold); }
+  .gc-title { font-size: 16px; font-weight: 800; color: var(--text); line-height: 1.3; overflow-wrap: anywhere; }
+  .gc-body { display: flex; align-items: center; gap: 12px; }
+  .gc-info { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .gc-line { font-size: 12px; color: var(--text-soft); overflow-wrap: break-word; }
+  .gc-line strong { color: var(--text); }
+  .gc-need { color: var(--purple); font-weight: 700; }
+  .gc-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px; color: var(--text-muted); flex-wrap: wrap; }
+  .pace { font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
+  .pace.on-track { background: var(--teal-light); color: var(--teal); }
+  .pace.behind { background: var(--red-light); color: var(--red); }
+  .goal-ring { flex-shrink: 0; }
+  .goal-empty { text-align: center; padding: 36px 16px; color: var(--text-muted); }
+  .goal-empty .ge-icon { font-size: 44px; margin-bottom: 8px; }
+  .goal-empty p { font-size: 14px; line-height: 1.6; margin-bottom: 14px; }
+  .goal-ideas { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+
+  .modal.wide { max-width: 640px; }
+  .goal-form { display: flex; flex-direction: column; gap: 8px; }
+  .goal-form label { font-size: 12px; font-weight: 700; color: var(--text-soft); }
+  .goal-form input:not([type="checkbox"]), .goal-form select, .goal-form textarea { border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 14px; font-size: 14px; font-family: inherit; background: var(--border-soft); color: var(--text); box-sizing: border-box; width: 100%; min-width: 0; }
+  .goal-form input:focus, .goal-form select:focus, .goal-form textarea:focus { outline: none; border-color: var(--purple); background: var(--card); }
+  .goal-form .row { display: flex; gap: 10px; }
+  .goal-form .row > div { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+  .goal-form .gf-box { display: flex; flex-direction: column; gap: 8px; background: var(--border-soft); border-radius: 14px; padding: 12px; }
+  .goal-form .gf-box input:not([type="checkbox"]), .goal-form .gf-box select { background: var(--card); }
+  .goal-form .gf-check { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text); cursor: pointer; }
+  .gf-hint { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+  .gf-hint:empty { display: none; }
+  .gf-error { font-size: 12px; font-weight: 700; color: var(--red); }
+  .gf-error:empty { display: none; }
+  .gf-save { background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: var(--on-accent); border: none; border-radius: 10px; padding: 12px 18px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; }
+  @media (max-width: 479px) { .goal-form .row { flex-direction: column; } }
+
+  .gd-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+  .gd-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--purple); margin: 0 0 4px; }
+  .gd-title { font-size: 20px; font-weight: 800; line-height: 1.3; overflow-wrap: anywhere; color: var(--text); }
+  .gd-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .gd-icon-btn { width: 34px; height: 34px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--border-soft); cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; color: var(--text-soft); }
+  .gd-icon-btn.on { background: var(--gold-light); border-color: var(--gold); }
+  .gd-statusrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; font-size: 12px; color: var(--text-soft); }
+  .gd-select { border: 1.5px solid var(--border); border-radius: 10px; padding: 7px 10px; font-family: inherit; font-weight: 700; background: var(--border-soft); color: var(--text); }
+  .gd-progress { display: flex; align-items: center; gap: 16px; background: var(--border-soft); border-radius: 16px; padding: 14px 16px; margin-bottom: 14px; }
+  .gd-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; flex: 1; min-width: 0; }
+  .gd-stat .k { font-size: 11px; color: var(--text-muted); }
+  .gd-stat .v { font-size: 14px; font-weight: 800; color: var(--text); white-space: nowrap; }
+  .gd-why { background: var(--purple-light); border-radius: 14px; padding: 12px 14px; font-size: 13px; line-height: 1.6; color: var(--text); margin-bottom: 6px; overflow-wrap: anywhere; }
+  .gd-why small { display: block; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--purple); margin-bottom: 4px; }
+  .gd-section { margin-top: 18px; }
+  .gd-section h3 { font-size: 14px; font-weight: 800; margin: 0 0 8px; color: var(--text); }
+  .gd-add { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+  .gd-add input { flex: 1 1 120px; min-width: 0; border: 1.5px solid var(--border); border-radius: 10px; padding: 9px 12px; font-family: inherit; background: var(--border-soft); color: var(--text); box-sizing: border-box; }
+  .gd-add input.wide { flex: 2 1 160px; }
+  .gd-add button { background: linear-gradient(135deg, var(--purple), var(--purple-mid)); color: var(--on-accent); border: none; border-radius: 10px; padding: 9px 14px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap; }
+  .gd-row { display: flex; align-items: center; gap: 10px; padding: 9px 2px; border-bottom: 0.5px solid var(--border-soft); font-size: 13px; }
+  .gd-row:last-child { border-bottom: none; }
+  .gd-check { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--border); background: var(--border-soft); cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .gd-check.on { background: var(--teal); border-color: var(--teal); color: var(--on-accent); }
+  .gd-text { flex: 1; min-width: 0; overflow-wrap: anywhere; color: var(--text); }
+  .gd-text.done { color: var(--text-muted); text-decoration: line-through; }
+  .gd-text small { display: block; font-size: 11px; color: var(--text-muted); }
+  .gd-amt { font-weight: 800; color: var(--teal); white-space: nowrap; }
+  .gd-date { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+  .gd-del { width: 24px; height: 24px; border-radius: 7px; border: none; background: transparent; color: var(--text-muted); cursor: pointer; flex-shrink: 0; }
+  .gd-del:hover { background: var(--red-light); color: var(--red); }
+  .gd-empty { font-size: 12px; color: var(--text-muted); padding: 4px 0; }
+  .gd-danger { margin-top: 20px; text-align: right; }
+  .gd-danger button { background: transparent; border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; font-family: inherit; }
+  .gd-danger button:hover { background: var(--red-light); color: var(--red); border-color: var(--red); }
+  @media (max-width: 600px) { .gd-progress { flex-direction: column; align-items: stretch; } .gd-progress .goal-ring { align-self: center; } .gd-stats { gap: 10px 12px; } }
+  @media (min-width: 1024px) { .goal-overlay { left: 224px; } }
+  @media (min-width: 1280px) { .goal-overlay { left: 248px; } }
 </style>
 </head>
 <body>
@@ -819,6 +921,14 @@
       <div class="guide-content">
         <h3>Tampilan laptop dan iPad</h3>
         <p>Di laptop dan iPad landscape, semua menu tampil permanen di <strong>sidebar kiri</strong> (Tugas, Progress, Matrix, Buku, Jurnal, mode warna), dan <strong>panel kanan</strong> menampilkan strip mingguan, ringkasan tugas hari itu, event, serta reminder berikutnya. Di iPad portrait dan HP, menu dibuka lewat tombol <strong>☰</strong> di pojok kiri atas.</p>
+      </div>
+    </div>
+
+    <div class="guide-step" style="margin-bottom:0;">
+      <div class="guide-num">13</div>
+      <div class="guide-content">
+        <h3>🎯 Goal tahunan</h3>
+        <p>Buka <strong>Goal tahunan</strong> dari menu untuk menulis target besar per tahun (pakai ‹ › untuk pindah tahun). Setiap goal bisa diukur lewat <strong>tahapan</strong> (checklist langkah), <strong>angka</strong> (tabungan, jumlah buku, atau pelunasan utang), atau gabungan keduanya. Catat setoran atau pembayaran tiap kali terjadi, dan app menghitung sisa serta berapa yang perlu disisihkan per bulan. Beri bintang ⭐ pada maksimal 3 goal prioritas, dan tulis check-in kapan saja kamu ingin meninjau ulang.</p>
       </div>
     </div>
 
@@ -1039,6 +1149,81 @@
   </div>
 </div>
 
+<!-- ══════════ GOAL TAHUNAN ══════════ -->
+<div class="goal-overlay hidden" id="goalOverlay">
+  <div class="reading-inner goal-inner">
+    <div class="reading-header">
+      <div>
+        <p class="reading-eyebrow">🎯 Goal tahunan</p>
+        <h1 class="reading-title">Target besar tahunmu</h1>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="book-card-btn primary" id="newGoalBtn" style="white-space:nowrap;padding:10px 16px;border-radius:12px;">+ Tambah goal</button>
+        <button class="reading-close" id="closeGoals">✕</button>
+      </div>
+    </div>
+    <div class="goal-year-row">
+      <button class="goal-year-btn" id="goalYearPrev" aria-label="Tahun sebelumnya">‹</button>
+      <div class="goal-year-label" id="goalYearLabel"></div>
+      <button class="goal-year-btn" id="goalYearNext" aria-label="Tahun berikutnya">›</button>
+    </div>
+    <p class="reading-desc">Tulis apa yang ingin kamu capai tahun ini, lalu pantau langkah dan angkanya. Batasi sekitar 3 goal sebagai prioritas supaya fokus tetap terjaga.</p>
+    <div class="goal-summary" id="goalSummary"></div>
+    <div class="goal-filters" id="goalFilters"></div>
+    <div id="goalSections"></div>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="goalDetailModal">
+  <div class="modal wide" id="goalDetailBox"><div id="goalDetailBody"></div></div>
+</div>
+
+<div class="modal-overlay hidden" id="goalFormModal">
+  <div class="modal wide">
+    <div class="modal-header">
+      <div>
+        <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--purple);margin-bottom:4px;" id="gfEyebrow">Goal baru</p>
+        <h2 id="gfHeading">Tambah goal</h2>
+      </div>
+      <button class="modal-close" id="closeGoalForm">✕</button>
+    </div>
+    <div class="goal-form">
+      <label for="gfTitle">Judul goal</label>
+      <input type="text" id="gfTitle" maxlength="80" placeholder="mis. Umrah, Beli mobil, Baca 12 buku">
+      <div class="row">
+        <div><label for="gfCategory">Kategori</label><select id="gfCategory"></select></div>
+        <div><label for="gfMonth">Target selesai</label><select id="gfMonth"></select></div>
+      </div>
+      <label for="gfType">Cara mengukur progres</label>
+      <select id="gfType">
+        <option value="milestone">Tahapan (checklist langkah-langkah)</option>
+        <option value="numeric">Angka (tabungan, jumlah, dan sejenisnya)</option>
+        <option value="both">Gabungan tahapan dan angka</option>
+      </select>
+      <div id="gfNumericBox" class="gf-box">
+        <div class="row">
+          <div><label for="gfKind">Arah progres</label>
+            <select id="gfKind"><option value="save">Mengumpulkan atau mencapai target</option><option value="debt">Melunasi utang</option></select></div>
+          <div><label for="gfUnitType">Satuan</label>
+            <select id="gfUnitType"><option value="rp">Rupiah</option><option value="num">Angka lain</option></select></div>
+        </div>
+        <div id="gfUnitLabelBox"><label for="gfUnitLabel">Nama satuan</label><input type="text" id="gfUnitLabel" maxlength="20" placeholder="mis. buku, kali, km"></div>
+        <div class="row">
+          <div><label for="gfTarget" id="gfTargetLabel">Target</label><input type="number" id="gfTarget" inputmode="decimal" min="0" step="any" placeholder="0"></div>
+          <div><label for="gfStart" id="gfStartLabel">Sudah terkumpul saat ini</label><input type="number" id="gfStart" inputmode="decimal" min="0" step="any" placeholder="0"></div>
+        </div>
+        <div class="gf-hint" id="gfHint"></div>
+      </div>
+      <label for="gfWhy">Kenapa goal ini penting? (opsional)</label>
+      <textarea id="gfWhy" rows="2" maxlength="300" placeholder="Alasan yang akan mengingatkanmu saat semangat turun"></textarea>
+      <label class="gf-check"><input type="checkbox" id="gfPriority"> ⭐ Jadikan goal prioritas (maksimal 3 per tahun)</label>
+      <div class="gf-hint" id="gfPrefillNote"></div>
+      <div class="gf-error" id="gfError"></div>
+      <button id="saveGoalBtn" class="gf-save">Simpan goal</button>
+    </div>
+  </div>
+</div>
+
 <div class="name-gate-overlay" id="nameGate">
   <div class="name-gate">
     <img src="data:image/png;base64,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" alt="Logo Mulai 2 Menit" class="gate-logo">
@@ -1072,6 +1257,7 @@
     </button>
     <button class="btn-ghost" id="openReading">📚 Buku</button>
     <button class="btn-ghost" id="openJournal">✍️ Jurnal</button>
+    <button class="btn-ghost" id="openGoals">🎯 Goal</button>
     <button class="btn-ghost" id="openGuide">📖 Cara pakai</button>
     <button class="btn-ghost hidden" id="switchUserBtn">Keluar</button>
   </div>
@@ -1117,6 +1303,11 @@
       <div class="si-icon" style="background:var(--purple-light);">✍️</div>
       <div class="si-text"><div class="si-label">Jurnal</div><div class="si-sub">Cerita harianmu</div></div>
     </button>
+    <button class="sidebar-item" id="sb_openGoals" data-nav="goals">
+      <div class="si-icon" style="background:var(--coral-light);">🎯</div>
+      <div class="si-text"><div class="si-label">Goal tahunan</div><div class="si-sub">Target besar tahun ini</div></div>
+    </button>
+
     <button class="sidebar-item" id="sb_openGuide">
       <div class="si-icon" style="background:var(--teal-light);">📖</div>
       <div class="si-text"><div class="si-label">Cara pakai</div><div class="si-sub">Panduan fitur lengkap</div></div>
@@ -3127,8 +3318,10 @@
     var key = currentTab || "checklist";
     var r = document.getElementById("readingOverlay");
     var j = document.getElementById("journalOverlay");
+    var gl = document.getElementById("goalOverlay");
     if (r && !r.classList.contains("hidden")) key = "reading";
     else if (j && !j.classList.contains("hidden")) key = "journal";
+    else if (gl && !gl.classList.contains("hidden")) key = "goals";
     document.querySelectorAll(".sidebar-item[data-nav]").forEach(function(el) {
       el.classList.toggle("on", el.getAttribute("data-nav") === key);
     });
@@ -3137,6 +3330,7 @@
   function hideOverlays() {
     document.getElementById("readingOverlay").classList.add("hidden");
     document.getElementById("journalOverlay").classList.add("hidden");
+    document.getElementById("goalOverlay").classList.add("hidden");
   }
 
   [["sb_tabChecklist", "checklist"], ["sb_tabProgress", "progress"], ["sb_tabMatrix", "matrix"]].forEach(function(p) {
@@ -3147,13 +3341,21 @@
   });
   document.getElementById("sb_openReading").addEventListener("click", function() {
     document.getElementById("journalOverlay").classList.add("hidden");
+    document.getElementById("goalOverlay").classList.add("hidden");
     syncSidebarActive();
   });
   document.getElementById("sb_openJournal").addEventListener("click", function() {
     document.getElementById("readingOverlay").classList.add("hidden");
+    document.getElementById("goalOverlay").classList.add("hidden");
     syncSidebarActive();
   });
-  ["openReading", "openJournal", "closeReading", "closeJournal"].forEach(function(id) {
+  document.getElementById("sb_openGoals").addEventListener("click", function() {
+    closeSidebar();
+    document.getElementById("readingOverlay").classList.add("hidden");
+    document.getElementById("journalOverlay").classList.add("hidden");
+    document.getElementById("openGoals").click();
+  });
+  ["openReading", "openJournal", "openGoals", "closeReading", "closeJournal", "closeGoals"].forEach(function(id) {
     document.getElementById(id).addEventListener("click", syncSidebarActive);
   });
 
@@ -3199,6 +3401,614 @@
 
   syncSidebarActive();
   updateRightPanel();
+
+  // ═══════════════════════════════════════════════════════════════
+  // GOAL TAHUNAN
+  // ═══════════════════════════════════════════════════════════════
+  // Data: users/{uid}/settings/goals = { goals: [...], deleted: { id: timestamp } }
+  // Satu mekanisme progres untuk semua goal berangka: (nilai awal + total catatan) / target.
+  // Goal utang memakai rumus yang sama: yang dicatat adalah pembayaran.
+
+  var GOAL_CATS = {
+    keuangan: { icon: "💰", label: "Keuangan" },
+    ibadah: { icon: "🕌", label: "Ibadah" },
+    karier: { icon: "💼", label: "Karier" },
+    kesehatan: { icon: "💪", label: "Kesehatan" },
+    belajar: { icon: "📚", label: "Belajar" },
+    relasi: { icon: "🤝", label: "Keluarga & relasi" },
+    lainnya: { icon: "✨", label: "Lainnya" }
+  };
+  var GOAL_STATUS = { belum: "Belum mulai", berjalan: "Berjalan", tercapai: "Tercapai", ditunda: "Ditunda" };
+  var GOAL_IDEAS = [
+    { label: "Umrah", p: { title: "Umrah", category: "ibadah", type: "both", kind: "save", unitType: "rp",
+        milestones: ["Tentukan bulan keberangkatan", "Pilih travel", "Lunasi biaya", "Urus paspor dan dokumen", "Berangkat"] } },
+    { label: "Beli mobil", p: { title: "Beli mobil", category: "keuangan", type: "numeric", kind: "save", unitType: "rp" } },
+    { label: "Dana darurat", p: { title: "Dana darurat", category: "keuangan", type: "numeric", kind: "save", unitType: "rp" } },
+    { label: "Baca 12 buku", p: { title: "Baca 12 buku", category: "belajar", type: "numeric", kind: "save", unitType: "num", unitLabel: "buku", target: 12 } },
+    { label: "Lunasi cicilan", p: { title: "Lunasi cicilan", category: "keuangan", type: "numeric", kind: "debt", unitType: "rp" } }
+  ];
+
+  var goalsState = { goals: [], deleted: {} };
+  var goalsUser = null;
+  var goalYear = null, goalYearTouched = false, goalFilter = "all";
+  var goalDetailId = null, goalEditId = null, goalPrefillMilestones = null;
+
+  function goalsPath(uid) { return "users/" + uid + "/settings/goals"; }
+  function goalsLocalKey(uid) { return "mulai2menit-goals:" + uid; }
+  function newGoalId(prefix) { return prefix + Date.now().toString(36) + Math.floor(Math.random() * 46656).toString(36); }
+
+  function persistLocalGoals() {
+    try { localStorage.setItem(goalsLocalKey(currentUser), JSON.stringify(goalsState)); } catch (e) {}
+  }
+  function saveGoals() {
+    persistLocalGoals();
+    backgroundSyncToServer(goalsPath(currentUser), goalsState);
+  }
+
+  // Gabungkan lokal dan server berdasarkan id. Yang updatedAt-nya lebih baru menang,
+  // dan goal yang dihapus tidak hidup lagi karena ada catatan penghapusan.
+  function mergeGoalStates(a, b) {
+    var del = {};
+    [a.deleted || {}, b.deleted || {}].forEach(function(d) {
+      Object.keys(d).forEach(function(k) { del[k] = Math.max(del[k] || 0, d[k]); });
+    });
+    var map = {};
+    (a.goals || []).concat(b.goals || []).forEach(function(g) {
+      var cur = map[g.id];
+      if (!cur || (g.updatedAt || 0) > (cur.updatedAt || 0)) map[g.id] = g;
+    });
+    var goals = Object.keys(map).map(function(k) { return map[k]; }).filter(function(g) {
+      return !(del[g.id] && del[g.id] >= (g.updatedAt || 0));
+    });
+    return { goals: goals, deleted: del };
+  }
+
+  async function loadGoalsData() {
+    goalsState = { goals: [], deleted: {} };
+    try {
+      var local = localStorage.getItem(goalsLocalKey(currentUser));
+      if (local) {
+        var p = JSON.parse(local);
+        goalsState = { goals: p.goals || [], deleted: p.deleted || {} };
+      }
+    } catch (e) {}
+    var raw = await backgroundSyncFromServer(goalsPath(currentUser));
+    if (raw) {
+      try {
+        var s = JSON.parse(raw);
+        goalsState = mergeGoalStates(goalsState, { goals: s.goals || [], deleted: s.deleted || {} });
+        persistLocalGoals();
+      } catch (e) {}
+    }
+  }
+
+  // ── Hitungan progres ──
+  function goalById(id) { return goalsState.goals.find(function(g) { return g.id === id; }); }
+  function goalHasNumeric(g) { return g.type === "numeric" || g.type === "both"; }
+  function goalHasMilestone(g) { return g.type === "milestone" || g.type === "both"; }
+  function goalEntriesSum(g) {
+    return (g.entries || []).reduce(function(s, e) { return s + (parseFloat(e.amount) || 0); }, 0);
+  }
+  function goalCurrentAmount(g) { return (parseFloat(g.startAmount) || 0) + goalEntriesSum(g); }
+  function goalProgressRaw(g) {
+    var parts = [];
+    var ms = g.milestones || [];
+    if (goalHasMilestone(g) && ms.length) {
+      parts.push(ms.filter(function(m) { return m.done; }).length / ms.length * 100);
+    }
+    if (goalHasNumeric(g) && parseFloat(g.targetAmount) > 0) {
+      parts.push(Math.min(100, goalCurrentAmount(g) / parseFloat(g.targetAmount) * 100));
+    }
+    if (!parts.length) return 0;
+    return Math.round(parts.reduce(function(a, b) { return a + b; }, 0) / parts.length);
+  }
+  function goalPct(g) { return g.status === "tercapai" ? 100 : goalProgressRaw(g); }
+
+  function goalWords(g) {
+    if (g.kind === "debt") return { total: "Total utang", done: "Sudah dibayar", left: "Sisa utang", entry: "Pembayaran", add: "Catat pembayaran", startLabel: "Sudah dibayar sebelumnya" };
+    if (g.unitType === "rp") return { total: "Target", done: "Terkumpul", left: "Sisa yang dibutuhkan", entry: "Setoran", add: "Catat setoran", startLabel: "Sudah terkumpul saat ini" };
+    return { total: "Target", done: "Tercapai", left: "Sisa", entry: "Capaian", add: "Catat capaian", startLabel: "Sudah tercapai saat ini" };
+  }
+  function fmtGoalNum(g, n) {
+    n = parseFloat(n) || 0;
+    if (g.unitType === "rp") return "Rp " + Math.round(n).toLocaleString("id-ID");
+    n = Math.round(n * 100) / 100;
+    var s = n.toLocaleString("id-ID", { maximumFractionDigits: 2 });
+    return s + (g.unitLabel ? " " + g.unitLabel : "");
+  }
+  function fmtShortDate(dk) {
+    var p = dk.split("-");
+    return parseInt(p[2], 10) + " " + monthNames[parseInt(p[1], 10) - 1].slice(0, 3) + " " + p[0];
+  }
+
+  function goalEndDate(g) { return new Date(g.year, parseInt(g.targetMonth) || 12, 0, 23, 59, 59); }
+  function goalMonthsLeft(g) {
+    var now = new Date();
+    var from = new Date(Math.max(now.getTime(), new Date(g.year, 0, 1).getTime()));
+    var end = goalEndDate(g);
+    if (end < from) return 0;
+    return (end.getFullYear() - from.getFullYear()) * 12 + (end.getMonth() - from.getMonth()) + 1;
+  }
+  function goalPerMonthNeed(g) {
+    if (!goalHasNumeric(g) || !(parseFloat(g.targetAmount) > 0)) return null;
+    var left = parseFloat(g.targetAmount) - goalCurrentAmount(g);
+    if (left <= 0) return null;
+    var m = goalMonthsLeft(g);
+    return m ? left / m : null;
+  }
+  function goalPace(g) {
+    if (g.status !== "berjalan") return null;
+    var now = new Date();
+    var start = new Date(g.year, 0, 1);
+    var end = goalEndDate(g);
+    if (now < start) return null;
+    var pct = goalPct(g);
+    if (now > end) return pct >= 100 ? null : { cls: "behind", label: "Melewati target" };
+    var elapsed = (now - start) / (end - start) * 100;
+    return pct >= elapsed - 5 ? { cls: "on-track", label: "Sesuai jalur" } : { cls: "behind", label: "Tertinggal" };
+  }
+
+  // Status ikut berubah otomatis saat progres berubah (kecuali goal ditunda).
+  function autoGoalStatus(g, reduced) {
+    if (g.status === "ditunda") return;
+    var hasTarget = (goalHasMilestone(g) && (g.milestones || []).length) || (goalHasNumeric(g) && parseFloat(g.targetAmount) > 0);
+    var raw = goalProgressRaw(g);
+    if (hasTarget && raw >= 100) g.status = "tercapai";
+    else if (reduced && g.status === "tercapai") g.status = "berjalan";
+    else if (g.status === "belum" && raw > 0) g.status = "berjalan";
+  }
+
+  function goalRing(pct, size, stroke) {
+    var r = (size - stroke) / 2, c = 2 * Math.PI * r, h = size / 2;
+    var rot = ' transform="rotate(-90 ' + h + ' ' + h + ')"';
+    var s = '<svg class="goal-ring" width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" aria-hidden="true">';
+    s += '<circle cx="' + h + '" cy="' + h + '" r="' + r + '" fill="none" style="stroke:var(--border)" stroke-width="' + stroke + '"' + rot + '></circle>';
+    if (pct > 0) {
+      s += '<circle cx="' + h + '" cy="' + h + '" r="' + r + '" fill="none" style="stroke:var(--purple)" stroke-width="' + stroke + '" stroke-linecap="round" stroke-dasharray="' + (pct / 100 * c) + ' ' + c + '"' + rot + '></circle>';
+    }
+    s += '<text x="' + h + '" y="' + (h + 4) + '" text-anchor="middle" font-size="' + (size > 70 ? 18 : 12) + '" font-weight="800" style="fill:var(--text)" font-family="inherit">' + pct + '%</text></svg>';
+    return s;
+  }
+
+  // ── Tampilan daftar ──
+  function pickDefaultGoalYear() {
+    var now = new Date(), y = now.getFullYear();
+    var years = {};
+    goalsState.goals.forEach(function(g) { years[g.year] = 1; });
+    if (years[y]) return y;
+    var ks = Object.keys(years).map(Number);
+    if (ks.length) return Math.max.apply(null, ks);
+    return now.getMonth() >= 10 ? y + 1 : y;
+  }
+
+  function renderGoals() {
+    document.getElementById("goalYearLabel").textContent = goalYear;
+    var list = goalsState.goals.filter(function(g) { return g.year === goalYear; });
+    renderGoalSummary(list);
+    renderGoalFilters(list);
+    renderGoalSections(list);
+  }
+
+  function renderGoalSummary(list) {
+    var box = document.getElementById("goalSummary");
+    if (!list.length) { box.innerHTML = ""; return; }
+    var done = list.filter(function(g) { return g.status === "tercapai"; }).length;
+    var active = list.filter(function(g) { return g.status !== "ditunda"; });
+    var avg = active.length ? Math.round(active.reduce(function(s, g) { return s + goalPct(g); }, 0) / active.length) : 0;
+    var prio = list.filter(function(g) { return g.priority; }).length;
+    box.innerHTML =
+      '<div class="goal-sum-ring">' + goalRing(avg, 84, 9) + '<div><div class="gs-main">Rata-rata progres</div><div class="gs-sub">dari ' + active.length + ' goal aktif</div></div></div>' +
+      '<div class="goal-stat"><div class="gv">' + done + ' / ' + list.length + '</div><div class="gl">Goal tercapai</div></div>' +
+      '<div class="goal-stat"><div class="gv">' + prio + ' / 3</div><div class="gl">Slot prioritas</div></div>';
+  }
+
+  function renderGoalFilters(list) {
+    var box = document.getElementById("goalFilters");
+    var cats = [];
+    list.forEach(function(g) { if (cats.indexOf(g.category) === -1) cats.push(g.category); });
+    if (goalFilter !== "all" && cats.indexOf(goalFilter) === -1) goalFilter = "all";
+    if (cats.length < 2) { box.innerHTML = ""; return; }
+    var html = '<button class="goal-chip' + (goalFilter === "all" ? ' on' : '') + '" data-cat="all">Semua</button>';
+    cats.forEach(function(c) {
+      var info = GOAL_CATS[c] || GOAL_CATS.lainnya;
+      html += '<button class="goal-chip' + (goalFilter === c ? ' on' : '') + '" data-cat="' + c + '">' + info.icon + ' ' + info.label + '</button>';
+    });
+    box.innerHTML = html;
+    box.querySelectorAll(".goal-chip").forEach(function(el) {
+      el.addEventListener("click", function() { goalFilter = el.getAttribute("data-cat"); renderGoals(); });
+    });
+  }
+
+  function goalSort(a, b) {
+    return ((parseInt(a.targetMonth) || 12) - (parseInt(b.targetMonth) || 12)) || ((a.createdAt || 0) - (b.createdAt || 0));
+  }
+
+  function goalCardHtml(g) {
+    var cat = GOAL_CATS[g.category] || GOAL_CATS.lainnya;
+    var pct = goalPct(g);
+    var pace = goalPace(g);
+    var lines = "";
+    if (goalHasNumeric(g)) {
+      lines += '<div class="gc-line"><strong>' + fmtGoalNum(g, goalCurrentAmount(g)) + '</strong> / ' + fmtGoalNum(g, g.targetAmount) + '</div>';
+      var need = goalPerMonthNeed(g);
+      if (need !== null && g.status !== "tercapai" && g.status !== "ditunda") {
+        lines += '<div class="gc-line gc-need">Perlu ' + fmtGoalNum(g, need) + ' per bulan</div>';
+      }
+    }
+    if (goalHasMilestone(g)) {
+      var ms = g.milestones || [];
+      lines += '<div class="gc-line">' + (ms.length ? ms.filter(function(m) { return m.done; }).length + ' / ' + ms.length + ' tahap' : 'Belum ada tahapan') + '</div>';
+    }
+    var h = '<div class="goal-card' + (g.priority ? ' prio' : '') + '" data-goal="' + g.id + '">';
+    h += '<div class="gc-top"><span class="gc-cat">' + cat.icon + ' ' + cat.label + (g.priority ? ' · ⭐' : '') + '</span><span class="gc-status st-' + g.status + '">' + GOAL_STATUS[g.status] + '</span></div>';
+    h += '<div class="gc-title">' + escapeHtml(g.title) + '</div>';
+    h += '<div class="gc-body">' + goalRing(pct, 56, 6) + '<div class="gc-info">' + lines + '</div></div>';
+    h += '<div class="gc-foot"><span>🎯 ' + monthNames[(parseInt(g.targetMonth) || 12) - 1] + ' ' + g.year + '</span>' + (pace ? '<span class="pace ' + pace.cls + '">' + pace.label + '</span>' : '') + '</div>';
+    return h + '</div>';
+  }
+
+  function renderGoalSections(list) {
+    var box = document.getElementById("goalSections");
+    if (!list.length) {
+      box.innerHTML = '<div class="goal-empty"><div class="ge-icon">🎯</div><p>Belum ada goal untuk ' + goalYear + '.<br>Mulai dari satu hal yang paling ingin kamu capai, atau pilih ide di bawah.</p>' +
+        '<div class="goal-ideas">' + GOAL_IDEAS.map(function(i, idx) { return '<button class="goal-chip goal-idea" data-idx="' + idx + '">' + i.label + '</button>'; }).join("") + '</div></div>';
+      box.querySelectorAll(".goal-idea").forEach(function(el) {
+        el.addEventListener("click", function() { openGoalForm(null, GOAL_IDEAS[parseInt(el.getAttribute("data-idx"), 10)].p); });
+      });
+      return;
+    }
+    var shown = list.filter(function(g) { return goalFilter === "all" || g.category === goalFilter; }).sort(goalSort);
+    var prio = shown.filter(function(g) { return g.priority; });
+    var rest = shown.filter(function(g) { return !g.priority; });
+    var html = "";
+    if (prio.length) html += '<div class="goal-section-title">⭐ Prioritas</div><div class="goal-grid">' + prio.map(goalCardHtml).join("") + '</div>';
+    if (rest.length) html += '<div class="goal-section-title">' + (prio.length ? 'Goal lainnya' : 'Semua goal') + '</div><div class="goal-grid">' + rest.map(goalCardHtml).join("") + '</div>';
+    box.innerHTML = html;
+    box.querySelectorAll(".goal-card").forEach(function(el) {
+      el.addEventListener("click", function() { openGoalDetail(el.getAttribute("data-goal")); });
+    });
+  }
+
+  // ── Buka / tutup halaman ──
+  document.getElementById("openGoals").addEventListener("click", function() {
+    if (!currentUser) return;
+    if (goalsUser !== currentUser) { goalsUser = currentUser; goalYear = null; goalYearTouched = false; goalFilter = "all"; }
+    document.getElementById("goalOverlay").classList.remove("hidden");
+    var loading = loadGoalsData();
+    if (goalYear === null || !goalYearTouched) goalYear = pickDefaultGoalYear();
+    renderGoals();
+    syncSidebarActive();
+    loading.then(function() {
+      if (!goalYearTouched) goalYear = pickDefaultGoalYear();
+      renderGoals();
+      if (goalDetailId && !document.getElementById("goalDetailModal").classList.contains("hidden")) renderGoalDetail();
+    });
+  });
+  document.getElementById("closeGoals").addEventListener("click", function() {
+    document.getElementById("goalOverlay").classList.add("hidden");
+    syncSidebarActive();
+  });
+  document.getElementById("goalYearPrev").addEventListener("click", function() { goalYear--; goalYearTouched = true; goalFilter = "all"; renderGoals(); });
+  document.getElementById("goalYearNext").addEventListener("click", function() { goalYear++; goalYearTouched = true; goalFilter = "all"; renderGoals(); });
+  document.getElementById("newGoalBtn").addEventListener("click", function() { openGoalForm(null, null); });
+
+  // ── Detail goal ──
+  function openGoalDetail(id) {
+    goalDetailId = id;
+    renderGoalDetail();
+    document.getElementById("goalDetailModal").classList.remove("hidden");
+  }
+  function closeGoalDetail() {
+    document.getElementById("goalDetailModal").classList.add("hidden");
+    goalDetailId = null;
+  }
+  document.getElementById("goalDetailModal").addEventListener("click", function(e) { if (e.target === this) closeGoalDetail(); });
+
+  function renderGoalDetail() {
+    var g = goalById(goalDetailId);
+    var box = document.getElementById("goalDetailBox");
+    var body = document.getElementById("goalDetailBody");
+    if (!g) { closeGoalDetail(); return; }
+    var scroll = box.scrollTop;
+    var cat = GOAL_CATS[g.category] || GOAL_CATS.lainnya;
+    var w = goalWords(g);
+    var pct = goalPct(g);
+    var pace = goalPace(g);
+    var h = '';
+
+    h += '<div class="gd-head"><div style="min-width:0"><p class="gd-eyebrow">' + cat.icon + ' ' + cat.label + ' · ' + g.year + '</p>';
+    h += '<div class="gd-title">' + (g.status === "tercapai" ? '🎉 ' : '') + escapeHtml(g.title) + '</div></div>';
+    h += '<div class="gd-actions"><button class="gd-icon-btn' + (g.priority ? ' on' : '') + '" data-act="prio" title="Goal prioritas">⭐</button>';
+    h += '<button class="gd-icon-btn" data-act="edit" title="Edit goal">✏️</button><button class="gd-icon-btn" data-act="close" title="Tutup">✕</button></div></div>';
+
+    h += '<div class="gd-statusrow"><select class="gd-select" id="gdStatus" aria-label="Status goal">';
+    Object.keys(GOAL_STATUS).forEach(function(k) { h += '<option value="' + k + '"' + (g.status === k ? ' selected' : '') + '>' + GOAL_STATUS[k] + '</option>'; });
+    h += '</select>' + (pace ? '<span class="pace ' + pace.cls + '">' + pace.label + '</span>' : '');
+    h += '<span>🎯 Target: ' + monthNames[(parseInt(g.targetMonth) || 12) - 1] + ' ' + g.year + '</span></div>';
+
+    var stats = [];
+    if (goalHasNumeric(g)) {
+      var cur = goalCurrentAmount(g), tot = parseFloat(g.targetAmount) || 0;
+      stats.push([w.total, fmtGoalNum(g, tot)]);
+      stats.push([w.done, fmtGoalNum(g, cur)]);
+      stats.push([w.left, fmtGoalNum(g, Math.max(0, tot - cur))]);
+      var need = goalPerMonthNeed(g);
+      stats.push(["Perlu per bulan", need !== null && g.status !== "tercapai" && g.status !== "ditunda" ? fmtGoalNum(g, need) : "-"]);
+    }
+    if (goalHasMilestone(g)) {
+      var ms0 = g.milestones || [];
+      stats.push(["Tahapan", ms0.filter(function(m) { return m.done; }).length + " / " + ms0.length]);
+    }
+    h += '<div class="gd-progress">' + goalRing(pct, 84, 9) + '<div class="gd-stats">' +
+      stats.map(function(s) { return '<div class="gd-stat"><div class="k">' + s[0] + '</div><div class="v">' + s[1] + '</div></div>'; }).join("") + '</div></div>';
+
+    if (g.why) h += '<div class="gd-why"><small>Kenapa ini penting</small>' + escapeHtml(g.why) + '</div>';
+
+    if (goalHasMilestone(g)) {
+      h += '<div class="gd-section"><h3>Tahapan</h3><div class="gd-add"><input type="text" id="gdMsInput" maxlength="100" placeholder="Tambah tahapan, mis. Pilih travel"><button data-act="add-ms">Tambah</button></div>';
+      var ms = g.milestones || [];
+      if (!ms.length) h += '<div class="gd-empty">Belum ada tahapan.</div>';
+      ms.forEach(function(m) {
+        h += '<div class="gd-row"><button class="gd-check' + (m.done ? ' on' : '') + '" data-act="toggle-ms" data-id="' + m.id + '" aria-label="Tandai selesai">' + (m.done ? '✓' : '') + '</button>';
+        h += '<div class="gd-text' + (m.done ? ' done' : '') + '">' + escapeHtml(m.text) + '</div><button class="gd-del" data-act="del-ms" data-id="' + m.id + '" aria-label="Hapus">✕</button></div>';
+      });
+      h += '</div>';
+    }
+
+    if (goalHasNumeric(g)) {
+      h += '<div class="gd-section"><h3>Riwayat ' + w.entry.toLowerCase() + '</h3><div class="gd-add">';
+      h += '<input type="date" id="gdEntryDate" value="' + dateKey(new Date()) + '" aria-label="Tanggal">';
+      h += '<input type="number" id="gdEntryAmount" inputmode="decimal" min="0" step="any" placeholder="Jumlah" aria-label="Jumlah">';
+      h += '<input type="text" id="gdEntryNote" class="wide" maxlength="80" placeholder="Catatan (opsional)">';
+      h += '<button data-act="add-entry">' + w.add + '</button></div>';
+      var entries = (g.entries || []).slice().sort(function(a, b) { return b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0); });
+      if (parseFloat(g.startAmount) > 0) h += '<div class="gd-empty">Nilai awal: ' + fmtGoalNum(g, g.startAmount) + '</div>';
+      if (!entries.length) h += '<div class="gd-empty">Belum ada catatan.</div>';
+      entries.forEach(function(e) {
+        h += '<div class="gd-row"><div class="gd-text">' + (e.note ? escapeHtml(e.note) : w.entry) + '<small>' + fmtShortDate(e.date) + '</small></div>';
+        h += '<div class="gd-amt">+' + fmtGoalNum(g, e.amount) + '</div><button class="gd-del" data-act="del-entry" data-id="' + e.id + '" aria-label="Hapus">✕</button></div>';
+      });
+      h += '</div>';
+    }
+
+    h += '<div class="gd-section"><h3>Check-in</h3><div class="gd-add"><input type="text" id="gdCheckinText" class="wide" maxlength="300" placeholder="Sudah sejauh mana? Apa yang menghambat?"><button data-act="add-checkin">Simpan</button></div>';
+    var cis = (g.checkins || []).slice().sort(function(a, b) { return b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0); });
+    if (!cis.length) h += '<div class="gd-empty">Belum ada check-in. Tulis kapan saja kamu ingin meninjau goal ini.</div>';
+    cis.forEach(function(c) {
+      h += '<div class="gd-row"><div class="gd-text">' + escapeHtml(c.text) + '<small>' + fmtShortDate(c.date) + '</small></div><button class="gd-del" data-act="del-checkin" data-id="' + c.id + '" aria-label="Hapus">✕</button></div>';
+    });
+    h += '</div>';
+
+    h += '<div class="gd-danger"><button data-act="delete-goal">🗑 Hapus goal ini</button></div>';
+    body.innerHTML = h;
+    box.scrollTop = scroll;
+  }
+
+  function goalChanged(g, reduced) {
+    g.updatedAt = Date.now();
+    autoGoalStatus(g, !!reduced);
+    saveGoals();
+    renderGoalDetail();
+    renderGoals();
+  }
+
+  document.getElementById("goalDetailBody").addEventListener("change", function(e) {
+    if (e.target.id !== "gdStatus") return;
+    var g = goalById(goalDetailId);
+    if (!g) return;
+    g.status = e.target.value;
+    g.updatedAt = Date.now();
+    saveGoals();
+    renderGoalDetail();
+    renderGoals();
+  });
+
+  document.getElementById("goalDetailBody").addEventListener("keydown", function(e) {
+    if (e.key !== "Enter") return;
+    var map = { gdMsInput: "add-ms", gdEntryAmount: "add-entry", gdEntryNote: "add-entry", gdCheckinText: "add-checkin" };
+    if (map[e.target.id]) {
+      var btn = document.querySelector('#goalDetailBody [data-act="' + map[e.target.id] + '"]');
+      if (btn) btn.click();
+    }
+  });
+
+  document.getElementById("goalDetailBody").addEventListener("click", function(e) {
+    var el = e.target.closest("[data-act]");
+    if (!el) return;
+    var g = goalById(goalDetailId);
+    if (!g) return;
+    var act = el.getAttribute("data-act");
+    var id = el.getAttribute("data-id");
+
+    if (act === "close") { closeGoalDetail(); return; }
+    if (act === "edit") { openGoalForm(g.id, null); return; }
+    if (act === "prio") {
+      if (!g.priority) {
+        var count = goalsState.goals.filter(function(x) { return x.year === g.year && x.priority && x.id !== g.id; }).length;
+        if (count >= 3) { alert("Maksimal 3 goal prioritas per tahun. Lepas bintang di goal lain dulu."); return; }
+      }
+      g.priority = !g.priority;
+      goalChanged(g, false);
+      return;
+    }
+    if (act === "delete-goal") {
+      if (!confirm("Hapus goal ini beserta seluruh riwayatnya? Tidak bisa dibatalkan.")) return;
+      goalsState.deleted[g.id] = Date.now();
+      goalsState.goals = goalsState.goals.filter(function(x) { return x.id !== g.id; });
+      saveGoals();
+      closeGoalDetail();
+      renderGoals();
+      return;
+    }
+    if (act === "add-ms") {
+      var mi = document.getElementById("gdMsInput");
+      var text = mi.value.trim();
+      if (!text) { mi.focus(); return; }
+      (g.milestones = g.milestones || []).push({ id: newGoalId("m"), text: text, done: false });
+      goalChanged(g, true);
+      return;
+    }
+    if (act === "toggle-ms") {
+      var m = (g.milestones || []).find(function(x) { return x.id === id; });
+      if (!m) return;
+      m.done = !m.done;
+      goalChanged(g, !m.done);
+      return;
+    }
+    if (act === "del-ms") {
+      g.milestones = (g.milestones || []).filter(function(x) { return x.id !== id; });
+      goalChanged(g, true);
+      return;
+    }
+    if (act === "add-entry") {
+      var ai = document.getElementById("gdEntryAmount");
+      var amount = parseFloat(ai.value);
+      if (!(amount > 0)) { ai.focus(); return; }
+      var date = document.getElementById("gdEntryDate").value || dateKey(new Date());
+      (g.entries = g.entries || []).push({ id: newGoalId("e"), date: date, amount: amount, note: document.getElementById("gdEntryNote").value.trim(), createdAt: Date.now() });
+      goalChanged(g, false);
+      return;
+    }
+    if (act === "del-entry") {
+      g.entries = (g.entries || []).filter(function(x) { return x.id !== id; });
+      goalChanged(g, true);
+      return;
+    }
+    if (act === "add-checkin") {
+      var ci = document.getElementById("gdCheckinText");
+      var ctext = ci.value.trim();
+      if (!ctext) { ci.focus(); return; }
+      (g.checkins = g.checkins || []).push({ id: newGoalId("c"), date: dateKey(new Date()), text: ctext, createdAt: Date.now() });
+      goalChanged(g, false);
+      return;
+    }
+    if (act === "del-checkin") {
+      g.checkins = (g.checkins || []).filter(function(x) { return x.id !== id; });
+      goalChanged(g, false);
+      return;
+    }
+  });
+
+  // ── Form tambah / edit goal ──
+  (function() {
+    var cat = document.getElementById("gfCategory");
+    Object.keys(GOAL_CATS).forEach(function(k) {
+      var o = document.createElement("option");
+      o.value = k; o.textContent = GOAL_CATS[k].icon + " " + GOAL_CATS[k].label;
+      cat.appendChild(o);
+    });
+    var mon = document.getElementById("gfMonth");
+    monthNames.forEach(function(n, i) {
+      var o = document.createElement("option");
+      o.value = i + 1; o.textContent = n;
+      mon.appendChild(o);
+    });
+  })();
+
+  function gfValues() {
+    return {
+      type: document.getElementById("gfType").value,
+      kind: document.getElementById("gfKind").value,
+      unitType: document.getElementById("gfUnitType").value,
+      unitLabel: document.getElementById("gfUnitLabel").value.trim()
+    };
+  }
+
+  function refreshGoalForm() {
+    var v = gfValues();
+    document.getElementById("gfNumericBox").style.display = v.type === "milestone" ? "none" : "flex";
+    document.getElementById("gfUnitLabelBox").style.display = v.unitType === "num" ? "block" : "none";
+    var w = goalWords(v);
+    document.getElementById("gfTargetLabel").textContent = w.total;
+    document.getElementById("gfStartLabel").textContent = w.startLabel;
+    var t = parseFloat(document.getElementById("gfTarget").value);
+    var s = parseFloat(document.getElementById("gfStart").value);
+    var parts = [];
+    if (t > 0) parts.push(w.total + ": " + fmtGoalNum(v, t));
+    if (s > 0) parts.push(w.startLabel.replace("Sudah ", "") + ": " + fmtGoalNum(v, s));
+    document.getElementById("gfHint").textContent = parts.join("  ·  ");
+  }
+  ["gfType", "gfKind", "gfUnitType", "gfUnitLabel", "gfTarget", "gfStart"].forEach(function(id) {
+    var el = document.getElementById(id);
+    el.addEventListener("input", refreshGoalForm);
+    el.addEventListener("change", refreshGoalForm);
+  });
+
+  function openGoalForm(id, prefill) {
+    goalEditId = id || null;
+    goalPrefillMilestones = null;
+    var g = id ? goalById(id) : null;
+    var d = g || Object.assign({ title: "", category: "keuangan", type: "milestone", kind: "save", unitType: "rp", unitLabel: "", targetAmount: "", startAmount: "", targetMonth: 12, why: "", priority: false }, prefill || {});
+    if (!g && prefill && prefill.target) d.targetAmount = prefill.target;
+    if (!g && prefill && prefill.milestones) goalPrefillMilestones = prefill.milestones;
+    document.getElementById("gfEyebrow").textContent = g ? "Edit goal" : "Goal " + goalYear;
+    document.getElementById("gfHeading").textContent = g ? "Ubah goal" : "Tambah goal";
+    document.getElementById("gfTitle").value = d.title || "";
+    document.getElementById("gfCategory").value = d.category || "keuangan";
+    document.getElementById("gfMonth").value = d.targetMonth || 12;
+    document.getElementById("gfType").value = d.type || "milestone";
+    document.getElementById("gfKind").value = d.kind || "save";
+    document.getElementById("gfUnitType").value = d.unitType || "rp";
+    document.getElementById("gfUnitLabel").value = d.unitLabel || "";
+    document.getElementById("gfTarget").value = d.targetAmount !== undefined && d.targetAmount !== null ? d.targetAmount : "";
+    document.getElementById("gfStart").value = d.startAmount !== undefined && d.startAmount !== null ? d.startAmount : "";
+    document.getElementById("gfWhy").value = d.why || "";
+    document.getElementById("gfPriority").checked = !!d.priority;
+    document.getElementById("gfError").textContent = "";
+    document.getElementById("gfPrefillNote").textContent = goalPrefillMilestones ? "Tahapan umum akan ditambahkan otomatis dan bisa kamu ubah nanti." : "";
+    refreshGoalForm();
+    document.getElementById("goalFormModal").classList.remove("hidden");
+    document.getElementById("gfTitle").focus();
+  }
+  function closeGoalForm() { document.getElementById("goalFormModal").classList.add("hidden"); }
+  document.getElementById("closeGoalForm").addEventListener("click", closeGoalForm);
+  document.getElementById("goalFormModal").addEventListener("click", function(e) { if (e.target === this) closeGoalForm(); });
+
+  document.getElementById("saveGoalBtn").addEventListener("click", function() {
+    var err = document.getElementById("gfError");
+    var title = document.getElementById("gfTitle").value.trim();
+    var v = gfValues();
+    var target = parseFloat(document.getElementById("gfTarget").value) || 0;
+    var start = parseFloat(document.getElementById("gfStart").value) || 0;
+    var wantsPriority = document.getElementById("gfPriority").checked;
+    if (!title) { err.textContent = "Judul goal belum diisi."; document.getElementById("gfTitle").focus(); return; }
+    if (v.type !== "milestone" && !(target > 0)) { err.textContent = "Isi target angkanya dulu, harus lebih dari 0."; document.getElementById("gfTarget").focus(); return; }
+    if (v.type !== "milestone" && v.unitType === "num" && !v.unitLabel) { err.textContent = "Isi nama satuannya, mis. buku atau kali."; document.getElementById("gfUnitLabel").focus(); return; }
+    var year = goalEditId ? goalById(goalEditId).year : goalYear;
+    if (wantsPriority) {
+      var count = goalsState.goals.filter(function(x) { return x.year === year && x.priority && x.id !== goalEditId; }).length;
+      if (count >= 3) { err.textContent = "Maksimal 3 goal prioritas per tahun. Lepas bintang di goal lain dulu."; return; }
+    }
+    var g;
+    if (goalEditId) {
+      g = goalById(goalEditId);
+    } else {
+      g = { id: newGoalId("g"), year: year, status: "belum", entries: [], milestones: [], checkins: [], createdAt: Date.now() };
+      if (goalPrefillMilestones) g.milestones = goalPrefillMilestones.map(function(t) { return { id: newGoalId("m"), text: t, done: false }; });
+      goalsState.goals.push(g);
+    }
+    g.title = title;
+    g.category = document.getElementById("gfCategory").value;
+    g.targetMonth = parseInt(document.getElementById("gfMonth").value, 10) || 12;
+    g.type = v.type;
+    g.kind = v.kind;
+    g.unitType = v.unitType;
+    g.unitLabel = v.unitType === "num" ? v.unitLabel : "";
+    g.targetAmount = v.type === "milestone" ? 0 : target;
+    g.startAmount = v.type === "milestone" ? 0 : start;
+    g.why = document.getElementById("gfWhy").value.trim();
+    g.priority = wantsPriority;
+    g.updatedAt = Date.now();
+    autoGoalStatus(g, true);
+    saveGoals();
+    closeGoalForm();
+    goalFilter = "all";
+    renderGoals();
+    openGoalDetail(g.id);
+  });
+
+
+  syncSidebarActive();
 </script>
 
 </body>
